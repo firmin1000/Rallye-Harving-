@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Weazel Rally — Control Center</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,900;1,700;1,900&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════ RESET + VARS ═══════════════════════ */
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --r:#e8001c;--rh:#ff2233;--rd:#9a0010;
+  --bg:#070707;--bg2:#0e0e0e;--bg3:#151515;--bg4:#1c1c1c;--bg5:#222;
+  --b:rgba(255,255,255,.07);--b2:rgba(255,255,255,.13);
+  --m:rgba(255,255,255,.28);--m2:rgba(255,255,255,.55);
+  --gold:#c8860a;--green:#00c853;--amber:#e08000;
+  --font-head:'Barlow Condensed',sans-serif;
+  --font-body:'Barlow',sans-serif;
+}
+html{background:var(--bg);color:#fff;font-family:var(--font-body);font-size:14px;min-height:100vh;}
+body{min-height:100vh;display:flex;flex-direction:column;position:relative;}
+
+/* grain */
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.035'/%3E%3C/svg%3E");opacity:.5;}
+
+/* ═══════════════════════ LOGIN SCREEN ═══════════════════════ */
+#loginScreen{
+  position:fixed;inset:0;z-index:999;
+  background:var(--bg);
+  display:flex;align-items:center;justify-content:center;
+}
+#loginScreen.hidden{display:none;}
+.login-box{
+  width:380px;text-align:center;
+  animation:fadeUp .4s ease;
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:none;}}
+.login-logo{
+  font-family:var(--font-head);font-size:72px;font-weight:900;font-style:italic;
+  color:var(--r);line-height:1;margin-bottom:4px;
+  text-shadow:0 0 60px rgba(232,0,28,.35);
+}
+.login-sub{font-size:11px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--m);margin-bottom:36px;}
+.login-box input{
+  width:100%;background:var(--bg3);color:white;
+  border:1px solid var(--b);border-radius:6px;
+  padding:13px 16px;font-family:var(--font-body);font-size:15px;
+  outline:none;text-align:center;letter-spacing:3px;
+  transition:border-color .2s;margin-bottom:12px;
+}
+.login-box input:focus{border-color:var(--b2);}
+.login-box input::placeholder{color:rgba(255,255,255,.15);letter-spacing:1px;}
+.login-btn{
+  width:100%;background:var(--r);color:white;border:none;border-radius:6px;
+  padding:13px;font-family:var(--font-head);font-size:16px;font-weight:900;
+  letter-spacing:2px;text-transform:uppercase;cursor:pointer;
+  transition:background .12s;
+}
+.login-btn:hover{background:var(--rh);}
+.login-err{color:#ff4455;font-size:11px;margin-top:8px;min-height:16px;}
+.login-hint{font-size:10px;color:rgba(255,255,255,.2);margin-top:20px;line-height:1.6;}
+
+/* ═══════════════════════ SETUP MODAL ═══════════════════════ */
+#setupModal{
+  position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.85);
+  display:flex;align-items:center;justify-content:center;
+}
+#setupModal.hidden{display:none;}
+.setup-box{
+  width:520px;background:var(--bg3);border:1px solid var(--b2);border-radius:10px;
+  padding:28px;animation:fadeUp .3s ease;
+}
+.setup-box h2{font-family:var(--font-head);font-size:22px;font-weight:900;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;}
+.setup-box p{font-size:12px;color:var(--m2);margin-bottom:20px;line-height:1.6;}
+.setup-field{margin-bottom:14px;}
+.setup-field label{display:block;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--m);margin-bottom:6px;}
+.setup-field input{width:100%;background:var(--bg4);color:white;border:1px solid var(--b);border-radius:5px;padding:10px 12px;font-family:var(--font-body);font-size:13px;outline:none;transition:border-color .2s;}
+.setup-field input:focus{border-color:var(--b2);}
+.setup-field input::placeholder{color:rgba(255,255,255,.18);}
+.setup-actions{display:flex;gap:10px;margin-top:20px;}
+.setup-save{flex:1;background:var(--r);color:white;border:none;border-radius:5px;padding:12px;font-family:var(--font-head);font-size:15px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:background .12s;}
+.setup-save:hover{background:var(--rh);}
+.setup-cancel{background:var(--bg4);color:var(--m2);border:1px solid var(--b);border-radius:5px;padding:12px 16px;font-family:var(--font-head);font-size:14px;font-weight:700;cursor:pointer;transition:background .12s;}
+.setup-cancel:hover{background:var(--bg5);}
+
+/* ═══════════════════════ TOPBAR ═══════════════════════ */
+#app{display:flex;flex-direction:column;flex:1;position:relative;z-index:1;}
+.topbar{
+  position:sticky;top:0;z-index:100;height:54px;
+  background:rgba(7,7,7,.94);backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--b);
+  display:flex;align-items:stretch;flex-shrink:0;
+}
+.tb-brand{
+  background:var(--r);display:flex;align-items:center;gap:9px;
+  padding:0 22px 0 16px;
+  clip-path:polygon(0 0,100% 0,90% 100%,0 100%);
+  flex-shrink:0;
+}
+.tb-w{font-family:var(--font-head);font-size:32px;font-weight:900;font-style:italic;line-height:1;}
+.tb-stack{display:flex;flex-direction:column;}
+.tb-t1{font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;line-height:1;}
+.tb-t2{font-size:8px;font-weight:600;letter-spacing:1.5px;opacity:.6;text-transform:uppercase;}
+.tb-nav{display:flex;align-items:stretch;flex:1;padding:0 6px;}
+.tb-btn{
+  display:flex;align-items:center;gap:6px;padding:0 14px;
+  font-family:var(--font-head);font-size:13px;font-weight:700;letter-spacing:1.5px;
+  text-transform:uppercase;color:var(--m);background:none;border:none;
+  cursor:pointer;border-bottom:2px solid transparent;
+  transition:color .15s,border-color .15s;white-space:nowrap;
+}
+.tb-btn:hover{color:white;}
+.tb-btn.on{color:white;border-bottom-color:var(--r);}
+.tb-right{display:flex;align-items:center;padding:0 14px;gap:14px;margin-left:auto;}
+.conn-dot{width:7px;height:7px;border-radius:50%;background:#222;transition:background .3s,box-shadow .3s;}
+.conn-dot.ok{background:var(--green);box-shadow:0 0 8px rgba(0,200,83,.4);}
+.conn-dot.err{background:var(--r);}
+.conn-txt{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--m);}
+.tb-setup{background:none;border:1px solid var(--b);color:var(--m);border-radius:4px;padding:5px 10px;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:border-color .15s,color .15s;font-family:var(--font-head);}
+.tb-setup:hover{border-color:var(--b2);color:white;}
+
+/* ═══════════════════════ PANELS ═══════════════════════ */
+.panel{display:none;flex:1;padding:22px 24px;animation:panelIn .2s ease;}
+.panel.on{display:block;}
+@keyframes panelIn{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:none;}}
+
+/* ═══════════════════════ LAYOUT ═══════════════════════ */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;}
+.g2l{display:grid;grid-template-columns:1.1fr .9fr;gap:20px;}
+@media(max-width:860px){.g2,.g3,.g2l{grid-template-columns:1fr;}}
+
+.sec-hd{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.sec-hd h2{font-family:var(--font-head);font-size:18px;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
+.sec-hd::after{content:'';flex:1;height:1px;background:var(--b);}
+
+/* ═══════════════════════ CARDS ═══════════════════════ */
+.card{background:var(--bg3);border:1px solid var(--b);border-radius:8px;overflow:hidden;margin-bottom:0;}
+.ch{padding:14px 16px;border-bottom:1px solid var(--b);display:flex;align-items:center;gap:8px;}
+.ch h3{font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--m2);}
+.cb{padding:16px;}
+
+/* ═══════════════════════ FORM ═══════════════════════ */
+.f{margin-bottom:12px;}
+.f:last-child{margin-bottom:0;}
+.fl{display:block;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--m);margin-bottom:5px;}
+input[type=text],input[type=number],select,textarea{
+  width:100%;background:var(--bg4);color:white;border:1px solid var(--b);
+  border-radius:5px;padding:9px 12px;font-family:var(--font-body);font-size:13px;
+  outline:none;transition:border-color .2s;
+}
+input:focus,select:focus,textarea:focus{border-color:var(--b2);}
+input::placeholder,textarea::placeholder{color:rgba(255,255,255,.17);}
+select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23555' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px;cursor:pointer;}
+select option{background:#1c1c1c;}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.frow3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+.color-pair{display:flex;gap:8px;align-items:center;}
+input[type=color]{width:38px;height:37px;padding:2px;border-radius:5px;border:1px solid var(--b);background:var(--bg4);cursor:pointer;flex-shrink:0;}
+
+/* ═══════════════════════ BUTTONS ═══════════════════════ */
+.btn{border:none;border-radius:5px;padding:11px 14px;font-family:var(--font-head);font-size:14px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;transition:background .12s,transform .08s,opacity .15s;width:100%;}
+.btn:active:not(:disabled){transform:scale(.97);}
+.btn:disabled{opacity:.22;cursor:not-allowed;transform:none!important;}
+.b-red{background:var(--r);color:white;}.b-red:hover:not(:disabled){background:var(--rh);}
+.b-dk{background:var(--bg4);color:white;border:1px solid var(--b);}.b-dk:hover:not(:disabled){background:var(--bg5);}
+.b-amb{background:rgba(224,128,0,.15);color:#ffaa30;border:1px solid rgba(224,128,0,.25);}.b-amb:hover:not(:disabled){background:rgba(224,128,0,.22);}
+.b-grn{background:rgba(0,200,83,.1);color:var(--green);border:1px solid rgba(0,200,83,.2);}.b-grn:hover:not(:disabled){background:rgba(0,200,83,.16);}
+.b-dnf{background:rgba(255,107,107,.1);color:#ff6b6b;border:1px solid rgba(255,107,107,.22);}.b-dnf:hover:not(:disabled){background:rgba(255,107,107,.16);}
+.b-dsq{background:rgba(255,68,85,.1);color:#ff4455;border:1px solid rgba(255,68,85,.22);}.b-dsq:hover:not(:disabled){background:rgba(255,68,85,.16);}
+.b-inc{background:rgba(255,200,0,.1);color:#ffc800;border:1px solid rgba(255,200,0,.2);}.b-inc:hover:not(:disabled){background:rgba(255,200,0,.15);}
+.b-sm{padding:7px 12px;font-size:12px;width:auto;}
+.brow{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.brow3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+
+/* ═══════════════════════ FEEDBACK ═══════════════════════ */
+.fb{margin-top:10px;padding:8px 12px;border-radius:4px;font-size:11px;font-weight:600;text-align:center;opacity:0;transform:translateY(-3px);transition:opacity .2s,transform .2s;}
+.fb.on{opacity:1;transform:none;}
+.fb.ok{background:rgba(0,200,83,.07);color:var(--green);border:1px solid rgba(0,200,83,.14);}
+.fb.err{background:rgba(232,0,28,.07);color:#ff4455;border:1px solid rgba(232,0,28,.14);}
+.fb.warn{background:rgba(255,149,0,.07);color:#ffaa40;border:1px solid rgba(255,149,0,.14);}
+
+/* ═══════════════════════ CHRONO ═══════════════════════ */
+.ch-display{text-align:center;padding:22px 16px 18px;background:var(--bg2);border-radius:6px;border:1px solid var(--b);margin-bottom:14px;position:relative;overflow:hidden;}
+.ch-display::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--r),transparent);animation:scan 2s linear infinite;opacity:0;transition:opacity .3s;}
+.ch-display.run::after{opacity:1;}
+@keyframes scan{0%{transform:translateX(-100%);}100%{transform:translateX(100%);}}
+.ch-plbl{font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--m);margin-bottom:4px;}
+.ch-pname{font-family:var(--font-head);font-size:20px;font-weight:900;font-style:italic;text-transform:uppercase;color:white;min-height:24px;margin-bottom:10px;}
+.ch-time{font-family:var(--font-head);font-size:62px;font-weight:900;letter-spacing:2px;font-variant-numeric:tabular-nums;color:#1e1e1e;line-height:1;transition:color .3s;}
+.ch-time.run{color:var(--r);text-shadow:0 0 40px rgba(232,0,28,.2);}
+.ch-best{margin-top:6px;font-size:11px;color:var(--m);font-weight:600;}
+.ch-best b{color:var(--gold);}
+.ch-st{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:8px;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.18);transition:color .3s;}
+.ch-st.run{color:var(--r);}
+.sdot{width:7px;height:7px;border-radius:50%;background:#1a1a1a;transition:background .3s;}
+.sdot.on{background:var(--r);animation:pulse 1s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.2;transform:scale(.6);}}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:.25;}}
+
+/* ═══════════════════════ PILOT LIST (driver card) ═══════════════════════ */
+.plist{display:flex;flex-direction:column;gap:5px;max-height:340px;overflow-y:auto;}
+.pitem{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg4);border:1px solid var(--b);border-radius:6px;cursor:pointer;transition:background .12s,border-color .12s,transform .08s;position:relative;overflow:hidden;}
+.pitem::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--tc,var(--r));}
+.pitem:hover{background:var(--bg5);transform:translateX(2px);}
+.pitem.sel{background:#1a1a1a;border-color:var(--b2);}
+.pi-info{flex:1;}
+.pi-n{font-family:var(--font-head);font-size:15px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;}
+.pi-t{font-size:10px;color:var(--m);margin-top:1px;}
+.pi-flag{font-size:15px;margin-left:auto;}
+.pi-chk{width:18px;height:18px;border-radius:50%;border:1px solid var(--b);display:flex;align-items:center;justify-content:center;font-size:9px;color:transparent;transition:all .12s;flex-shrink:0;}
+.pitem.sel .pi-chk{background:var(--r);border-color:var(--r);color:white;}
+
+.dur-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:14px;}
+.dur-btn{background:var(--bg4);color:var(--m2);border:1px solid var(--b);border-radius:5px;padding:8px 4px;cursor:pointer;font-family:var(--font-head);font-size:14px;font-weight:700;text-align:center;transition:all .12s;}
+.dur-btn:hover{background:var(--bg5);color:white;}
+.dur-btn.on{background:var(--r);border-color:var(--r);color:white;}
+
+/* dc preview */
+.dc-prev{background:var(--bg2);border:1px solid var(--b);border-radius:6px;padding:14px 16px;margin-bottom:14px;position:relative;overflow:hidden;display:none;}
+.dc-prev.on{display:block;}
+.dc-prev-bar{position:absolute;left:0;top:0;bottom:0;width:4px;}
+.dc-prev-content{padding-left:12px;}
+.dc-prev-name{font-family:var(--font-head);font-size:24px;font-weight:900;font-style:italic;text-transform:uppercase;}
+.dc-prev-team{font-size:11px;color:var(--m2);margin-top:2px;}
+
+/* ═══════════════════════ CLASSEMENT TABLE ═══════════════════════ */
+.cls-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;}
+th{font-family:var(--font-body);font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--m);padding:9px 14px;text-align:left;border-bottom:2px solid var(--r);background:var(--bg2);white-space:nowrap;}
+td{padding:10px 14px;border-bottom:1px solid var(--b);font-family:var(--font-head);vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(255,255,255,.015);}
+.td-pos{font-size:17px;font-weight:900;width:40px;}
+.td-name{font-size:15px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;}
+.td-team{font-size:11px;color:var(--m);font-family:var(--font-body);font-weight:600;}
+.td-time{font-size:14px;font-weight:700;font-variant-numeric:tabular-nums;text-align:right;}
+.badge{display:inline-flex;align-items:center;font-size:8px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:2px 5px;border-radius:2px;margin-left:5px;}
+.b-dnf2{background:rgba(255,107,107,.12);color:#ff6b6b;border:1px solid rgba(255,107,107,.2);}
+.b-dsq2{background:rgba(255,68,85,.12);color:#ff4455;border:1px solid rgba(255,68,85,.2);}
+.b-inc2{background:rgba(255,200,0,.1);color:#ffc800;border:1px solid rgba(255,200,0,.18);}
+.pen-note{display:block;font-size:9px;color:#c47900;font-family:var(--font-body);margin-top:2px;}
+.cls-live{display:flex;align-items:center;gap:6px;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--m);}
+.live-dot{width:7px;height:7px;border-radius:50%;background:var(--r);animation:pulse 1.2s ease-in-out infinite;}
+.tbl-empty{padding:30px;text-align:center;font-family:var(--font-body);color:var(--m);font-size:13px;}
+
+/* ═══════════════════════ PILOTES EDITOR ═══════════════════════ */
+.pe-list{display:flex;flex-direction:column;gap:7px;max-height:500px;overflow-y:auto;}
+.pe-row{background:var(--bg4);border:1px solid var(--b);border-radius:6px;padding:12px 14px;}
+.pe-head{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.pe-dot{width:11px;height:11px;border-radius:50%;flex-shrink:0;}
+.pe-name{font-family:var(--font-head);font-size:16px;font-weight:700;text-transform:uppercase;flex:1;}
+.pe-team{font-size:10px;color:var(--m);font-family:var(--font-body);}
+.pe-meta{font-size:10px;color:var(--m);display:flex;gap:10px;flex-wrap:wrap;margin-bottom:8px;}
+.pe-acts{display:flex;gap:8px;}
+
+/* ═══════════════════════ EV LOG ═══════════════════════ */
+.ev-log{display:flex;flex-direction:column;gap:5px;max-height:300px;overflow-y:auto;}
+.ev-row{display:flex;align-items:flex-start;gap:9px;padding:8px 11px;background:var(--bg4);border:1px solid var(--b);border-radius:5px;animation:slideIn .2s ease;}
+@keyframes slideIn{from{opacity:0;transform:translateY(-3px);}to{opacity:1;transform:none;}}
+.ev-bdg{font-size:8px;font-weight:700;letter-spacing:.8px;padding:3px 6px;border-radius:2px;flex-shrink:0;margin-top:1px;}
+.eb-P{background:rgba(196,121,0,.15);color:#e08c00;}
+.eb-D{background:rgba(255,107,107,.12);color:#ff6b6b;}
+.eb-Q{background:rgba(255,68,85,.12);color:#ff4455;}
+.eb-I{background:rgba(255,200,0,.1);color:#ffc800;}
+.eb-T{background:rgba(255,255,255,.07);color:rgba(255,255,255,.5);}
+.ev-body{flex:1;}
+.ev-pn{font-weight:700;text-transform:uppercase;font-size:12px;letter-spacing:.5px;}
+.ev-msg{font-size:11px;color:var(--m2);margin-top:2px;line-height:1.4;}
+.ev-tm{font-size:9px;color:var(--m);flex-shrink:0;margin-top:1px;}
+.ev-empty{padding:20px;text-align:center;color:var(--m);font-size:12px;}
+
+/* scrollbar */
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:#252525;border-radius:2px;}
+::-webkit-scrollbar-thumb:hover{background:#333;}
+</style>
+</head>
+<body>
+
+<!-- ══ LOGIN ══ -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">W</div>
+    <div class="login-sub">Weazel Rally · Control Center</div>
+    <input type="password" id="pwdInput" placeholder="Mot de passe" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="login-btn" onclick="doLogin()">Accéder</button>
+    <div class="login-err" id="loginErr"></div>
+    <div class="login-hint">Ce dashboard contrôle les overlays OBS en temps réel.<br>Accès réservé aux opérateurs autorisés.</div>
+  </div>
+</div>
+
+<!-- ══ SETUP MODAL ══ -->
+<div id="setupModal" class="hidden">
+  <div class="setup-box">
+    <h2>⚙️ Configuration Supabase</h2>
+    <p>Entre les informations de ton projet Supabase pour connecter le dashboard à la base de données.</p>
+    <div class="setup-field">
+      <label>URL du projet Supabase</label>
+      <input type="text" id="cfgUrl" placeholder="https://xxxxxxxxxxxx.supabase.co">
+    </div>
+    <div class="setup-field">
+      <label>Clé publique (anon key)</label>
+      <input type="text" id="cfgKey" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9…">
+    </div>
+    <div class="setup-field">
+      <label>Mot de passe dashboard</label>
+      <input type="text" id="cfgPwd" placeholder="Choisir un mot de passe">
+    </div>
+    <div class="setup-actions">
+      <button class="setup-save" onclick="saveSetup()">Sauvegarder</button>
+      <button class="setup-cancel" onclick="closeSetup()">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ APP ══ -->
+<div id="app">
+  <header class="topbar">
+    <div class="tb-brand">
+      <div class="tb-w">W</div>
+      <div class="tb-stack"><span class="tb-t1">Weazel Rally</span><span class="tb-t2">Control Center</span></div>
+    </div>
+    <nav class="tb-nav">
+      <button class="tb-btn on" data-tab="chrono"     onclick="tab('chrono')">⏱ Chrono</button>
+      <button class="tb-btn"    data-tab="events"     onclick="tab('events')">⚡ Événements</button>
+      <button class="tb-btn"    data-tab="drivercard" onclick="tab('drivercard')">🏎 Driver Card</button>
+      <button class="tb-btn"    data-tab="classement" onclick="tab('classement')">📊 Classement</button>
+      <button class="tb-btn"    data-tab="pilotes"    onclick="tab('pilotes')">👤 Pilotes</button>
+    </nav>
+    <div class="tb-right">
+      <div class="conn-dot" id="connDot"></div>
+      <span class="conn-txt" id="connTxt">—</span>
+      <button class="tb-setup" onclick="openSetup()">⚙ Config</button>
+    </div>
+  </header>
+
+  <!-- ══════════ CHRONO ══════════ -->
+  <div class="panel on" id="panel-chrono">
+    <div class="g2l">
+      <div>
+        <div class="sec-hd"><h2>⏱ Chronomètre live</h2></div>
+        <div class="card">
+          <div class="cb">
+            <div class="ch-display" id="chDisp">
+              <div class="ch-plbl">EN PISTE</div>
+              <div class="ch-pname" id="chPN">—</div>
+              <div class="ch-time" id="chT">00:00.000</div>
+              <div class="ch-best">Meilleur : <b id="chB">—</b></div>
+              <div class="ch-st" id="chSt"><div class="sdot" id="chDot"></div><span id="chStTxt">ARRÊTÉ</span></div>
+            </div>
+            <div class="f"><label class="fl">Pilote</label><select id="selCh"><option value="">— Sélectionner —</option></select></div>
+            <div class="brow" style="margin-bottom:8px;">
+              <button class="btn b-red" id="bStart" onclick="chStart()">▶ START</button>
+              <button class="btn b-dk"  id="bStop"  onclick="chStop()"  disabled>■ STOP</button>
+            </div>
+            <button class="btn b-dk" id="bReset" onclick="chReset()" style="opacity:.45;">↺ RESET</button>
+            <div class="fb" id="fb-ch"></div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="sec-hd"><h2>📋 Historique session</h2></div>
+        <div class="card"><div class="cb" style="padding:10px;"><div class="ev-log" id="evLog"><div class="ev-empty">Aucun événement</div></div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════ ÉVÉNEMENTS ══════════ -->
+  <div class="panel" id="panel-events">
+    <div class="g2">
+      <div>
+        <div class="sec-hd"><h2>⚠ Pénalité</h2></div>
+        <div class="card"><div class="cb">
+          <div class="f"><label class="fl">Pilote</label><select id="selPen"><option value="">— Sélectionner —</option></select></div>
+          <div class="f"><label class="fl">Raison</label><input type="text" id="penR" placeholder="Faux départ, Sortie de piste…"></div>
+          <div class="f"><label class="fl">Secondes</label><input type="number" id="penS" placeholder="10" min="1"></div>
+          <button class="btn b-amb" onclick="doPenalty()">⚠ Appliquer la pénalité</button>
+          <div class="fb" id="fb-pen"></div>
+        </div></div>
+      </div>
+      <div>
+        <div class="sec-hd"><h2>🚩 Événement de course</h2></div>
+        <div class="card"><div class="cb">
+          <div class="f"><label class="fl">Pilote</label><select id="selEv"><option value="">— Sélectionner —</option></select></div>
+          <div class="f"><label class="fl">Note (optionnel)</label><input type="text" id="evNote" placeholder="Description…"></div>
+          <div class="brow3">
+            <button class="btn b-dnf" onclick="doEvent('DNF')">🚫 Abandon</button>
+            <button class="btn b-dsq" onclick="doEvent('DSQ')">❌ Disqual.</button>
+            <button class="btn b-inc" onclick="doEvent('INCIDENT')">⚡ Incident</button>
+          </div>
+          <div class="fb" id="fb-ev"></div>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════ DRIVER CARD ══════════ -->
+  <div class="panel" id="panel-drivercard">
+    <div class="g2">
+      <div>
+        <div class="sec-hd"><h2>🏎 Sélection pilote</h2></div>
+        <div class="card"><div class="cb" style="padding:10px;"><div class="plist" id="dcList"><div class="ev-empty">Chargement…</div></div></div></div>
+      </div>
+      <div>
+        <div class="sec-hd"><h2>🎬 Diffusion OBS</h2></div>
+        <div class="card"><div class="cb">
+          <div class="dc-prev" id="dcPrev">
+            <div class="dc-prev-bar" id="dcPrevBar"></div>
+            <div class="dc-prev-content">
+              <div style="font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--m);margin-bottom:4px;">PILOTE SÉLECTIONNÉ</div>
+              <div class="dc-prev-name" id="dcPrevName">—</div>
+              <div class="dc-prev-team" id="dcPrevTeam">—</div>
+            </div>
+          </div>
+          <div class="f"><label class="fl">Durée d'affichage</label>
+            <div class="dur-grid">
+              <div class="dur-btn on" data-ms="6000"  onclick="setDur(this)">6s</div>
+              <div class="dur-btn"    data-ms="8000"  onclick="setDur(this)">8s</div>
+              <div class="dur-btn"    data-ms="12000" onclick="setDur(this)">12s</div>
+              <div class="dur-btn"    data-ms="0"     onclick="setDur(this)">∞</div>
+            </div>
+          </div>
+          <button class="btn b-red" id="bDcShow" onclick="dcShow()" disabled style="margin-bottom:8px;">▶ Afficher sur OBS</button>
+          <button class="btn b-dk" onclick="dcHide()">✕ Masquer</button>
+          <div class="fb" id="fb-dc"></div>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════ CLASSEMENT ══════════ -->
+  <div class="panel" id="panel-classement">
+    <div class="sec-hd">
+      <h2>📊 Classement en direct</h2>
+      <div class="cls-live" style="margin-left:auto;"><div class="live-dot"></div><span id="clsUpd">—</span></div>
+    </div>
+    <div class="card"><div class="cls-wrap">
+      <table><thead><tr>
+        <th style="width:40px;">Pos</th><th>Pilote</th><th>Écurie</th><th style="text-align:right;">Temps</th>
+      </tr></thead>
+      <tbody id="clsBody"><tr><td colspan="4" class="tbl-empty">Chargement…</td></tr></tbody>
+      </table>
+    </div></div>
+  </div>
+
+  <!-- ══════════ PILOTES ══════════ -->
+  <div class="panel" id="panel-pilotes">
+    <div class="g2l">
+      <div>
+        <div class="sec-hd"><h2>👤 Pilotes</h2></div>
+        <div class="card"><div class="cb" style="padding:10px;"><div class="pe-list" id="peList"><div class="ev-empty">Chargement…</div></div></div></div>
+      </div>
+      <div>
+        <div class="sec-hd"><h2 id="piFormTitle">➕ Ajouter un pilote</h2></div>
+        <div class="card"><div class="cb">
+          <input type="hidden" id="piId">
+          <div class="frow">
+            <div class="f"><label class="fl">Prénom</label><input type="text" id="piFirst" placeholder="Marc"></div>
+            <div class="f"><label class="fl">Nom</label><input type="text" id="piLast" placeholder="LEBLANC"></div>
+          </div>
+          <div class="frow">
+            <div class="f"><label class="fl">Nationalité</label><input type="text" id="piNat" placeholder="🇫🇷 FR"></div>
+            <div class="f"><label class="fl">Écurie</label><input type="text" id="piTeam" placeholder="Weazel Racing"></div>
+          </div>
+          <div class="frow">
+            <div class="f"><label class="fl">Couleur écurie</label>
+              <div class="color-pair">
+                <input type="color" id="piColor" value="#e8001c">
+                <input type="text" id="piColorTxt" value="#e8001c" placeholder="#e8001c">
+              </div>
+            </div>
+            <div class="f"><label class="fl">Sponsor</label><input type="text" id="piSponsor" placeholder="Weazel News"></div>
+          </div>
+          <div class="f"><label class="fl">URL Photo</label><input type="text" id="piPhoto" placeholder="https://…"></div>
+          <div class="f"><label class="fl">URL Logo écurie</label><input type="text" id="piLogo" placeholder="https://…"></div>
+          <div class="brow" style="margin-top:4px;">
+            <button class="btn b-grn" onclick="piSave()">💾 Enregistrer</button>
+            <button class="btn b-dk"  onclick="piClear()">✕ Annuler</button>
+          </div>
+          <div class="fb" id="fb-pi"></div>
+        </div></div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /app -->
+
+<script>
+'use strict';
+// ══════════════════════════════════════════════════════════
+//  CONFIG — stockée dans localStorage
+// ══════════════════════════════════════════════════════════
+let SB_URL = localStorage.getItem('sb_url')||'';
+let SB_KEY = localStorage.getItem('sb_key')||'';
+let APP_PWD = localStorage.getItem('app_pwd')||'weazel2024';
+
+// ══════════════════════════════════════════════════════════
+//  LOGIN
+// ══════════════════════════════════════════════════════════
+function doLogin(){
+  const v = document.getElementById('pwdInput').value;
+  if(v === APP_PWD){ document.getElementById('loginScreen').classList.add('hidden'); if(!SB_URL||!SB_KEY) openSetup(); else init(); }
+  else { document.getElementById('loginErr').textContent='Mot de passe incorrect'; document.getElementById('pwdInput').value=''; }
+}
+document.getElementById('pwdInput').addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
+
+// ══════════════════════════════════════════════════════════
+//  SETUP
+// ══════════════════════════════════════════════════════════
+function openSetup(){
+  document.getElementById('cfgUrl').value = SB_URL;
+  document.getElementById('cfgKey').value = SB_KEY;
+  document.getElementById('cfgPwd').value = APP_PWD;
+  document.getElementById('setupModal').classList.remove('hidden');
+}
+function closeSetup(){ document.getElementById('setupModal').classList.add('hidden'); }
+function saveSetup(){
+  const u=document.getElementById('cfgUrl').value.trim();
+  const k=document.getElementById('cfgKey').value.trim();
+  const p=document.getElementById('cfgPwd').value.trim();
+  if(!u||!k){ alert('URL et clé requises'); return; }
+  SB_URL=u; SB_KEY=k; if(p) APP_PWD=p;
+  localStorage.setItem('sb_url',SB_URL);
+  localStorage.setItem('sb_key',SB_KEY);
+  localStorage.setItem('app_pwd',APP_PWD);
+  closeSetup(); init();
+}
+
+// ══════════════════════════════════════════════════════════
+//  SUPABASE REST API
+// ══════════════════════════════════════════════════════════
+const H = ()=>({ 'Content-Type':'application/json', 'apikey':SB_KEY, 'Authorization':'Bearer '+SB_KEY, 'Prefer':'return=representation' });
+
+async function sb(method, table, query='', body=null){
+  if(!SB_URL||!SB_KEY) return null;
+  try{
+    const opts = { method, headers:H() };
+    if(body) opts.body = JSON.stringify(body);
+    const r = await fetch(`${SB_URL}/rest/v1/${table}${query}`, opts);
+    setConn(r.ok);
+    if(!r.ok){ console.error('SB error',r.status, await r.text()); return null; }
+    const txt = await r.text();
+    return txt ? JSON.parse(txt) : [];
+  } catch(e){ setConn(false); return null; }
+}
+
+const GET    = (t,q)       => sb('GET',    t, q||'');
+const POST   = (t,b)       => sb('POST',   t, '', b);
+const PATCH  = (t,q,b)     => sb('PATCH',  t, q, b);
+const DELETE = (t,q)       => sb('DELETE', t, q);
+
+function setConn(ok){
+  document.getElementById('connDot').className='conn-dot '+(ok?'ok':'err');
+  document.getElementById('connTxt').textContent=ok?'CONNECTÉ':'ERREUR';
+}
+
+// ══════════════════════════════════════════════════════════
+//  TABS
+// ══════════════════════════════════════════════════════════
+function tab(name){
+  document.querySelectorAll('.tb-btn').forEach(b=>b.classList.toggle('on',b.dataset.tab===name));
+  document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('on',p.id==='panel-'+name));
+  if(name==='classement') pollCls();
+  if(name==='pilotes') loadPilots();
+  if(name==='drivercard') renderDcList();
+}
+
+// ══════════════════════════════════════════════════════════
+//  PILOTES
+// ══════════════════════════════════════════════════════════
+let pilots=[];
+
+async function loadPilots(){
+  const d = await GET('pilotes','?order=id.asc');
+  if(!d) return;
+  pilots = d;
+  fillSelects();
+  renderDcList();
+  renderPeList();
+}
+
+function fillSelects(){
+  ['selCh','selPen','selEv'].forEach(id=>{
+    const s=document.getElementById(id), prev=s.value;
+    s.innerHTML='<option value="">— Sélectionner —</option>';
+    pilots.forEach(p=>{
+      const o=document.createElement('option');
+      o.value=p.id; o.textContent=p.last_name+' '+p.first_name;
+      if(String(p.id)===prev) o.selected=true;
+      s.appendChild(o);
+    });
+  });
+}
+
+function flagOf(nat){ const m=(nat||'').match(/(\p{Emoji_Presentation}+)/u); return m?m[1]:'🌍'; }
+
+// Pilot editor
+function renderPeList(){
+  const el=document.getElementById('peList');
+  if(!pilots.length){el.innerHTML='<div class="ev-empty">Aucun pilote — ajoutez-en un !</div>';return;}
+  el.innerHTML=pilots.map(p=>`
+    <div class="pe-row">
+      <div class="pe-head">
+        <div class="pe-dot" style="background:${p.team_color||'#e8001c'}"></div>
+        <div class="pe-name">${p.last_name} ${p.first_name}</div>
+        <div style="font-size:15px;">${flagOf(p.country)}</div>
+      </div>
+      <div class="pe-team">${p.team||''} ${p.sponsor?'· '+p.sponsor:''}</div>
+      <div class="pe-acts" style="margin-top:8px;">
+        <button class="btn b-dk b-sm" onclick="piEdit(${p.id})" style="flex:1;">✏️ Modifier</button>
+        <button class="btn b-dk b-sm" onclick="piDelete(${p.id})" style="color:#ff4455;width:36px;flex:0 0 auto;">🗑</button>
+      </div>
+    </div>`).join('');
+}
+
+function piEdit(id){
+  const p=pilots.find(x=>x.id===id); if(!p) return;
+  document.getElementById('piId').value=id;
+  document.getElementById('piFirst').value=p.first_name;
+  document.getElementById('piLast').value=p.last_name;
+  document.getElementById('piNat').value=p.country;
+  document.getElementById('piTeam').value=p.team;
+  document.getElementById('piColor').value=p.team_color||'#e8001c';
+  document.getElementById('piColorTxt').value=p.team_color||'#e8001c';
+  document.getElementById('piSponsor').value=p.sponsor;
+  document.getElementById('piPhoto').value=p.photo_url;
+  document.getElementById('piLogo').value=p.logo_url;
+  document.getElementById('piFormTitle').textContent='✏️ Modifier le pilote';
+  tab('pilotes');
+  document.getElementById('piFirst').focus();
+}
+
+function piClear(){
+  document.getElementById('piId').value='';
+  ['piFirst','piLast','piNat','piTeam','piSponsor','piPhoto','piLogo'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('piColor').value='#e8001c';
+  document.getElementById('piColorTxt').value='#e8001c';
+  document.getElementById('piFormTitle').textContent='➕ Ajouter un pilote';
+}
+
+async function piSave(){
+  const id=document.getElementById('piId').value;
+  const body={
+    first_name: document.getElementById('piFirst').value.trim(),
+    last_name:  document.getElementById('piLast').value.trim(),
+    country:    document.getElementById('piNat').value.trim(),
+    team:       document.getElementById('piTeam').value.trim(),
+    team_color: document.getElementById('piColorTxt').value.trim()||document.getElementById('piColor').value,
+    sponsor:    document.getElementById('piSponsor').value.trim(),
+    photo_url:  document.getElementById('piPhoto').value.trim(),
+    logo_url:   document.getElementById('piLogo').value.trim(),
+  };
+  if(!body.first_name||!body.last_name){fb('fb-pi','Prénom et nom requis','err');return;}
+  let d;
+  if(id){ d=await PATCH('pilotes',`?id=eq.${id}`,body); }
+  else   { d=await POST('pilotes',body); }
+  if(d!==null){
+    fb('fb-pi',id?'✔ Modifié':'✔ Pilote ajouté','ok');
+    piClear(); await loadPilots();
+  } else fb('fb-pi','Erreur Supabase','err');
+}
+
+async function piDelete(id){
+  if(!confirm('Supprimer ce pilote ? Son entrée au classement sera aussi supprimée.')) return;
+  const d=await DELETE('pilotes',`?id=eq.${id}`);
+  if(d!==null){fb('fb-pi','🗑 Supprimé','ok');await loadPilots();}
+  else fb('fb-pi','Erreur','err');
+}
+
+// colour sync
+document.getElementById('piColor').addEventListener('input',e=>document.getElementById('piColorTxt').value=e.target.value);
+document.getElementById('piColorTxt').addEventListener('input',e=>{if(/^#[0-9a-f]{6}$/i.test(e.target.value))document.getElementById('piColor').value=e.target.value;});
+
+// ══════════════════════════════════════════════════════════
+//  CHRONO
+// ══════════════════════════════════════════════════════════
+let chRun=false,chTs=0,chRaf=null,bestMs=Infinity;
+
+function fmt(ms){return p2(Math.floor(ms/60000))+':'+p2(Math.floor((ms%60000)/1000))+'.'+p3(ms%1000);}
+function p2(n){return String(n).padStart(2,'0');}
+function p3(n){return String(n).padStart(3,'0');}
+
+function chTick(){
+  if(!chRun)return;
+  document.getElementById('chT').textContent=fmt(Date.now()-chTs);
+  chRaf=requestAnimationFrame(chTick);
+}
+
+function uiRun(name,ts){
+  chRun=true;chTs=ts;
+  document.getElementById('chDisp').classList.add('run');
+  document.getElementById('chT').classList.add('run');
+  document.getElementById('chPN').textContent=name||'—';
+  document.getElementById('chDot').classList.add('on');
+  document.getElementById('chSt').classList.add('run');
+  document.getElementById('chStTxt').textContent='EN COURS';
+  document.getElementById('bStart').disabled=true;
+  document.getElementById('bStop').disabled=false;
+  document.getElementById('bReset').disabled=true;
+  document.getElementById('bReset').style.opacity='.22';
+  cancelAnimationFrame(chRaf);chRaf=requestAnimationFrame(chTick);
+}
+function uiStop(keep){
+  chRun=false;cancelAnimationFrame(chRaf);
+  document.getElementById('chDisp').classList.remove('run');
+  document.getElementById('chT').classList.remove('run');
+  document.getElementById('chPN').textContent='—';
+  document.getElementById('chDot').classList.remove('on');
+  document.getElementById('chSt').classList.remove('run');
+  document.getElementById('chStTxt').textContent='ARRÊTÉ';
+  if(!keep)document.getElementById('chT').textContent='00:00.000';
+  document.getElementById('bStart').disabled=false;
+  document.getElementById('bStop').disabled=true;
+  document.getElementById('bReset').disabled=false;
+  document.getElementById('bReset').style.opacity='.45';
+}
+function lockCh(){['bStart','bStop','bReset'].forEach(id=>document.getElementById(id).disabled=true);}
+
+async function chStart(){
+  const pid=document.getElementById('selCh').value;
+  if(!pid){fb('fb-ch','Sélectionne un pilote !','err');return;}
+  const pname=document.getElementById('selCh').selectedOptions[0].textContent;
+  lockCh();
+  const ts=Date.now();
+  const d=await PATCH('chrono','?id=eq.1',{status:'START',pilote_id:Number(pid),started_at:ts});
+  if(d!==null){uiRun(pname,ts);fb('fb-ch','▶ '+pname,'ok');}
+  else fb('fb-ch','Erreur Supabase','err');
+}
+
+async function chStop(){
+  if(!chRun)return;
+  const ms=Date.now()-chTs,time=fmt(ms);
+  cancelAnimationFrame(chRaf);
+  document.getElementById('chT').textContent=time;
+  lockCh();
+  // 1. stop chrono
+  const pid=document.getElementById('selCh').value||null;
+  await PATCH('chrono','?id=eq.1',{status:'STOP',started_at:0});
+  // 2. save time to classement
+  if(pid){
+    // upsert classement row
+    const exist=await GET('classement',`?pilote_id=eq.${pid}`);
+    if(exist&&exist.length){
+      await PATCH('classement',`?pilote_id=eq.${pid}`,{best_time:time,updated_at:new Date().toISOString()});
+    } else {
+      await POST('classement',{pilote_id:Number(pid),best_time:time,status:'',penalties:''});
+    }
+    addLog('T',document.getElementById('selCh').selectedOptions[0].textContent,time);
+    if(ms>0&&ms<bestMs){bestMs=ms;document.getElementById('chB').textContent=fmt(bestMs);}
+  }
+  uiStop(true);
+  fb('fb-ch','✔ '+time,'ok');
+  pollCls();
+}
+
+async function chReset(){
+  lockCh();
+  await PATCH('chrono','?id=eq.1',{status:'STOP',pilote_id:null,started_at:0});
+  uiStop(false);
+  fb('fb-ch','↺ Remis à zéro','ok');
+}
+
+// ══════════════════════════════════════════════════════════
+//  ÉVÉNEMENTS
+// ══════════════════════════════════════════════════════════
+async function doPenalty(){
+  const pid=document.getElementById('selPen').value;
+  const reason=document.getElementById('penR').value.trim();
+  const secs=Number(document.getElementById('penS').value);
+  if(!pid){fb('fb-pen','Sélectionne un pilote !','err');return;}
+  if(!reason){fb('fb-pen','Écris la raison','err');return;}
+  if(!secs||secs<=0){fb('fb-pen','Secondes invalides','err');return;}
+
+  const pname=document.getElementById('selPen').selectedOptions[0].textContent;
+
+  // get current classement row
+  const rows=await GET('classement',`?pilote_id=eq.${pid}`);
+  const row=rows&&rows[0];
+  const curMs=toMs(row?.best_time||'');
+  const newMs=(curMs<Infinity?curMs:0)+secs*1000;
+  const newTime=toTime(newMs);
+  const label='+'+secs+'s · '+reason;
+  const newPen=row?.penalties?row.penalties+' | '+label:label;
+
+  if(row){ await PATCH('classement',`?pilote_id=eq.${pid}`,{best_time:newTime,penalties:newPen,updated_at:new Date().toISOString()}); }
+  else    { await POST('classement',{pilote_id:Number(pid),best_time:newTime,penalties:newPen}); }
+
+  // push event for OBS overlay
+  await POST('events',{pilote_id:Number(pid),pilote_name:pname,type:'PENALTY',message:label});
+
+  fb('fb-pen','⚠ +'+secs+'s → '+pname,'ok');
+  addLog('P',pname,label);
+  document.getElementById('penR').value='';
+  document.getElementById('penS').value='';
+  pollCls();
+}
+
+async function doEvent(type){
+  const pid=document.getElementById('selEv').value;
+  const note=document.getElementById('evNote').value.trim();
+  if(!pid){fb('fb-ev','Sélectionne un pilote !','err');return;}
+  const pname=document.getElementById('selEv').selectedOptions[0].textContent;
+  const labels={DNF:'🚫 ABANDON',DSQ:'❌ DISQUALIFIÉ',INCIDENT:'⚡ INCIDENT'};
+
+  // update classement
+  const rows=await GET('classement',`?pilote_id=eq.${pid}`);
+  const row=rows&&rows[0];
+  const upd={status:type,updated_at:new Date().toISOString()};
+  if(type==='DNF'||type==='DSQ') upd.best_time='';
+  if(note) upd.penalties=row?.penalties?row.penalties+' | '+note:note;
+  if(row){ await PATCH('classement',`?pilote_id=eq.${pid}`,upd); }
+  else    { await POST('classement',{pilote_id:Number(pid),...upd}); }
+
+  // push event
+  await POST('events',{pilote_id:Number(pid),pilote_name:pname,type,message:note||labels[type]});
+
+  fb('fb-ev',labels[type]+' · '+pname,'ok');
+  addLog(type==='DNF'?'D':type==='DSQ'?'Q':'I',pname,note||labels[type]);
+  document.getElementById('evNote').value='';
+  pollCls();
+}
+
+// ══════════════════════════════════════════════════════════
+//  CLASSEMENT
+// ══════════════════════════════════════════════════════════
+function toMs(t){
+  if(!t||String(t).trim()==='')return Infinity;
+  const m=String(t).trim().match(/^(\d+):(\d{2})\.(\d{3})$/);
+  return m?parseInt(m[1])*60000+parseInt(m[2])*1000+parseInt(m[3]):Infinity;
+}
+function toTime(ms){
+  if(ms<0)ms=0;
+  return p2(Math.floor(ms/60000))+':'+p2(Math.floor((ms%60000)/1000))+'.'+p3(ms%1000);
+}
+
+async function pollCls(){
+  // join classement + pilotes
+  const rows=await GET('classement','?select=*,pilotes(last_name,first_name,team)&order=best_time.asc.nullslast');
+  if(!rows) return;
+
+  // tri : temps valides → sans temps → DNF/DSQ
+  const ok  = rows.filter(r=>r.best_time&&toMs(r.best_time)<Infinity&&r.status!=='DNF'&&r.status!=='DSQ');
+  const no  = rows.filter(r=>(!r.best_time||toMs(r.best_time)===Infinity)&&r.status!=='DNF'&&r.status!=='DSQ');
+  const out = rows.filter(r=>r.status==='DNF'||r.status==='DSQ');
+  ok.sort((a,b)=>toMs(a.best_time)-toMs(b.best_time));
+  const sorted=[...ok,...no,...out];
+
+  const tbody=document.getElementById('clsBody');
+  if(!sorted.length){tbody.innerHTML='<tr><td colspan="4" class="tbl-empty">Aucun résultat</td></tr>';return;}
+
+  tbody.innerHTML=sorted.map((r,i)=>{
+    const p=r.pilotes||{};
+    const name=(p.last_name||'')+' '+(p.first_name||'');
+    const st=(r.status||'').toUpperCase();
+    const pos=(st==='DNF'||st==='DSQ')?'—':String(i+1);
+    const time=st==='DNF'?'DNF':st==='DSQ'?'DSQ':(r.best_time||'—');
+    const posColor=i===0?'color:var(--r)':i===1?'color:#bbb':i===2?'color:var(--gold)':'color:rgba(255,255,255,.14)';
+    const timeColor=i===0&&st!=='DNF'&&st!=='DSQ'?'color:var(--r)':'';
+    const leftBorder=i===0?'border-left:3px solid var(--r)':i===1?'border-left:3px solid #777':i===2?'border-left:3px solid var(--gold)':'';
+    let badge='';
+    if(st==='DNF')badge='<span class="badge b-dnf2">DNF</span>';
+    else if(st==='DSQ')badge='<span class="badge b-dsq2">DSQ</span>';
+    else if(st==='INCIDENT')badge='<span class="badge b-inc2">INC</span>';
+    const pen=r.penalties?`<span class="pen-note">⚠ ${r.penalties}</span>`:'';
+    return `<tr>
+      <td class="td-pos" style="${posColor};${leftBorder};padding-left:${i<3?'11px':'14px'}">${pos}</td>
+      <td class="td-name">${name.trim()||'?'}${badge}${pen}</td>
+      <td class="td-team">${p.team||''}</td>
+      <td class="td-time" style="${timeColor}">${time}</td>
+    </tr>`;
+  }).join('');
+  document.getElementById('clsUpd').textContent=new Date().toLocaleTimeString('fr-FR');
+}
+
+// ══════════════════════════════════════════════════════════
+//  DRIVER CARD
+// ══════════════════════════════════════════════════════════
+let dcSel=null, dcDur=6000;
+
+function renderDcList(){
+  const el=document.getElementById('dcList');
+  if(!pilots.length){el.innerHTML='<div class="ev-empty">Aucun pilote</div>';return;}
+  el.innerHTML=pilots.map((p,i)=>`
+    <div class="pitem ${dcSel===p.id?'sel':''}" style="--tc:${p.team_color||'#e8001c'}" onclick="dcSelect(${p.id})">
+      <div class="pi-info">
+        <div class="pi-n">${p.last_name} ${p.first_name}</div>
+        <div class="pi-t">${p.team||''}</div>
+      </div>
+      <div class="pi-flag">${flagOf(p.country)}</div>
+      <div class="pi-chk">${dcSel===p.id?'✓':''}</div>
+    </div>`).join('');
+}
+
+function dcSelect(id){
+  dcSel=id;
+  const p=pilots.find(x=>x.id===id);
+  renderDcList();
+  const prev=document.getElementById('dcPrev');
+  prev.classList.add('on');
+  document.getElementById('dcPrevBar').style.background=p.team_color||'#e8001c';
+  document.getElementById('dcPrevName').textContent=(p.last_name+' '+p.first_name).toUpperCase();
+  document.getElementById('dcPrevTeam').textContent=p.team||'';
+  document.getElementById('bDcShow').disabled=false;
+}
+
+function setDur(btn){
+  document.querySelectorAll('.dur-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  dcDur=Number(btn.dataset.ms);
+}
+
+async function dcShow(){
+  if(!dcSel){fb('fb-dc','Sélectionne un pilote !','err');return;}
+  const p=pilots.find(x=>x.id===dcSel);
+  const d=await PATCH('driver_card','?id=eq.1',{
+    pilote_id:dcSel,
+    active:true,
+    duration_ms:dcDur,
+    triggered_at:Date.now()
+  });
+  if(d!==null) fb('fb-dc','▶ Affiché · '+(p.last_name+' '+p.first_name),'ok');
+  else fb('fb-dc','Erreur Supabase','err');
+}
+
+async function dcHide(){
+  const d=await PATCH('driver_card','?id=eq.1',{active:false});
+  if(d!==null) fb('fb-dc','✕ Masqué','ok');
+}
+
+// ══════════════════════════════════════════════════════════
+//  LOG
+// ══════════════════════════════════════════════════════════
+const hist=[];
+function addLog(type,pilot,msg){
+  hist.unshift({type,pilot,msg,time:new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})});
+  const el=document.getElementById('evLog');
+  el.innerHTML=hist.slice(0,30).map(e=>`
+    <div class="ev-row">
+      <span class="ev-bdg eb-${e.type}">${e.type}</span>
+      <div class="ev-body"><div class="ev-pn">${e.pilot}</div><div class="ev-msg">${e.msg}</div></div>
+      <span class="ev-tm">${e.time}</span>
+    </div>`).join('');
+}
+
+// ══════════════════════════════════════════════════════════
+//  FEEDBACK
+// ══════════════════════════════════════════════════════════
+function fb(id,msg,type){
+  const el=document.getElementById(id);if(!el)return;
+  el.textContent=msg;el.className='fb on '+type;
+  setTimeout(()=>el.className='fb '+type,3500);
+}
+
+// ══════════════════════════════════════════════════════════
+//  INIT + POLLING
+// ══════════════════════════════════════════════════════════
+async function init(){
+  await loadPilots();
+  pollCls();
+}
+
+// Classement auto toutes les 2s si onglet actif
+setInterval(()=>{
+  if(document.getElementById('panel-classement').classList.contains('on')) pollCls();
+},2000);
+
+// Reload pilotes toutes les 20s
+setInterval(loadPilots,20000);
+</script>
+</body>
+</html>
