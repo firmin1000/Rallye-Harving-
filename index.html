@@ -165,8 +165,8 @@ input[type=color]{width:38px;height:37px;padding:2px;border-radius:5px;border:1p
 .sdot.on{background:var(--r);animation:pulse 1s ease-in-out infinite;}
 
 /* ═══ PILOT LIST ═══ */
-.plist{display:flex;flex-direction:column;gap:5px;max-height:400px;overflow-y:auto;}
-.pitem{display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--bg4);border:1px solid var(--b);border-radius:6px;cursor:pointer;transition:all .12s;position:relative;overflow:hidden;}
+.plist{display:flex;flex-direction:column;gap:12px;max-height:400px;overflow-y:auto;}
+.pitem{display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--bg4);border:1px solid var(--b);border-radius:6px;cursor:pointer;transition:all .12s;position:relative;overflow:hidden;}
 .pitem::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--tc,var(--r));}
 .pitem:hover{background:var(--bg5);transform:translateX(2px);}
 .pitem.sel{background:#1a1a1a;border-color:var(--b2);}
@@ -193,6 +193,19 @@ input[type=color]{width:38px;height:37px;padding:2px;border-radius:5px;border:1p
 .dc-prev-lbl{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--m);margin-bottom:3px;}
 .dc-prev-name{font-family:var(--font-head);font-size:22px;font-weight:900;font-style:italic;text-transform:uppercase;}
 .dc-prev-team{font-size:11px;color:var(--m2);margin-top:2px;}
+
+/* ═══ PASSAGE ORDER ═══ */
+.passage-list{display:flex;flex-direction:column;gap:10px;max-height:700px;overflow-y:auto;}
+.passage-item{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--bg4);border:1px solid var(--b);border-radius:6px;position:relative;transition:all .15s;}
+.passage-item:hover{background:var(--bg5);border-color:var(--b2);}
+.passage-num{font-family:var(--font-head);font-size:24px;font-weight:900;color:var(--r);min-width:36px;text-align:center;line-height:1;}
+.passage-info{flex:1;}
+.passage-name{font-family:var(--font-head);font-size:15px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;}
+.passage-team{font-size:10px;color:var(--m);margin-top:2px;}
+.passage-controls{display:flex;gap:6px;flex-shrink:0;}
+.passage-btn{width:40px;height:40px;border:none;border-radius:5px;cursor:pointer;font-family:var(--font-head);font-size:18px;font-weight:700;transition:all .12s;display:flex;align-items:center;justify-content:center;background:rgba(136,170,255,.1);color:#88aaff;border:1px solid rgba(136,170,255,.3);}
+.passage-btn:hover{background:rgba(136,170,255,.2);border-color:rgba(136,170,255,.5);}
+.passage-btn:disabled{opacity:.3;cursor:not-allowed;}
 
 /* ═══ COMMENTATEUR ═══ */
 .comm-prev{text-align:center;padding:16px 14px 12px;background:var(--bg2);border-radius:6px;border:1px solid var(--b);margin-bottom:12px;}
@@ -404,7 +417,7 @@ tr:hover td{background:rgba(255,255,255,.015);}
       <div>
         <div class="sec-hd"><h2>🏎 Sélection pilote</h2></div>
         <div class="card"><div class="cb" style="padding:10px;">
-          <div class="plist" id="dcList" style="max-height:450px;"><div class="ev-empty">Chargement…</div></div>
+          <div class="plist" id="dcList" style="max-height:700px;"><div class="ev-empty">Chargement…</div></div>
         </div></div>
       </div>
       <div>
@@ -489,17 +502,27 @@ tr:hover td{background:rgba(255,255,255,.015);}
 
   <!-- CLASSEMENT -->
   <div class="panel" id="panel-classement">
-    <div class="sec-hd">
-      <h2>📊 Classement en direct</h2>
-      <div class="cls-live" style="margin-left:auto;"><div class="live-dot"></div><span id="clsUpd">—</span></div>
+    <div class="g2">
+      <div>
+        <div class="sec-hd"><h2>📋 Ordre de Passage</h2></div>
+        <div class="card"><div class="cb" style="padding:10px;">
+          <div class="passage-list" id="passageList"><div class="ev-empty">Chargement…</div></div>
+        </div></div>
+      </div>
+      <div>
+        <div class="sec-hd">
+          <h2>📊 Classement en direct</h2>
+          <div class="cls-live" style="margin-left:auto;"><div class="live-dot"></div><span id="clsUpd">—</span></div>
+        </div>
+        <div class="card"><div class="cls-wrap">
+          <table><thead><tr>
+            <th style="width:40px;">Pos</th><th>Pilote</th><th>Écurie</th><th style="text-align:right;">Temps</th><th style="width:80px;text-align:center;">Actions</th>
+          </tr></thead>
+          <tbody id="clsBody"><tr><td colspan="5" class="tbl-empty">Chargement…</td></tr></tbody>
+          </table>
+        </div></div>
+      </div>
     </div>
-    <div class="card"><div class="cls-wrap">
-      <table><thead><tr>
-        <th style="width:40px;">Pos</th><th>Pilote</th><th style="width:60px;">Ordre</th><th>Écurie</th><th style="text-align:right;">Temps</th><th style="width:140px;text-align:center;">Actions</th>
-      </tr></thead>
-      <tbody id="clsBody"><tr><td colspan="6" class="tbl-empty">Chargement…</td></tr></tbody>
-      </table>
-    </div></div>
   </div>
 
   <!-- PILOTES -->
@@ -951,7 +974,7 @@ async function doEvent(type){
 //   3. DNF / DSQ
 async function pollCls(){
   const tbody=document.getElementById('clsBody');
-  if(!pilots.length){tbody.innerHTML='<tr><td colspan="6" class="tbl-empty">Aucun pilote dans cette catégorie</td></tr>';return;}
+  if(!pilots.length){tbody.innerHTML='<tr><td colspan="5" class="tbl-empty">Aucun pilote dans cette catégorie</td></tr>';return;}
 
   // Toutes les entrées classement pour les pilotes de la catégorie
   const ids=pilots.map(p=>p.id);
@@ -985,6 +1008,9 @@ async function pollCls(){
   });
   const sorted=[...ok,...no,...out];
 
+  // Rendu de l'ordre de passage
+  renderPassageList(no);
+
   tbody.innerHTML=sorted.map((r,i)=>{
     const p=r._pilot;
     const name=fmtNameFull(p.first_name,p.last_name);
@@ -1009,13 +1035,6 @@ async function pollCls(){
     else if(st==='INCIDENT')badge='<span class="badge b-inc2">INC</span>';
     const pen=r.penalties?`<span class="pen-note">⚠ ${r.penalties}</span>`:'';
 
-    // Ordre de passage (position dans la liste pour les pilotes sans temps)
-    let ordreHTML='—';
-    if(!hasTime&&!isOut){
-      const noIdx=no.indexOf(r);
-      ordreHTML=`<span style="font-weight:700;color:#ffaa00;">${noIdx+1}</span>`;
-    }
-
     // Boutons d'action
     let actions='';
     if(st==='DNF'||st==='DSQ'||st==='INCIDENT'){
@@ -1027,27 +1046,44 @@ async function pollCls(){
     if(st!=='INCIDENT'){
       actions+=`<button class="act-btn act-inf" onclick="setStatus(${p.id},'INCIDENT')">Inc</button>`;
     }
-    // Boutons de réordonner pour les pilotes sans temps
-    if(!hasTime&&!isOut){
-      const noIdx=no.indexOf(r);
-      if(noIdx>0){
-        actions=`<button class="act-btn" style="background:rgba(100,150,255,.15);color:#88aaff;border:1px solid rgba(100,150,255,.3);" onclick="movePassageUp(${p.id})">▲</button>` + actions;
-      }
-      if(noIdx<no.length-1){
-        actions += `<button class="act-btn" style="background:rgba(100,150,255,.15);color:#88aaff;border:1px solid rgba(100,150,255,.3);" onclick="movePassageDown(${p.id})">▼</button>`;
-      }
-    }
 
     return `<tr style="${rowStyle}">
       <td class="td-pos" style="${pc};${lb};padding-left:${posNum>=0&&posNum<3?'11px':'14px'}">${pos}</td>
       <td class="td-name">${name.trim()||'?'}${badge}${pen}</td>
-      <td style="text-align:center;font-size:12px;color:#ffaa00;font-weight:700;">${ordreHTML}</td>
       <td class="td-team">${p.team||''}</td>
       <td class="td-time" style="${tc}">${time}</td>
       <td style="text-align:center;font-size:0;">${actions}</td>
     </tr>`;
   }).join('');
   document.getElementById('clsUpd').textContent=new Date().toLocaleTimeString('fr-FR');
+}
+
+// ══ RENDU ORDRE DE PASSAGE ══
+function renderPassageList(noPilots){
+  const el=document.getElementById('passageList');
+  if(!noPilots||!noPilots.length){
+    el.innerHTML='<div class="ev-empty">Aucun pilote en attente</div>';
+    return;
+  }
+  
+  el.innerHTML=noPilots.map((r,idx)=>{
+    const p=r._pilot;
+    const name=fmtNameFull(p.first_name,p.last_name);
+    const canUp=idx>0;
+    const canDown=idx<noPilots.length-1;
+    
+    return `<div class="passage-item">
+      <div class="passage-num">${idx+1}</div>
+      <div class="passage-info">
+        <div class="passage-name">${name}</div>
+        <div class="passage-team">${p.team||''}</div>
+      </div>
+      <div class="passage-controls">
+        <button class="passage-btn" onclick="movePassageUp(${p.id})" ${!canUp?'disabled':''}>▲</button>
+        <button class="passage-btn" onclick="movePassageDown(${p.id})" ${!canDown?'disabled':''}>▼</button>
+      </div>
+    </div>`;
+  }).join('');
 }
 
 // ══ GESTION STATUTS PILOTES ══
