@@ -1123,7 +1123,7 @@ async function movePassageUp(pid){
   }).sort((a,b)=>(passageOrder.get(a.id)||999)-(passageOrder.get(b.id)||999));
   
   const idx=noRows.findIndex(p=>p.id===pid);
-  if(idx>0){
+  if(idx > 0 && idx < noRows.length){
     const ord1=passageOrder.get(noRows[idx-1].id)||999;
     const ord2=passageOrder.get(noRows[idx].id)||999;
     passageOrder.set(noRows[idx-1].id, ord2);
@@ -1144,7 +1144,7 @@ async function movePassageDown(pid){
   }).sort((a,b)=>(passageOrder.get(a.id)||999)-(passageOrder.get(b.id)||999));
   
   const idx=noRows.findIndex(p=>p.id===pid);
-  if(idx<noRows.length-1){
+  if(idx >= 0 && idx < noRows.length-1){
     const ord1=passageOrder.get(noRows[idx].id)||999;
     const ord2=passageOrder.get(noRows[idx+1].id)||999;
     passageOrder.set(noRows[idx].id, ord2);
