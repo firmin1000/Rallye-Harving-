@@ -6,18 +6,17 @@
 <title>Weazel Rally — Control Center</title>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,900;1,700;1,900&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-*{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased;}
 :root{--r:#e8001c;--rh:#ff2233;--bg:#070707;--bg2:#0e0e0e;--bg3:#151515;--bg4:#1c1c1c;--bg5:#222;--b:rgba(255,255,255,.07);--b2:rgba(255,255,255,.13);--m:rgba(255,255,255,.28);--m2:rgba(255,255,255,.55);--gold:#c8860a;--green:#00c853;--font-head:'Barlow Condensed',sans-serif;--font-body:'Barlow',sans-serif;}
-html{background:var(--bg);color:#fff;font-family:var(--font-body);font-size:14px;min-height:100vh;text-rendering:optimizeLegibility;}
-body{min-height:100vh;display:flex;flex-direction:column;position:relative;font-weight:400;}
-body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.035'/%3E%3C/svg%3E");opacity:.5;}
+html{background:var(--bg);color:#fff;font-family:var(--font-body);font-size:14px;min-height:100vh;}
+body{min-height:100vh;display:flex;flex-direction:column;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:none;}}
 @keyframes panelIn{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:none;}}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.2;transform:scale(.6);}}
 @keyframes scan{0%{transform:translateX(-100%);}100%{transform:translateX(100%);}}
 @keyframes slideIn{from{opacity:0;transform:translateY(-3px);}to{opacity:1;transform:none;}}
 
-/* ═══ BOOTSTRAP ═══ */
+/* BOOTSTRAP */
 #bootstrapScreen{position:fixed;inset:0;z-index:1000;background:var(--bg);display:flex;align-items:center;justify-content:center;}
 #bootstrapScreen.hidden{display:none;}
 .boot-box{width:440px;text-align:center;animation:fadeUp .4s ease;}
@@ -35,7 +34,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
 .boot-err{color:#ff4455;font-size:11px;margin-top:8px;min-height:16px;text-align:center;}
 .boot-info{font-size:10px;color:rgba(255,255,255,.2);margin-top:12px;line-height:1.6;}
 
-/* ═══ LOGIN ═══ */
+/* LOGIN */
 #loginScreen{position:fixed;inset:0;z-index:999;background:var(--bg);display:flex;align-items:center;justify-content:center;}
 #loginScreen.hidden{display:none;}
 .login-box{width:340px;text-align:center;animation:fadeUp .4s ease;}
@@ -48,7 +47,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
 .login-btn:hover{background:var(--rh);}
 .login-err{color:#ff4455;font-size:11px;margin-top:8px;min-height:16px;}
 
-/* ═══ SETUP MODAL ═══ */
+/* SETUP MODAL */
 #setupModal{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.85);display:flex;align-items:center;justify-content:center;}
 #setupModal.hidden{display:none;}
 .setup-box{width:480px;background:var(--bg3);border:1px solid var(--b2);border-radius:10px;padding:24px;animation:fadeUp .3s ease;}
@@ -58,14 +57,14 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
 .sf input{width:100%;background:var(--bg4);color:white;border:1px solid var(--b);border-radius:5px;padding:9px 12px;font-family:var(--font-body);font-size:13px;outline:none;transition:border-color .2s;}
 .sf input:focus{border-color:var(--b2);}
 .setup-acts{display:flex;gap:10px;margin-top:16px;}
-.setup-ok{flex:1;background:var(--r);color:white;border:none;border-radius:5px;padding:11px;font-family:var(--font-head);font-size:14px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:background .12s;}
+.setup-ok{flex:1;background:var(--r);color:white;border:none;border-radius:5px;padding:11px;font-family:var(--font-head);font-size:14px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;}
 .setup-ok:hover{background:var(--rh);}
-.setup-cl{background:var(--bg4);color:var(--m2);border:1px solid var(--b);border-radius:5px;padding:11px 14px;font-family:var(--font-head);font-size:13px;font-weight:700;cursor:pointer;transition:background .12s;}
+.setup-cl{background:var(--bg4);color:var(--m2);border:1px solid var(--b);border-radius:5px;padding:11px 14px;font-family:var(--font-head);font-size:13px;font-weight:700;cursor:pointer;}
 .setup-cl:hover{background:var(--bg5);}
 .setup-note{font-size:10px;color:rgba(255,255,255,.22);margin-top:10px;line-height:1.5;}
 
-/* ═══ TOPBAR ═══ */
-#app{display:flex;flex-direction:column;flex:1;position:relative;z-index:1;}
+/* TOPBAR */
+#app{display:flex;flex-direction:column;flex:1;}
 .topbar{position:sticky;top:0;z-index:100;height:54px;background:rgba(7,7,7,.94);backdrop-filter:blur(14px);border-bottom:1px solid var(--b);display:flex;align-items:stretch;flex-shrink:0;}
 .tb-brand{background:var(--r);display:flex;align-items:center;gap:9px;padding:0 22px 0 16px;clip-path:polygon(0 0,100% 0,90% 100%,0 100%);flex-shrink:0;}
 .tb-w{font-family:var(--font-head);font-size:32px;font-weight:900;font-style:italic;line-height:1;}
@@ -84,8 +83,8 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
 .tb-setup{background:none;border:1px solid var(--b);color:var(--m);border-radius:4px;padding:5px 10px;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all .15s;font-family:var(--font-head);}
 .tb-setup:hover{border-color:var(--b2);color:white;}
 
-/* ═══ CAT BAR ═══ */
-.cat-bar{display:flex;align-items:center;gap:6px;padding:10px 24px 2px;position:relative;z-index:1;}
+/* CAT BAR */
+.cat-bar{display:flex;align-items:center;gap:6px;padding:10px 24px 2px;}
 .cat-lbl{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--m);margin-right:2px;}
 .cat-btn{background:var(--bg4);color:var(--m2);border:1px solid var(--b);border-radius:20px;padding:5px 14px;font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .15s;}
 .cat-btn:hover{border-color:var(--b2);color:white;}
@@ -100,7 +99,7 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
 .cat-ovl-lbl{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--m);}
 .cat-ovl-val{font-size:11px;font-weight:700;letter-spacing:1px;color:rgba(255,255,255,.3);font-family:var(--font-head);}
 
-/* ═══ PANELS ═══ */
+/* PANELS */
 .panel{display:none;flex:1;padding:16px 24px 24px;animation:panelIn .2s ease;}
 .panel.on{display:block;}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
@@ -110,11 +109,11 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
 .sec-hd h2{font-family:var(--font-head);font-size:17px;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
 .sec-hd::after{content:'';flex:1;height:1px;background:var(--b);}
 
-/* ═══ CARDS ═══ */
+/* CARDS */
 .card{background:var(--bg3);border:1px solid var(--b);border-radius:8px;overflow:hidden;}
 .cb{padding:15px;}
 
-/* ═══ FORM ═══ */
+/* FORM */
 .f{margin-bottom:11px;}
 .f:last-child{margin-bottom:0;}
 .fl{display:block;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--m);margin-bottom:5px;}
@@ -127,7 +126,7 @@ select option{background:#1c1c1c;}
 .color-pair{display:flex;gap:8px;align-items:center;}
 input[type=color]{width:38px;height:37px;padding:2px;border-radius:5px;border:1px solid var(--b);background:var(--bg4);cursor:pointer;flex-shrink:0;}
 
-/* ═══ BUTTONS ═══ */
+/* BUTTONS */
 .btn{border:none;border-radius:5px;padding:10px 14px;font-family:var(--font-head);font-size:14px;font-weight:900;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;transition:background .12s,transform .08s,opacity .15s;width:100%;}
 .btn:active:not(:disabled){transform:scale(.97);}
 .btn:disabled{opacity:.22;cursor:not-allowed;}
@@ -143,13 +142,13 @@ input[type=color]{width:38px;height:37px;padding:2px;border-radius:5px;border:1p
 .brow{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
 .brow3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
 
-/* ═══ FEEDBACK ═══ */
+/* FEEDBACK */
 .fb{margin-top:9px;padding:7px 12px;border-radius:4px;font-size:11px;font-weight:600;text-align:center;opacity:0;transform:translateY(-3px);transition:opacity .2s,transform .2s;}
 .fb.on{opacity:1;transform:none;}
 .fb.ok{background:rgba(0,200,83,.07);color:var(--green);border:1px solid rgba(0,200,83,.13);}
 .fb.err{background:rgba(232,0,28,.07);color:#ff4455;border:1px solid rgba(232,0,28,.13);}
 
-/* ═══ CHRONO DISPLAY ═══ */
+/* CHRONO */
 .ch-disp{text-align:center;padding:20px 14px 16px;background:var(--bg2);border-radius:6px;border:1px solid var(--b);margin-bottom:13px;position:relative;overflow:hidden;}
 .ch-disp::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--r),transparent);animation:scan 2s linear infinite;opacity:0;transition:opacity .3s;}
 .ch-disp.run::after{opacity:1;}
@@ -164,7 +163,7 @@ input[type=color]{width:38px;height:37px;padding:2px;border-radius:5px;border:1p
 .sdot{width:7px;height:7px;border-radius:50%;background:#1a1a1a;transition:background .3s;}
 .sdot.on{background:var(--r);animation:pulse 1s ease-in-out infinite;}
 
-/* ═══ PILOT LIST ═══ */
+/* PILOT LIST */
 .plist{display:flex;flex-direction:column;gap:12px;max-height:400px;overflow-y:auto;}
 .pitem{display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--bg4);border:1px solid var(--b);border-radius:6px;cursor:pointer;transition:all .12s;position:relative;overflow:hidden;}
 .pitem::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--tc,var(--r));}
@@ -179,13 +178,13 @@ input[type=color]{width:38px;height:37px;padding:2px;border-radius:5px;border:1p
 .pi-chk{width:17px;height:17px;border-radius:50%;border:1px solid var(--b);display:flex;align-items:center;justify-content:center;font-size:9px;color:transparent;transition:all .12s;flex-shrink:0;margin-left:auto;}
 .pitem.sel .pi-chk{background:var(--r);border-color:var(--r);color:white;}
 
-/* ═══ DUR GRID ═══ */
+/* DUR GRID */
 .dur-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:12px;}
 .dur-btn{background:var(--bg4);color:var(--m2);border:1px solid var(--b);border-radius:5px;padding:7px 4px;cursor:pointer;font-family:var(--font-head);font-size:14px;font-weight:700;text-align:center;transition:all .12s;}
 .dur-btn:hover{background:var(--bg5);color:white;}
 .dur-btn.on{background:var(--r);border-color:var(--r);color:white;}
 
-/* ═══ DC PREVIEW ═══ */
+/* DC PREVIEW */
 .dc-prev{background:var(--bg2);border:1px solid var(--b);border-radius:6px;padding:12px 14px;margin-bottom:12px;position:relative;overflow:hidden;display:none;}
 .dc-prev.on{display:block;}
 .dc-prev-bar{position:absolute;left:0;top:0;bottom:0;width:4px;}
@@ -194,20 +193,44 @@ input[type=color]{width:38px;height:37px;padding:2px;border-radius:5px;border:1p
 .dc-prev-name{font-family:var(--font-head);font-size:22px;font-weight:900;font-style:italic;text-transform:uppercase;}
 .dc-prev-team{font-size:11px;color:var(--m2);margin-top:2px;}
 
-/* ═══ PASSAGE ORDER ═══ */
-.passage-list{display:flex;flex-direction:column;gap:10px;max-height:700px;overflow-y:auto;}
-.passage-item{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--bg4);border:1px solid var(--b);border-radius:6px;position:relative;transition:all .15s;}
-.passage-item:hover{background:var(--bg5);border-color:var(--b2);}
-.passage-num{font-family:var(--font-head);font-size:24px;font-weight:900;color:var(--r);min-width:36px;text-align:center;line-height:1;}
-.passage-info{flex:1;}
-.passage-name{font-family:var(--font-head);font-size:15px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;}
-.passage-team{font-size:10px;color:var(--m);margin-top:2px;}
-.passage-controls{display:flex;gap:6px;flex-shrink:0;}
-.passage-btn{width:40px;height:40px;border:none;border-radius:5px;cursor:pointer;font-family:var(--font-head);font-size:18px;font-weight:700;transition:all .12s;display:flex;align-items:center;justify-content:center;background:rgba(136,170,255,.1);color:#88aaff;border:1px solid rgba(136,170,255,.3);}
-.passage-btn:hover{background:rgba(136,170,255,.2);border-color:rgba(136,170,255,.5);}
-.passage-btn:disabled{opacity:.3;cursor:not-allowed;}
+/* ═══ ORDRE DE PASSAGE ═══ */
+.passage-list{display:flex;flex-direction:column;gap:5px;max-height:660px;overflow-y:auto;padding:2px 0;}
+.passage-item{display:flex;align-items:center;gap:0;background:var(--bg4);border:1px solid var(--b);border-radius:8px;transition:background .12s,border-color .15s,opacity .2s,box-shadow .15s,transform .12s;user-select:none;position:relative;overflow:hidden;cursor:grab;}
+.passage-item:hover{background:var(--bg5);border-color:var(--b2);transform:translateX(2px);}
+.passage-item:active{cursor:grabbing;}
+.passage-item.drag-over{border-color:var(--r)!important;background:#180204!important;box-shadow:0 0 0 2px rgba(232,0,28,.22),inset 0 0 20px rgba(232,0,28,.04);transform:scale(1.01);}
+.passage-item.dragging{opacity:.22;border-style:dashed;background:var(--bg2);transform:scale(.98);}
+.passage-item.just-moved{animation:passagePop .3s ease;}
+@keyframes passagePop{0%{background:rgba(232,0,28,.12);}100%{background:var(--bg4);}}
+.passage-accent{width:4px;height:100%;position:absolute;left:0;top:0;bottom:0;border-radius:8px 0 0 8px;}
+.passage-inner{display:flex;align-items:center;gap:10px;padding:10px 12px 10px 14px;width:100%;}
+.passage-handle{color:rgba(255,255,255,.14);font-size:14px;cursor:grab;flex-shrink:0;line-height:1;transition:color .15s;display:flex;flex-direction:column;gap:2px;}
+.passage-handle span{display:block;width:14px;height:2px;background:currentColor;border-radius:2px;}
+.passage-item:hover .passage-handle{color:rgba(255,255,255,.45);}
+.passage-num-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;width:32px;flex-shrink:0;}
+.passage-num{font-family:var(--font-head);font-size:22px;font-weight:900;line-height:1;}
+.p-num-1{color:var(--r);text-shadow:0 0 14px rgba(232,0,28,.4);}
+.p-num-2{color:#bbb;}
+.p-num-3{color:var(--gold);}
+.p-num-x{color:rgba(255,255,255,.18);}
+.passage-pos-lbl{font-size:7px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.15);margin-top:1px;}
+.passage-info{flex:1;min-width:0;}
+.passage-name{font-family:var(--font-head);font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2;}
+.passage-team{font-size:10px;color:var(--m);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:5px;}
+.passage-country{font-size:13px;line-height:1;}
+.passage-controls{display:flex;flex-direction:column;gap:3px;flex-shrink:0;}
+.passage-btn{width:26px;height:26px;border:1px solid rgba(255,255,255,.08);border-radius:5px;cursor:pointer;font-size:10px;transition:all .12s;display:flex;align-items:center;justify-content:center;background:transparent;color:rgba(255,255,255,.22);font-weight:900;font-family:var(--font-head);}
+.passage-btn:hover:not(:disabled){background:rgba(136,170,255,.14);color:#88aaff;border-color:rgba(136,170,255,.32);transform:scale(1.08);}
+.passage-btn:active:not(:disabled){transform:scale(.94);}
+.passage-btn:disabled{opacity:.08;cursor:not-allowed;}
+.passage-empty{padding:32px 16px;text-align:center;color:var(--m);font-size:12px;line-height:2;background:var(--bg3);border:2px dashed rgba(255,255,255,.06);border-radius:8px;}
+.passage-footer{display:flex;align-items:center;justify-content:space-between;margin-top:8px;padding:0 2px;}
+.passage-hint{font-size:9px;color:rgba(255,255,255,.16);letter-spacing:.5px;display:flex;align-items:center;gap:5px;}
+.passage-saved{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--green);opacity:0;transition:opacity .4s;display:flex;align-items:center;gap:4px;}
+.passage-saved.on{opacity:1;}
+.passage-count{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.2);background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:3px;padding:2px 6px;}
 
-/* ═══ COMMENTATEUR ═══ */
+/* COMMENTATEUR */
 .comm-prev{text-align:center;padding:16px 14px 12px;background:var(--bg2);border-radius:6px;border:1px solid var(--b);margin-bottom:12px;}
 .comm-prev-name{font-family:var(--font-head);font-size:26px;font-weight:900;font-style:italic;text-transform:uppercase;color:white;min-height:30px;}
 .comm-prev-role{font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--m2);margin-top:3px;min-height:14px;}
@@ -216,7 +239,7 @@ input[type=color]{width:38px;height:37px;padding:2px;border-radius:5px;border:1p
 .csdot{width:7px;height:7px;border-radius:50%;background:#1a1a1a;}
 .csdot.on{background:var(--green);animation:pulse 1.2s ease-in-out infinite;}
 
-/* ═══ CLASSEMENT ═══ */
+/* CLASSEMENT */
 .cls-wrap{overflow-x:auto;}
 table{width:100%;border-collapse:collapse;}
 th{font-family:var(--font-body);font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--m);padding:8px 13px;text-align:left;border-bottom:2px solid var(--r);background:var(--bg2);}
@@ -236,7 +259,7 @@ tr:hover td{background:rgba(255,255,255,.015);}
 .live-dot{width:7px;height:7px;border-radius:50%;background:var(--r);animation:pulse 1.2s ease-in-out infinite;}
 .tbl-empty{padding:28px;text-align:center;font-family:var(--font-body);color:var(--m);font-size:13px;}
 
-/* ═══ PILOTE ACTIONS ═══ */
+/* PILOTES EDITOR */
 .act-btn{padding:4px 8px;font-size:10px;font-weight:700;border:none;border-radius:3px;cursor:pointer;transition:background .15s;margin:0 2px;font-family:var(--font-head);letter-spacing:1px;text-transform:uppercase;white-space:nowrap;}
 .act-clr{background:rgba(0,200,83,.15);color:#00c853;border:1px solid rgba(0,200,83,.3);}
 .act-clr:hover{background:rgba(0,200,83,.25);}
@@ -244,8 +267,6 @@ tr:hover td{background:rgba(255,255,255,.015);}
 .act-inf:hover{background:rgba(255,180,0,.2);}
 .act-dnf{background:rgba(255,100,100,.12);color:#ff6464;border:1px solid rgba(255,100,100,.2);}
 .act-dnf:hover{background:rgba(255,100,100,.2);}
-
-/* ═══ PILOTS EDITOR ═══ */
 .pe-list{display:flex;flex-direction:column;gap:6px;max-height:580px;overflow-y:auto;}
 .pe-cat-hd{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--m);padding:8px 4px 3px;}
 .pe-row{background:var(--bg4);border:1px solid var(--b);border-radius:6px;padding:11px 13px;}
@@ -255,7 +276,7 @@ tr:hover td{background:rgba(255,255,255,.015);}
 .pe-team{font-size:10px;color:var(--m);margin-bottom:7px;}
 .pe-acts{display:flex;gap:7px;}
 
-/* ═══ EV LOG ═══ */
+/* EV LOG */
 .ev-log{display:flex;flex-direction:column;gap:4px;max-height:360px;overflow-y:auto;}
 .ev-row{display:flex;align-items:flex-start;gap:8px;padding:7px 10px;background:var(--bg4);border:1px solid var(--b);border-radius:5px;animation:slideIn .2s ease;}
 .ev-bdg{font-size:8px;font-weight:700;letter-spacing:.8px;padding:3px 5px;border-radius:2px;flex-shrink:0;margin-top:1px;}
@@ -275,13 +296,13 @@ tr:hover td{background:rgba(255,255,255,.015);}
 </head>
 <body>
 
-<!-- ══ BOOTSTRAP ══ -->
+<!-- BOOTSTRAP -->
 <div id="bootstrapScreen">
   <div class="boot-box">
     <div class="boot-logo">W</div>
     <div class="boot-sub">Weazel Rally · Control Center</div>
     <div class="boot-step">
-      <h3>� Code d'accès</h3>
+      <h3>🔑 Code d'accès</h3>
       <div class="boot-f"><label>Entrez votre code d'accès</label><input type="text" id="bootCode" placeholder="Ex: ABC123" autofocus></div>
     </div>
     <button class="boot-btn" onclick="doBootstrap()">Vérifier et accéder</button>
@@ -290,7 +311,7 @@ tr:hover td{background:rgba(255,255,255,.015);}
   </div>
 </div>
 
-<!-- ══ LOGIN ══ -->
+<!-- LOGIN -->
 <div id="loginScreen" class="hidden">
   <div class="login-box">
     <div class="login-logo">W</div>
@@ -301,22 +322,22 @@ tr:hover td{background:rgba(255,255,255,.015);}
   </div>
 </div>
 
-<!-- ══ SETUP ══ -->
+<!-- SETUP -->
 <div id="setupModal" class="hidden">
   <div class="setup-box">
     <h2>⚙️ Configuration</h2>
     <div class="sf"><label>URL Supabase</label><input type="text" id="cfgUrl"></div>
     <div class="sf"><label>Clé anon</label><input type="text" id="cfgKey"></div>
-    <div class="sf"><label>Nouveau mot de passe (laisser vide = inchangé)</label><input type="text" id="cfgPwd" placeholder=""></div>
+    <div class="sf"><label>Nouveau mot de passe (vide = inchangé)</label><input type="text" id="cfgPwd" placeholder=""></div>
     <div class="setup-acts">
       <button class="setup-ok" onclick="saveSetup()">Sauvegarder</button>
       <button class="setup-cl" onclick="closeSetup()">Annuler</button>
     </div>
-    <div class="setup-note">La config est stockée dans Supabase — partagée automatiquement avec tous les opérateurs.</div>
+    <div class="setup-note">Config stockée dans Supabase — partagée avec tous les opérateurs.</div>
   </div>
 </div>
 
-<!-- ══ APP ══ -->
+<!-- APP -->
 <div id="app">
   <header class="topbar">
     <div class="tb-brand"><div class="tb-w">W</div><div class="tb-stack"><span class="tb-t1">Weazel Rally</span><span class="tb-t2">Control Center</span></div></div>
@@ -337,12 +358,12 @@ tr:hover td{background:rgba(255,255,255,.015);}
 
   <div class="cat-bar">
     <span class="cat-lbl">Catégorie :</span>
-    <button class="cat-btn on" data-cat="Rally B"           onclick="setCat(this)">🔵 Rally B</button>
-    <button class="cat-btn"    data-cat="Rally N"           onclick="setCat(this)">🟢 Rally N</button>
-    <button class="cat-btn"    data-cat="Rally Historique"  onclick="setCat(this)">🟡 Rally Historique</button>
+    <button class="cat-btn on" data-cat="Rally B"          onclick="setCat(this)">🔵 Rally B</button>
+    <button class="cat-btn"    data-cat="Rally N"          onclick="setCat(this)">🟢 Rally N</button>
+    <button class="cat-btn"    data-cat="Rally Historique" onclick="setCat(this)">🟡 Rally Historique</button>
     <div class="cat-sep"></div>
-    <button class="cat-push" id="catPushBtn" onclick="pushCatToOverlay()" title="Envoyer cette catégorie vers l'overlay OBS">
-      <span id="catPushIco">📺</span> <span id="catPushTxt">Overlay OBS</span>
+    <button class="cat-push" id="catPushBtn" onclick="pushCatToOverlay()">
+      <span id="catPushIco">📺</span><span id="catPushTxt">Overlay OBS</span>
     </button>
     <div class="cat-overlay-status">
       <span class="cat-ovl-lbl">OBS :</span>
@@ -370,7 +391,7 @@ tr:hover td{background:rgba(255,255,255,.015);}
           </div>
           <div class="brow" style="margin-bottom:8px;">
             <button class="btn b-dk" id="bReset" onclick="chReset()" style="opacity:.4;flex:1;">↺ RESET</button>
-            <button class="btn b-dk" onclick="resetHistorique()" style="color:#ffaa00;flex:1;">🔄 Reset Histor.</button>
+            <button class="btn b-dk" onclick="resetHistorique()" style="color:#ffaa00;flex:1;">🔄 Reset Session</button>
           </div>
           <div class="fb" id="fb-ch"></div>
         </div></div>
@@ -450,13 +471,11 @@ tr:hover td{background:rgba(255,255,255,.015);}
   <!-- COMMENTATEUR -->
   <div class="panel" id="panel-commentateur">
     <div class="g2l">
-      <!-- Colonne gauche : annuaire + affichage rapide -->
       <div>
         <div class="sec-hd"><h2>🎙 Commentateurs enregistrés</h2></div>
         <div class="card" style="margin-bottom:16px;"><div class="cb" style="padding:10px;">
           <div class="plist" id="commList"><div class="ev-empty">Chargement…</div></div>
         </div></div>
-
         <div class="sec-hd"><h2 id="commFormTitle">➕ Ajouter un commentateur</h2></div>
         <div class="card"><div class="cb">
           <input type="hidden" id="commId">
@@ -464,9 +483,7 @@ tr:hover td{background:rgba(255,255,255,.015);}
             <div class="f"><label class="fl">Prénom</label><input type="text" id="commFirst" placeholder="Jean" oninput="commPreview()"></div>
             <div class="f"><label class="fl">Nom</label><input type="text" id="commLast" placeholder="DUPONT" oninput="commPreview()"></div>
           </div>
-          <div class="frow">
-            <div class="f"><label class="fl">Rôle</label><input type="text" id="commRole" placeholder="Commentateur principal" oninput="commPreview()"></div>
-          </div>
+          <div class="f"><label class="fl">Rôle</label><input type="text" id="commRole" placeholder="Commentateur principal" oninput="commPreview()"></div>
           <div class="brow" style="margin-top:4px;">
             <button class="btn b-grn" onclick="commSave()">💾 Enregistrer</button>
             <button class="btn b-dk"  onclick="commClear()">✕ Annuler</button>
@@ -474,8 +491,6 @@ tr:hover td{background:rgba(255,255,255,.015);}
           <div class="fb" id="fb-commForm"></div>
         </div></div>
       </div>
-
-      <!-- Colonne droite : diffusion OBS -->
       <div>
         <div class="sec-hd"><h2>🎬 Diffusion OBS</h2></div>
         <div class="card"><div class="cb">
@@ -504,9 +519,18 @@ tr:hover td{background:rgba(255,255,255,.015);}
   <div class="panel" id="panel-classement">
     <div class="g2">
       <div>
-        <div class="sec-hd"><h2>📋 Ordre de Passage</h2></div>
-        <div class="card"><div class="cb" style="padding:10px;">
-          <div class="passage-list" id="passageList"><div class="ev-empty">Chargement…</div></div>
+        <div class="sec-hd">
+          <h2>📋 Ordre de Passage</h2>
+          <span class="passage-count" id="passageCount">0 pilote(s)</span>
+        </div>
+        <div class="card"><div class="cb" style="padding:10px 10px 8px;">
+          <div class="passage-list" id="passageList"><div class="passage-empty">Chargement…</div></div>
+          <div class="passage-footer">
+            <span class="passage-hint">
+              <span style="font-size:11px;opacity:.6;">⠿</span> Glisse · ou use ▲▼ · sauvegardé auto
+            </span>
+            <span class="passage-saved" id="passageSaved"><span style="font-size:10px;">●</span> Sauvegardé</span>
+          </div>
         </div></div>
       </div>
       <div>
@@ -575,9 +599,6 @@ tr:hover td{background:rgba(255,255,255,.015);}
 
 <script>
 'use strict';
-// ════════════════════════════════════
-//  ⚠️  CONFIG SUPABASE FIXE
-// ════════════════════════════════════
 const DEFAULT_SB_URL='https://tnjnxmndvxrisohmiieh.supabase.co';
 const DEFAULT_SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRuam54bW5kdnhyaXNvaG1paWVoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMxNzYyMzcsImV4cCI6MjA4ODc1MjIzN30.oi8kVDp5879LWv2Gwuy384LVFIFSjl3U8dorBuzQHNg';
 
@@ -587,86 +608,36 @@ let allPilots=[],pilots=[];
 let dcSel=null,dcDur=6000,commDur=6000;
 let chRun=false,chTs=0,chRaf=null,bestMs=Infinity;
 const hist=[];
-const passageOrder=new Map(); // pilot_id → order_index
+// passage_order : Map pilote_id → index (0=premier à passer)
+const passageOrder=new Map();
 
 // ══ BOOTSTRAP ══
 async function startup(){
   const lp=localStorage.getItem('app_pwd')||'';
-  
-  SB_URL=DEFAULT_SB_URL;
-  SB_KEY=DEFAULT_SB_KEY;
-  
-  if(lp){
-    APP_PWD=lp;
-    showLogin();
-  } else {
-    showBootstrap();
-  }
+  SB_URL=DEFAULT_SB_URL; SB_KEY=DEFAULT_SB_KEY;
+  if(lp){APP_PWD=lp;showLogin();}
+  else showBootstrap();
 }
-
 function showBootstrap(){document.getElementById('bootstrapScreen').classList.remove('hidden');document.getElementById('bootCode').focus();}
 function showLogin(){
   document.getElementById('bootstrapScreen').classList.add('hidden');
   document.getElementById('loginScreen').classList.remove('hidden');
   document.getElementById('pwdInput').focus();
 }
-
-async function loadConfig(){
-  try{
-    const r=await fetch(`${SB_URL}/rest/v1/app_config?id=eq.1`,{headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}});
-    if(!r.ok)return null;
-    const d=await r.json();
-    return d&&d.length?d[0]:null;
-  }catch(e){return null;}
-}
 async function doBootstrap(){
   const pwd=document.getElementById('bootCode').value.trim();
   const err=document.getElementById('bootErr');
-  
-  if(!pwd){err.textContent='⚠️ Veuillez entrer votre mot de passe';return;}
-  
-  err.textContent='Vérification en cours…';
-  
+  if(!pwd){err.textContent='Veuillez entrer votre mot de passe';return;}
+  err.textContent='Vérification…';
   try{
-    console.log('🔍 Vérification du mot de passe');
-    const r=await fetch(`${DEFAULT_SB_URL}/rest/v1/app_config?id=eq.1`,{
-      headers:{'apikey':DEFAULT_SB_KEY,'Authorization':'Bearer '+DEFAULT_SB_KEY}
-    });
-    console.log('📡 Réponse HTTP:',r.status);
+    const r=await fetch(`${DEFAULT_SB_URL}/rest/v1/app_config?id=eq.1`,{headers:{'apikey':DEFAULT_SB_KEY,'Authorization':'Bearer '+DEFAULT_SB_KEY}});
     const text=await r.text();
-    console.log('📄 Réponse:',text);
-    
-    if(!r.ok){
-      console.error('❌ Erreur HTTP',r.status);
-      err.textContent='❌ Erreur serveur';
-      return;
-    }
-    
+    if(!r.ok){err.textContent='❌ Erreur serveur ('+r.status+')';return;}
     const d=text?JSON.parse(text):[];
-    console.log('✅ Données:',d);
-    if(!d||!d.length){
-      err.textContent='❌ Configuration introuvable';
-      return;
-    }
-    
-    const config=d[0];
-    console.log('📋 Config:',config);
-    
-    if(pwd!==config.app_pwd){
-      err.textContent='❌ Mot de passe incorrect';
-      document.getElementById('bootCode').value='';
-      return;
-    }
-    
-    localStorage.setItem('app_pwd',pwd);
-    APP_PWD=pwd;
-    err.textContent='';
-    console.log('✅ Connexion OK!');
-    showLogin();
-  }catch(e){
-    console.error('💥',e);
-    err.textContent='❌ Erreur: '+e.message;
-  }
+    if(!d||!d.length){err.textContent='❌ Config introuvable';return;}
+    if(pwd!==d[0].app_pwd){err.textContent='❌ Mot de passe incorrect';document.getElementById('bootCode').value='';return;}
+    localStorage.setItem('app_pwd',pwd);APP_PWD=pwd;err.textContent='';showLogin();
+  }catch(e){err.textContent='❌ Erreur : '+e.message;}
 }
 
 // ══ LOGIN ══
@@ -678,22 +649,14 @@ function doLogin(){
 document.getElementById('pwdInput').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
 
 // ══ SETUP ══
-function openSetup(){
-  document.getElementById('cfgUrl').value=SB_URL;
-  document.getElementById('cfgKey').value=SB_KEY;
-  document.getElementById('cfgPwd').value='';
-  document.getElementById('setupModal').classList.remove('hidden');
-}
+function openSetup(){document.getElementById('cfgUrl').value=SB_URL;document.getElementById('cfgKey').value=SB_KEY;document.getElementById('cfgPwd').value='';document.getElementById('setupModal').classList.remove('hidden');}
 function closeSetup(){document.getElementById('setupModal').classList.add('hidden');}
 async function saveSetup(){
-  const u=document.getElementById('cfgUrl').value.trim();
-  const k=document.getElementById('cfgKey').value.trim();
-  const p=document.getElementById('cfgPwd').value.trim();
+  const u=document.getElementById('cfgUrl').value.trim(),k=document.getElementById('cfgKey').value.trim(),p=document.getElementById('cfgPwd').value.trim();
   if(!u||!k){alert('URL et clé requises');return;}
   SB_URL=u;SB_KEY=k;if(p)APP_PWD=p;
   const body={sb_url:u,sb_key:k};if(p)body.app_pwd=p;
   await PATCH('app_config','?id=eq.1',body);
-  localStorage.setItem('sb_url',u);localStorage.setItem('sb_key',k);
   closeSetup();fb('fb-ch','✔ Config sauvegardée','ok');
 }
 
@@ -726,18 +689,16 @@ function setConn(ok){
   document.getElementById('connTxt').textContent=ok?'CONNECTÉ':'ERREUR';
 }
 function setConnErr(msg){
-  document.getElementById('connDot').className='conn-dot err';
-  document.getElementById('connTxt').textContent='ERREUR';
+  setConn(false);
   let el=document.getElementById('sbErrBanner');
   if(!el){
     el=document.createElement('div');el.id='sbErrBanner';
-    el.style.cssText='position:fixed;bottom:14px;left:50%;transform:translateX(-50%);z-index:9999;background:#120005;border:1px solid rgba(232,0,28,.6);color:#ff6677;font-size:12px;font-weight:600;padding:10px 20px;border-radius:6px;max-width:700px;text-align:center;pointer-events:none;transition:opacity .4s;font-family:monospace;letter-spacing:.3px;';
+    el.style.cssText='position:fixed;bottom:14px;left:50%;transform:translateX(-50%);z-index:9999;background:#120005;border:1px solid rgba(232,0,28,.6);color:#ff6677;font-size:12px;font-weight:600;padding:10px 20px;border-radius:6px;max-width:700px;text-align:center;pointer-events:none;transition:opacity .4s;font-family:monospace;';
     document.body.appendChild(el);
   }
   el.textContent='❌ Supabase : '+msg;
   el.style.opacity='1';
-  clearTimeout(el._t);
-  el._t=setTimeout(()=>{el.style.opacity='0';},10000);
+  clearTimeout(el._t);el._t=setTimeout(()=>{el.style.opacity='0';},10000);
 }
 
 // ══ CATEGORY ══
@@ -746,26 +707,7 @@ async function setCat(btn){
   btn.classList.add('on');
   currentCat=btn.dataset.cat;
   pilots=allPilots.filter(p=>p.category===currentCat);
-  
-  // Charge les ordres de passage pour la nouvelle catégorie
-  passageOrder.clear();
-  const ids=pilots.map(p=>p.id);
-  if(ids.length>0){
-    const rows=await GET('classement',`?select=pilote_id,passage_order&pilote_id=in.(${ids.join(',')})`)||[];
-    rows.forEach(r=>{
-      if(r.passage_order!==null && r.passage_order!==undefined){
-        passageOrder.set(r.pilote_id, r.passage_order);
-      }
-    });
-  }
-  
-  // Initialise l'ordre de passage si nécessaire (pour les nouveaux pilotes)
-  pilots.forEach((p,idx)=>{
-    if(!passageOrder.has(p.id)){
-      passageOrder.set(p.id, idx);
-    }
-  });
-  
+  await loadPassageOrder();
   commSel=null;
   fillSelects();renderDcList();renderPeList();renderCommList();pollCls();
 }
@@ -777,7 +719,7 @@ function tab(name){
   if(name==='classement')pollCls();
   if(name==='pilotes')renderPeList();
   if(name==='drivercard')renderDcList();
-  if(name==='commentateur'){loadCommentateurs();}
+  if(name==='commentateur')loadCommentateurs();
 }
 
 // ══ PILOTES ══
@@ -786,26 +728,30 @@ async function loadPilots(){
   if(!d)return;
   allPilots=d;
   pilots=allPilots.filter(p=>p.category===currentCat);
-  
-  // Charge les ordres de passage depuis la DB
-  const ids=pilots.map(p=>p.id);
-  if(ids.length>0){
-    const rows=await GET('classement',`?select=pilote_id,passage_order&pilote_id=in.(${ids.join(',')})`)||[];
-    rows.forEach(r=>{
-      if(r.passage_order!==null && r.passage_order!==undefined){
-        passageOrder.set(r.pilote_id, r.passage_order);
-      }
-    });
-  }
-  
-  // Initialise l'ordre de passage si nécessaire (pour les nouveaux pilotes)
-  pilots.forEach((p,idx)=>{
-    if(!passageOrder.has(p.id)){
-      passageOrder.set(p.id, idx);
-    }
-  });
+  await loadPassageOrder();
   fillSelects();renderDcList();renderPeList();
 }
+
+// Charge l'ordre de passage depuis Supabase
+async function loadPassageOrder(){
+  const ids=pilots.map(p=>p.id);
+  if(!ids.length){passageOrder.clear();return;}
+  const rows=await GET('classement',`?select=pilote_id,passage_order&pilote_id=in.(${ids.join(',')})`)||[];
+  // Initialise avec l'ordre alphabétique par défaut
+  const withOrder=[], withoutOrder=[];
+  const dbOrder={};
+  rows.forEach(r=>{if(r.passage_order!=null)dbOrder[r.pilote_id]=r.passage_order;});
+  pilots.forEach((p,idx)=>{
+    if(dbOrder[p.id]!=null) withOrder.push({id:p.id,order:dbOrder[p.id]});
+    else withoutOrder.push({id:p.id,order:9000+idx});
+  });
+  withOrder.sort((a,b)=>a.order-b.order);
+  // Réassigne des ordres propres 0,1,2...
+  const all=[...withOrder,...withoutOrder];
+  passageOrder.clear();
+  all.forEach((x,i)=>passageOrder.set(x.id,i));
+}
+
 function fillSelects(){
   ['selCh','selPen','selEv'].forEach(id=>{
     const s=document.getElementById(id),prev=s.value;
@@ -821,25 +767,21 @@ function fillSelects(){
 function flagOf(nat){const m=(nat||'').match(/(\p{Emoji_Presentation}+)/u);return m?m[1]:'🌍';}
 function catShort(c){return c==='Rally B'?'B':c==='Rally N'?'N':'H';}
 function catCls(c){return c==='Rally B'?'cat-B':c==='Rally N'?'cat-N':'cat-H';}
-function fmtNameFull(firstName,lastName){return (firstName||'')+' '+(lastName||'').toUpperCase();}
-function fmtNameNormal(firstName,lastName){return (firstName||'')+' '+(lastName||'');}
+function fmtNameFull(fn,ln){return ((fn||'')+' '+(ln||'').toUpperCase()).trim();}
 
 function renderDcList(){
   const el=document.getElementById('dcList');
   if(!pilots.length){el.innerHTML='<div class="ev-empty">Aucun pilote dans cette catégorie</div>';return;}
   el.innerHTML=pilots.map(p=>`
     <div class="pitem ${dcSel===p.id?'sel':''}" style="--tc:${p.team_color||'#e8001c'}" onclick="dcSelect(${p.id})">
-      <div style="flex:1;">
-        <div class="pi-n">${fmtNameFull(p.first_name,p.last_name)}</div>
-        <div class="pi-t">${p.team||''}</div>
-      </div>
+      <div style="flex:1;"><div class="pi-n">${fmtNameFull(p.first_name,p.last_name)}</div><div class="pi-t">${p.team||''}</div></div>
       <div class="pi-chk">${dcSel===p.id?'✓':''}</div>
     </div>`).join('');
 }
 
 function renderPeList(){
   const el=document.getElementById('peList');
-  if(!allPilots.length){el.innerHTML='<div class="ev-empty">Aucun pilote — ajoutez-en un !</div>';return;}
+  if(!allPilots.length){el.innerHTML='<div class="ev-empty">Aucun pilote</div>';return;}
   const cats=['Rally B','Rally N','Rally Historique'];
   el.innerHTML=cats.map(cat=>{
     const grp=allPilots.filter(p=>p.category===cat);
@@ -870,7 +812,7 @@ function piEdit(id){
   document.getElementById('piPhoto').value=p.photo_url||'';
   document.getElementById('piLogo').value=p.logo_url||'';
   document.getElementById('piFormTitle').textContent='✏️ Modifier le pilote';
-  tab('pilotes');document.getElementById('piFirst').focus();
+  tab('pilotes');
 }
 function piClear(){
   document.getElementById('piId').value='';
@@ -994,215 +936,203 @@ async function doEvent(type){
 }
 
 // ══ CLASSEMENT ══
-// Affiche TOUS les pilotes de la catégorie :
-//   1. avec chrono (triés du meilleur au moins bon)
-//   2. sans chrono (inscrits, pas encore passés) — position "—"
-//   3. DNF / DSQ
 async function pollCls(){
   const tbody=document.getElementById('clsBody');
   if(!pilots.length){tbody.innerHTML='<tr><td colspan="5" class="tbl-empty">Aucun pilote dans cette catégorie</td></tr>';return;}
-
-  // Toutes les entrées classement pour les pilotes de la catégorie
   const ids=pilots.map(p=>p.id);
   const rows=await GET('classement',`?select=*&pilote_id=in.(${ids.join(',')})`);
   if(!rows)return;
-
-  // Map pilote_id → données classement
   const clsMap={};
   rows.forEach(r=>{clsMap[r.pilote_id]=r;});
-
-  // Construire une ligne pour chaque pilote de la catégorie, même sans entrée classement
-  const allRows=pilots.map((p,idx)=>{
+  const allRows=pilots.map(p=>{
     const cls=clsMap[p.id]||{pilote_id:p.id,best_time:'',status:'',penalties:''};
-    cls._pilot=p;
-    cls._idx=idx;
-    return cls;
+    return {...cls,_pilot:p};
   });
-
-  const ok  = allRows.filter(r=>r.best_time&&toMs(r.best_time)<Infinity&&r.status!=='DNF'&&r.status!=='DSQ');
-  const no  = allRows.filter(r=>(!r.best_time||toMs(r.best_time)===Infinity)&&r.status!=='DNF'&&r.status!=='DSQ');
-  const out = allRows.filter(r=>r.status==='DNF'||r.status==='DSQ');
+  const ok  =allRows.filter(r=>r.best_time&&toMs(r.best_time)<Infinity&&r.status!=='DNF'&&r.status!=='DSQ');
+  const no  =allRows.filter(r=>(!r.best_time||toMs(r.best_time)===Infinity)&&r.status!=='DNF'&&r.status!=='DSQ');
+  const out =allRows.filter(r=>r.status==='DNF'||r.status==='DSQ');
   ok.sort((a,b)=>toMs(a.best_time)-toMs(b.best_time));
-  // Tri l'ordre de passage selon passageOrder
-  no.sort((a,b)=>{
-    const ordA=passageOrder.get(a._pilot.id);
-    const ordB=passageOrder.get(b._pilot.id);
-    if(ordA===undefined && ordB===undefined) return 0;
-    if(ordA===undefined) return 1;
-    if(ordB===undefined) return -1;
-    return ordA - ordB;
-  });
-  const sorted=[...ok,...no,...out];
-
-  // Rendu de l'ordre de passage
+  no.sort((a,b)=>(passageOrder.get(a._pilot.id)??999)-(passageOrder.get(b._pilot.id)??999));
   renderPassageList(no);
-
-  tbody.innerHTML=sorted.map((r,i)=>{
-    const p=r._pilot;
-    const name=fmtNameFull(p.first_name,p.last_name);
-    const st=(r.status||'').toUpperCase();
-    const hasTime=r.best_time&&toMs(r.best_time)<Infinity;
-    const isOut=st==='DNF'||st==='DSQ';
-
-    // Position : numérotée uniquement pour les pilotes AVEC chrono valide
-    const posNum=ok.indexOf(r); // -1 si pas dans ok
+  const sorted=[...ok,...no,...out];
+  tbody.innerHTML=sorted.map(r=>{
+    const p=r._pilot,st=(r.status||'').toUpperCase();
+    const hasTime=r.best_time&&toMs(r.best_time)<Infinity,isOut=st==='DNF'||st==='DSQ';
+    const posNum=ok.indexOf(r);
     const pos=isOut?'—':posNum>=0?String(posNum+1):'—';
     const time=st==='DNF'?'DNF':st==='DSQ'?'DSQ':hasTime?r.best_time:'—';
-
-    // Couleur position
     const pc=posNum===0?'color:var(--r)':posNum===1?'color:#bbb':posNum===2?'color:var(--gold)':'color:rgba(255,255,255,.14)';
     const tc=posNum===0&&!isOut?'color:var(--r)':'color:rgba(255,255,255,.35)';
     const lb=posNum===0?'border-left:3px solid var(--r)':posNum===1?'border-left:3px solid #777':posNum===2?'border-left:3px solid var(--gold)':'';
     const rowStyle=!hasTime&&!isOut?'opacity:.55;':'';
-
     let badge='';
     if(st==='DNF')badge='<span class="badge b-dnf2">DNF</span>';
     else if(st==='DSQ')badge='<span class="badge b-dsq2">DSQ</span>';
     else if(st==='INCIDENT')badge='<span class="badge b-inc2">INC</span>';
     const pen=r.penalties?`<span class="pen-note">⚠ ${r.penalties}</span>`:'';
-
-    // Boutons d'action
     let actions='';
-    if(st==='DNF'||st==='DSQ'||st==='INCIDENT'){
-      actions+=`<button class="act-btn act-clr" onclick="clearStatus(${p.id})">✓ Clr</button>`;
-    }
-    if(st!=='DNF'){
-      actions+=`<button class="act-btn act-dnf" onclick="setStatus(${p.id},'DNF')">DNF</button>`;
-    }
-    if(st!=='INCIDENT'){
-      actions+=`<button class="act-btn act-inf" onclick="setStatus(${p.id},'INCIDENT')">Inc</button>`;
-    }
-
-    return `<tr style="${rowStyle}">
-      <td class="td-pos" style="${pc};${lb};padding-left:${posNum>=0&&posNum<3?'11px':'14px'}">${pos}</td>
-      <td class="td-name">${name.trim()||'?'}${badge}${pen}</td>
-      <td class="td-team">${p.team||''}</td>
-      <td class="td-time" style="${tc}">${time}</td>
-      <td style="text-align:center;font-size:0;">${actions}</td>
-    </tr>`;
+    if(st==='DNF'||st==='DSQ'||st==='INCIDENT')actions+=`<button class="act-btn act-clr" onclick="clearStatus(${p.id})">✓</button>`;
+    if(st!=='DNF')actions+=`<button class="act-btn act-dnf" onclick="setStatus(${p.id},'DNF')">DNF</button>`;
+    if(st!=='INCIDENT')actions+=`<button class="act-btn act-inf" onclick="setStatus(${p.id},'INCIDENT')">Inc</button>`;
+    return `<tr style="${rowStyle}"><td class="td-pos" style="${pc};${lb};padding-left:${posNum>=0&&posNum<3?'11px':'14px'}">${pos}</td><td class="td-name">${fmtNameFull(p.first_name,p.last_name)}${badge}${pen}</td><td class="td-team">${p.team||''}</td><td class="td-time" style="${tc}">${time}</td><td style="text-align:center;font-size:0;">${actions}</td></tr>`;
   }).join('');
   document.getElementById('clsUpd').textContent=new Date().toLocaleTimeString('fr-FR');
 }
 
-// ══ RENDU ORDRE DE PASSAGE ══
+// ══ ORDRE DE PASSAGE — drag & drop + boutons ══
+let dragSrcId=null;
+// Cache de la liste courante pour movePassage (▲▼)
+let _lastNoPilots=[];
+
 function renderPassageList(noPilots){
+  _lastNoPilots=noPilots||[];
+  const countEl=document.getElementById('passageCount');
+  if(countEl)countEl.textContent=_lastNoPilots.length+' pilote'+(  _lastNoPilots.length>1?'s':'')+' en attente';
   const el=document.getElementById('passageList');
-  if(!noPilots||!noPilots.length){
-    el.innerHTML='<div class="ev-empty">Aucun pilote en attente</div>';
+  if(!_lastNoPilots.length){
+    el.innerHTML=`<div class="passage-empty">
+      <div style="font-size:28px;margin-bottom:6px;opacity:.4;">🏁</div>
+      Aucun pilote en attente de passage<br>
+      <span style="font-size:10px;opacity:.5;">Tous les pilotes ont passé, ou ajoutez des pilotes dans l'onglet Pilotes</span>
+    </div>`;
     return;
   }
-  
-  el.innerHTML=noPilots.map((r,idx)=>{
+  el.innerHTML=_lastNoPilots.map((r,idx)=>{
     const p=r._pilot;
-    const name=fmtNameFull(p.first_name,p.last_name);
-    const canUp=idx>0;
-    const canDown=idx<noPilots.length-1;
-    
-    return `<div class="passage-item">
-      <div class="passage-num">${idx+1}</div>
-      <div class="passage-info">
-        <div class="passage-name">${name}</div>
-        <div class="passage-team">${p.team||''}</div>
-      </div>
-      <div class="passage-controls">
-        <button class="passage-btn" onclick="movePassageUp(${p.id})" ${!canUp?'disabled':''}>▲</button>
-        <button class="passage-btn" onclick="movePassageDown(${p.id})" ${!canDown?'disabled':''}>▼</button>
+    const numCls=idx===0?'p-num-1':idx===1?'p-num-2':idx===2?'p-num-3':'p-num-x';
+    const posLbl=idx===0?'NEXT':idx===1?'2ème':idx===2?'3ème':'';
+    const barColor=p.team_color||'#e8001c';
+    const country=p.country||'';
+    return `<div class="passage-item" draggable="true" data-pid="${p.id}"
+        ondragstart="onDragStart(event,${p.id})"
+        ondragover="onDragOver(event)"
+        ondragleave="onDragLeave(event)"
+        ondrop="onDrop(event,${p.id})"
+        ondragend="onDragEnd(event)">
+      <div class="passage-accent" style="background:${barColor};"></div>
+      <div class="passage-inner">
+        <div class="passage-handle"><span></span><span></span><span></span></div>
+        <div class="passage-num-wrap">
+          <div class="passage-num ${numCls}">${idx+1}</div>
+          ${posLbl?`<div class="passage-pos-lbl">${posLbl}</div>`:''}
+        </div>
+        <div class="passage-info">
+          <div class="passage-name">${fmtNameFull(p.first_name,p.last_name)}</div>
+          <div class="passage-team">
+            ${country?`<span class="passage-country">${country.match(/(\p{Emoji_Presentation}+)/u)?.[1]||''}</span>`:''}
+            ${p.team||'<span style="opacity:.4;">Aucune écurie</span>'}
+          </div>
+        </div>
+        <div class="passage-controls">
+          <button class="passage-btn" title="Monter" onclick="event.stopPropagation();movePassage(${p.id},-1)" ${idx===0?'disabled':''}>▲</button>
+          <button class="passage-btn" title="Descendre" onclick="event.stopPropagation();movePassage(${p.id},1)" ${idx===_lastNoPilots.length-1?'disabled':''}>▼</button>
+        </div>
       </div>
     </div>`;
   }).join('');
 }
 
-// ══ GESTION STATUTS PILOTES ══
-async function clearStatus(pid){
-  const p=allPilots.find(x=>x.id===pid);
-  const rows=await GET('classement',`?pilote_id=eq.${pid}`);
-  const row=rows&&rows[0];
-  if(row){
-    await PATCH('classement',`?pilote_id=eq.${pid}`,{status:'',updated_at:new Date().toISOString()});
-    addLog('✓',p.first_name+' '+p.last_name,'Statut retiré');
-  }
-  pollCls();
+// Drag & drop
+function onDragStart(e,pid){
+  dragSrcId=pid;
+  e.dataTransfer.effectAllowed='move';
+  setTimeout(()=>{
+    const el=document.querySelector(`.passage-item[data-pid="${pid}"]`);
+    if(el)el.classList.add('dragging');
+  },0);
+}
+function onDragOver(e){
+  e.preventDefault();
+  e.dataTransfer.dropEffect='move';
+  const item=e.currentTarget.closest('.passage-item');
+  if(item&&item.dataset.pid!=dragSrcId)item.classList.add('drag-over');
+}
+function onDragLeave(e){
+  const item=e.currentTarget.closest?.('.passage-item')||e.currentTarget;
+  item.classList.remove('drag-over');
+}
+function onDragEnd(e){
+  document.querySelectorAll('.passage-item').forEach(el=>{
+    el.classList.remove('dragging','drag-over');
+  });
+}
+async function onDrop(e,targetPid){
+  e.preventDefault();
+  document.querySelectorAll('.passage-item').forEach(el=>el.classList.remove('drag-over','dragging'));
+  if(dragSrcId===null||dragSrcId===targetPid){dragSrcId=null;return;}
+  await swapPassage(dragSrcId,targetPid);
+  dragSrcId=null;
 }
 
+// Boutons ▲▼ — utilise _lastNoPilots (liste filtrée courante)
+async function movePassage(pid,dir){
+  const sorted=_lastNoPilots.map(r=>r._pilot.id);
+  const idx=sorted.indexOf(pid);
+  if(idx===-1)return;
+  const swapIdx=idx+dir;
+  if(swapIdx<0||swapIdx>=sorted.length)return;
+  await swapPassage(sorted[idx],sorted[swapIdx],pid);
+}
+
+// Échange deux pilotes dans passageOrder et sauvegarde
+let saveTout=null;
+async function swapPassage(idA,idB,highlightId){
+  const oA=passageOrder.get(idA)??0;
+  const oB=passageOrder.get(idB)??0;
+  passageOrder.set(idA,oB);
+  passageOrder.set(idB,oA);
+  await pollCls(); // Re-render immédiat
+  // Highlight l'élément déplacé
+  if(highlightId!==undefined){
+    setTimeout(()=>{
+      const el=document.querySelector(`.passage-item[data-pid="${highlightId}"]`);
+      if(el){el.classList.add('just-moved');setTimeout(()=>el.classList.remove('just-moved'),400);}
+    },30);
+  }
+  clearTimeout(saveTout);
+  saveTout=setTimeout(savePassageOrderToDB,500);
+}
+
+async function savePassageOrderToDB(){
+  const ids=pilots.map(p=>p.id);
+  if(!ids.length)return;
+  const existing=await GET('classement',`?select=pilote_id&pilote_id=in.(${ids.join(',')})`)||[];
+  const existSet=new Set(existing.map(r=>r.pilote_id));
+  const promises=pilots.map(p=>{
+    const order=passageOrder.get(p.id)??0;
+    if(existSet.has(p.id))
+      return PATCH('classement',`?pilote_id=eq.${p.id}`,{passage_order:order,updated_at:new Date().toISOString()});
+    else
+      return POST('classement',{pilote_id:p.id,best_time:'',status:'',penalties:'',passage_order:order});
+  });
+  const results=await Promise.all(promises);
+  const allOk=results.every(r=>r!==null);
+  const ind=document.getElementById('passageSaved');
+  if(ind){
+    ind.style.color=allOk?'var(--green)':'#ff6677';
+    ind.innerHTML=allOk?'<span style="font-size:10px;">●</span> Sauvegardé':'<span style="font-size:10px;">●</span> Erreur';
+    ind.classList.add('on');
+    clearTimeout(ind._t);
+    ind._t=setTimeout(()=>ind.classList.remove('on'),3000);
+  }
+}
+
+// ══ STATUTS ══
+async function clearStatus(pid){
+  await PATCH('classement',`?pilote_id=eq.${pid}`,{status:'',updated_at:new Date().toISOString()});
+  const p=allPilots.find(x=>x.id===pid);
+  if(p)addLog('T',fmtNameFull(p.first_name,p.last_name),'Statut retiré');
+  pollCls();
+}
 async function setStatus(pid,st){
   const p=allPilots.find(x=>x.id===pid);
-  const rows=await GET('classement',`?pilote_id=eq.${pid}`);
-  const row=rows&&rows[0];
+  const rows=await GET('classement',`?pilote_id=eq.${pid}`);const row=rows&&rows[0];
   const upd={status:st,updated_at:new Date().toISOString()};
   if(st==='DNF'||st==='DSQ')upd.best_time='';
   if(row)await PATCH('classement',`?pilote_id=eq.${pid}`,upd);
   else await POST('classement',{pilote_id:pid,...upd});
-  addLog(st==='DNF'?'D':'I',p.first_name+' '+p.last_name,st);
+  if(p)addLog(st==='DNF'?'D':'I',fmtNameFull(p.first_name,p.last_name),st);
   pollCls();
-}
-
-// ══ GESTION ORDRE DE PASSAGE ══
-async function movePassageUp(pid){
-  const ids=pilots.map(p=>p.id);
-  const rows=await GET('classement',`?select=*&pilote_id=in.(${ids.join(',')})`)||[];
-  const clsMap={};
-  rows.forEach(r=>{clsMap[r.pilote_id]=r;});
-  
-  const noRows=pilots.map(p=>{
-    const cls=clsMap[p.id]||{pilote_id:p.id,best_time:'',status:'',penalties:''};
-    return {_pilot:p,...cls};
-  }).filter(r=>(!r.best_time||toMs(r.best_time)===Infinity)&&r.status!=='DNF'&&r.status!=='DSQ')
-   .sort((a,b)=>{
-    const ordA=passageOrder.get(a._pilot.id);
-    const ordB=passageOrder.get(b._pilot.id);
-    if(ordA===undefined && ordB===undefined) return 0;
-    if(ordA===undefined) return 1;
-    if(ordB===undefined) return -1;
-    return ordA - ordB;
-  });
-  
-  const idx=noRows.findIndex(p=>p._pilot.id===pid);
-  if(idx > 0 && idx < noRows.length){
-    const ord1=passageOrder.get(noRows[idx-1]._pilot.id)||999;
-    const ord2=passageOrder.get(noRows[idx]._pilot.id)||999;
-    passageOrder.set(noRows[idx-1]._pilot.id, ord2);
-    passageOrder.set(noRows[idx]._pilot.id, ord1);
-    
-    // Sauvegarde dans la DB
-    await PATCH('classement',`?pilote_id=eq.${noRows[idx-1]._pilot.id}`,{passage_order:ord2,updated_at:new Date().toISOString()});
-    await PATCH('classement',`?pilote_id=eq.${noRows[idx]._pilot.id}`,{passage_order:ord1,updated_at:new Date().toISOString()});
-    
-    pollCls();
-  }
-}
-
-async function movePassageDown(pid){
-  const ids=pilots.map(p=>p.id);
-  const rows=await GET('classement',`?select=*&pilote_id=in.(${ids.join(',')})`)||[];
-  const clsMap={};
-  rows.forEach(r=>{clsMap[r.pilote_id]=r;});
-  
-  const noRows=pilots.map(p=>{
-    const cls=clsMap[p.id]||{pilote_id:p.id,best_time:'',status:'',penalties:''};
-    return {_pilot:p,...cls};
-  }).filter(r=>(!r.best_time||toMs(r.best_time)===Infinity)&&r.status!=='DNF'&&r.status!=='DSQ')
-   .sort((a,b)=>{
-    const ordA=passageOrder.get(a._pilot.id);
-    const ordB=passageOrder.get(b._pilot.id);
-    if(ordA===undefined && ordB===undefined) return 0;
-    if(ordA===undefined) return 1;
-    if(ordB===undefined) return -1;
-    return ordA - ordB;
-  });
-  
-  const idx=noRows.findIndex(p=>p._pilot.id===pid);
-  if(idx >= 0 && idx < noRows.length-1){
-    const ord1=passageOrder.get(noRows[idx]._pilot.id)||999;
-    const ord2=passageOrder.get(noRows[idx+1]._pilot.id)||999;
-    passageOrder.set(noRows[idx]._pilot.id, ord2);
-    passageOrder.set(noRows[idx+1]._pilot.id, ord1);
-    
-    // Sauvegarde dans la DB
-    await PATCH('classement',`?pilote_id=eq.${noRows[idx]._pilot.id}`,{passage_order:ord2,updated_at:new Date().toISOString()});
-    await PATCH('classement',`?pilote_id=eq.${noRows[idx+1]._pilot.id}`,{passage_order:ord1,updated_at:new Date().toISOString()});
-    
-    pollCls();
-  }
 }
 
 // ══ DRIVER CARD ══
@@ -1218,31 +1148,20 @@ async function dcShow(){
   if(!dcSel){fb('fb-dc','Sélectionne un pilote !','err');return;}
   const p=allPilots.find(x=>x.id===dcSel);
   const d=await PATCH('driver_card','?id=eq.1',{pilote_id:dcSel,active:true,duration_ms:dcDur,triggered_at:Date.now()});
-  if(d!==null)fb('fb-dc','▶ '+fmtNameFull(p.first_name,p.last_name),'ok');else fb('fb-dc','Erreur Supabase','err');
+  if(d!==null)fb('fb-dc','▶ '+fmtNameFull(p.first_name,p.last_name),'ok');else fb('fb-dc','Erreur','err');
 }
 async function dcHide(){const d=await PATCH('driver_card','?id=eq.1',{active:false});if(d!==null)fb('fb-dc','✕ Masqué','ok');}
 
-// ══ OVERLAY CONFIG (catégorie active OBS) ══
+// ══ OVERLAY CONFIG ══
 async function pushCatToOverlay(){
-  const btn=document.getElementById('catPushBtn');
-  btn.disabled=true;
+  const btn=document.getElementById('catPushBtn');btn.disabled=true;
   const d=await PATCH('overlay_config','?id=eq.1',{category:currentCat});
   if(d!==null){
-    btn.classList.add('sent');
-    document.getElementById('catPushTxt').textContent='Envoyé ✓';
-    document.getElementById('catOvlVal').textContent=currentCat;
-    document.getElementById('catOvlVal').style.color='var(--green)';
-    setTimeout(()=>{
-      btn.classList.remove('sent');
-      document.getElementById('catPushTxt').textContent='Overlay OBS';
-      btn.disabled=false;
-    },2000);
-  } else {
-    document.getElementById('catPushTxt').textContent='Erreur';
-    setTimeout(()=>{document.getElementById('catPushTxt').textContent='Overlay OBS';btn.disabled=false;},2000);
-  }
+    btn.classList.add('sent');document.getElementById('catPushTxt').textContent='Envoyé ✓';
+    document.getElementById('catOvlVal').textContent=currentCat;document.getElementById('catOvlVal').style.color='var(--green)';
+    setTimeout(()=>{btn.classList.remove('sent');document.getElementById('catPushTxt').textContent='Overlay OBS';btn.disabled=false;},2000);
+  }else{document.getElementById('catPushTxt').textContent='Erreur';setTimeout(()=>{document.getElementById('catPushTxt').textContent='Overlay OBS';btn.disabled=false;},2000);}
 }
-
 async function pollOverlayStatus(){
   const d=await GET('overlay_config','?id=eq.1');
   if(!d||!d.length)return;
@@ -1252,24 +1171,18 @@ async function pollOverlayStatus(){
 }
 
 // ══ COMMENTATEUR ══
-let commSel=null, allCommentateurs=[];
-
+let commSel=null,allCommentateurs=[];
 async function loadCommentateurs(){
   const d=await GET('commentateurs','?order=last_name.asc');
   if(!d)return;
-  allCommentateurs=d;
-  renderCommList();
+  allCommentateurs=d;renderCommList();
 }
-
 function renderCommList(){
   const el=document.getElementById('commList');
-  if(!allCommentateurs.length){el.innerHTML='<div class="ev-empty">Aucun commentateur — ajoutez-en un !</div>';return;}
+  if(!allCommentateurs.length){el.innerHTML='<div class="ev-empty">Aucun commentateur</div>';return;}
   el.innerHTML=allCommentateurs.map(c=>`
     <div class="pitem ${commSel===c.id?'sel':''}" style="--tc:#4466cc" onclick="commSelect(${c.id})">
-      <div style="flex:1;">
-        <div class="pi-n">${fmtNameFull(c.first_name,c.last_name)}</div>
-        <div class="pi-t">${c.role||''}</div>
-      </div>
+      <div style="flex:1;"><div class="pi-n">${fmtNameFull(c.first_name,c.last_name)}</div><div class="pi-t">${c.role||''}</div></div>
       <div style="display:flex;gap:6px;align-items:center;">
         <button class="btn b-dk b-sm" onclick="event.stopPropagation();commEdit(${c.id})" style="width:auto;padding:5px 10px;">✏️</button>
         <button class="btn b-dk b-sm" onclick="event.stopPropagation();commDelete(${c.id})" style="width:auto;padding:5px 10px;color:#ff4455;">🗑</button>
@@ -1277,26 +1190,16 @@ function renderCommList(){
       <div class="pi-chk">${commSel===c.id?'✓':''}</div>
     </div>`).join('');
 }
-
 function commSelect(id){
-  commSel=id;
-  const c=allCommentateurs.find(x=>x.id===id);
-  renderCommList();
+  commSel=id;const c=allCommentateurs.find(x=>x.id===id);renderCommList();
   document.getElementById('commPN').textContent=fmtNameFull(c.first_name,c.last_name);
   document.getElementById('commPR').textContent=(c.role||'').toUpperCase();
   document.getElementById('bCommShow').disabled=false;
 }
-
 function commPreview(){
-  const fn=document.getElementById('commFirst').value.trim();
-  const ln=document.getElementById('commLast').value.trim();
-  const role=document.getElementById('commRole').value.trim();
-  if(fn||ln){
-    document.getElementById('commPN').textContent=fmtNameFull(fn,ln);
-    document.getElementById('commPR').textContent=(role||'').toUpperCase();
-  }
+  const fn=document.getElementById('commFirst').value.trim(),ln=document.getElementById('commLast').value.trim(),role=document.getElementById('commRole').value.trim();
+  if(fn||ln){document.getElementById('commPN').textContent=fmtNameFull(fn,ln);document.getElementById('commPR').textContent=(role||'').toUpperCase();}
 }
-
 function commEdit(id){
   const c=allCommentateurs.find(x=>x.id===id);if(!c)return;
   document.getElementById('commId').value=id;
@@ -1306,63 +1209,38 @@ function commEdit(id){
   document.getElementById('commFormTitle').textContent='✏️ Modifier le commentateur';
   commPreview();
 }
-
 function commClear(){
   document.getElementById('commId').value='';
   ['commFirst','commLast','commRole'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('commFormTitle').textContent='➕ Ajouter un commentateur';
 }
-
 async function commSave(){
   const id=document.getElementById('commId').value;
-  const body={
-    first_name:document.getElementById('commFirst').value.trim(),
-    last_name:document.getElementById('commLast').value.trim(),
-    role:document.getElementById('commRole').value.trim(),
-  };
+  const body={first_name:document.getElementById('commFirst').value.trim(),last_name:document.getElementById('commLast').value.trim(),role:document.getElementById('commRole').value.trim()};
   if(!body.first_name&&!body.last_name){fb('fb-commForm','Prénom ou nom requis','err');return;}
   const d=id?await PATCH('commentateurs',`?id=eq.${id}`,body):await POST('commentateurs',body);
-  if(d!==null){fb('fb-commForm',id?'✔ Modifié':'✔ Commentateur ajouté','ok');commClear();await loadCommentateurs();}
+  if(d!==null){fb('fb-commForm',id?'✔ Modifié':'✔ Ajouté','ok');commClear();await loadCommentateurs();}
   else fb('fb-commForm','Erreur Supabase','err');
 }
-
 async function commDelete(id){
   if(!confirm('Supprimer ce commentateur ?'))return;
   const d=await DELETE('commentateurs',`?id=eq.${id}`);
   if(d!==null){if(commSel===id){commSel=null;document.getElementById('bCommShow').disabled=true;}await loadCommentateurs();}
 }
-
 async function commShow(){
   let fn,ln,role;
-  if(commSel){
-    const c=allCommentateurs.find(x=>x.id===commSel);
-    fn=c.first_name;ln=c.last_name;role=c.role;
-  } else {
-    fn=document.getElementById('commFirst').value.trim();
-    ln=document.getElementById('commLast').value.trim();
-    role=document.getElementById('commRole').value.trim();
-  }
+  if(commSel){const c=allCommentateurs.find(x=>x.id===commSel);fn=c.first_name;ln=c.last_name;role=c.role;}
+  else{fn=document.getElementById('commFirst').value.trim();ln=document.getElementById('commLast').value.trim();role=document.getElementById('commRole').value.trim();}
   if(!fn&&!ln){fb('fb-comm','Sélectionne ou saisis un commentateur','err');return;}
-  const d=await PATCH('commentateur','?id=eq.1',{
-    first_name:fn,last_name:ln,role,
-    active:true,duration_ms:commDur,triggered_at:Date.now()
-  });
+  const d=await PATCH('commentateur','?id=eq.1',{first_name:fn,last_name:ln,role,active:true,duration_ms:commDur,triggered_at:Date.now()});
   if(d!==null){
     fb('fb-comm','▶ '+fmtNameFull(fn,ln),'ok');
-    document.getElementById('commDot').classList.add('on');
-    document.getElementById('commSt').classList.add('on');
-    document.getElementById('commStTxt').textContent='EN DIRECT';
+    document.getElementById('commDot').classList.add('on');document.getElementById('commSt').classList.add('on');document.getElementById('commStTxt').textContent='EN DIRECT';
   }else fb('fb-comm','Erreur Supabase','err');
 }
-
 async function commHide(){
   const d=await PATCH('commentateur','?id=eq.1',{active:false});
-  if(d!==null){
-    fb('fb-comm','✕ Masqué','ok');
-    document.getElementById('commDot').classList.remove('on');
-    document.getElementById('commSt').classList.remove('on');
-    document.getElementById('commStTxt').textContent='INACTIF';
-  }
+  if(d!==null){fb('fb-comm','✕ Masqué','ok');document.getElementById('commDot').classList.remove('on');document.getElementById('commSt').classList.remove('on');document.getElementById('commStTxt').textContent='INACTIF';}
 }
 
 // ══ DUR ══
@@ -1377,42 +1255,22 @@ function addLog(type,pilot,msg){
   hist.unshift({type,pilot,msg,time:new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})});
   document.getElementById('evLog').innerHTML=hist.slice(0,30).map(e=>`<div class="ev-row"><span class="ev-bdg eb-${e.type}">${e.type}</span><div class="ev-body"><div class="ev-pn">${e.pilot}</div><div class="ev-msg">${e.msg}</div></div><span class="ev-tm">${e.time}</span></div>`).join('');
 }
+
 async function resetHistorique(){
-  if(!confirm('⚠️ ATTENTION : Cela va effacer TOUS les temps et événements de la session. Êtes-vous sûr ?'))return;
-  
+  if(!confirm('⚠️ Effacer TOUS les temps et événements de la session ?'))return;
   lockCh();
-  document.getElementById('evLog').innerHTML='<div class="ev-empty">Historique réinitialisé...</div>';
-  
-  // Effacer tous les temps et statuts
   const ids=pilots.map(p=>p.id);
-  if(ids.length>0){
-    const rows=await GET('classement',`?select=*&pilote_id=in.(${ids.join(',')})`);
-    if(rows&&rows.length){
-      for(const row of rows){
-        await PATCH('classement',`?pilote_id=eq.${row.pilote_id}`,{best_time:'',status:'',penalties:'',passage_order:null,updated_at:new Date().toISOString()});
-      }
-    }
+  if(ids.length){
+    const rows=await GET('classement',`?select=*&pilote_id=in.(${ids.join(',')})`)||[];
+    await Promise.all(rows.map(row=>PATCH('classement',`?pilote_id=eq.${row.pilote_id}`,{best_time:'',status:'',penalties:'',updated_at:new Date().toISOString()})));
   }
-  
-  // Réinitialiser l'historique local
-  hist.length=0;
-  bestMs=Infinity;
+  hist.length=0;bestMs=Infinity;
   document.getElementById('chB').textContent='—';
-  
-  // Réinitialiser l'ordre de passage
-  passageOrder.clear();
-  pilots.forEach((p,idx)=>{
-    passageOrder.set(p.id, idx);
-  });
-  
-  // Réinitialiser l'affichage
   document.getElementById('evLog').innerHTML='<div class="ev-empty">Aucun événement</div>';
-  addLog('T','SYSTÈME','🔄 Historique réinitialisé');
-  
-  uiStop(false);
-  fb('fb-ch','🔄 Session réinitialisée','ok');
-  pollCls();
+  addLog('T','SYSTÈME','🔄 Session réinitialisée');
+  uiStop(false);fb('fb-ch','🔄 Session réinitialisée','ok');pollCls();
 }
+
 function fb(id,msg,type){const el=document.getElementById(id);if(!el)return;el.textContent=msg;el.className='fb on '+type;setTimeout(()=>el.className='fb '+type,3500);}
 
 // ══ INIT ══
@@ -1422,8 +1280,8 @@ async function init(){
   pollCls();
   pollOverlayStatus();
 }
-setInterval(()=>{if(document.getElementById('panel-classement').classList.contains('on'))pollCls();},2000);
-setInterval(pollOverlayStatus, 3000);
+setInterval(()=>{if(document.getElementById('panel-classement').classList.contains('on'))pollCls();},2500);
+setInterval(pollOverlayStatus,3000);
 setInterval(loadPilots,30000);
 startup();
 </script>
