@@ -627,10 +627,17 @@ async function sb(method,table,query='',body=null){
     const opts={method,headers:H()};
     if(body)opts.body=JSON.stringify(body);
     const r=await fetch(`${SB_URL}/rest/v1/${table}${query}`,opts);
-    setConn(r.ok);
-    if(!r.ok){console.error('SB',r.status,await r.text());return null;}
+    if(!r.ok){
+      const errTxt=await r.text();
+      let errMsg=errTxt;
+      try{const j=JSON.parse(errTxt);errMsg=j.message||j.hint||j.details||errTxt;}catch(_){}
+      console.error('SB ERR',method,table,r.status,errMsg);
+      setConnErr(table+' : '+errMsg.slice(0,120));
+      return null;
+    }
+    setConn(true);
     const txt=await r.text();return txt?JSON.parse(txt):[];
-  }catch(e){setConn(false);return null;}
+  }catch(e){setConn(false);console.error('SB fetch',e);return null;}
 }
 const GET=(t,q)=>sb('GET',t,q||'');
 const POST=(t,b)=>sb('POST',t,'',b);
@@ -639,6 +646,20 @@ const DELETE=(t,q)=>sb('DELETE',t,q);
 function setConn(ok){
   document.getElementById('connDot').className='conn-dot '+(ok?'ok':'err');
   document.getElementById('connTxt').textContent=ok?'CONNECTÉ':'ERREUR';
+}
+function setConnErr(msg){
+  document.getElementById('connDot').className='conn-dot err';
+  document.getElementById('connTxt').textContent='ERREUR';
+  let el=document.getElementById('sbErrBanner');
+  if(!el){
+    el=document.createElement('div');el.id='sbErrBanner';
+    el.style.cssText='position:fixed;bottom:14px;left:50%;transform:translateX(-50%);z-index:9999;background:#120005;border:1px solid rgba(232,0,28,.6);color:#ff6677;font-size:12px;font-weight:600;padding:10px 20px;border-radius:6px;max-width:700px;text-align:center;pointer-events:none;transition:opacity .4s;font-family:monospace;letter-spacing:.3px;';
+    document.body.appendChild(el);
+  }
+  el.textContent='❌ Supabase : '+msg;
+  el.style.opacity='1';
+  clearTimeout(el._t);
+  el._t=setTimeout(()=>{el.style.opacity='0';},10000);
 }
 
 // ══ CATEGORY ══
@@ -1107,3 +1128,4 @@ startup();
 </script>
 </body>
 </html>
+
