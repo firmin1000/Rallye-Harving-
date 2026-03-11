@@ -6,10 +6,10 @@
 <title>Weazel Rally — Control Center</title>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,900;1,700;1,900&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-*{margin:0;padding:0;box-sizing:border-box;}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;}
 :root{--r:#e8001c;--rh:#ff2233;--bg:#070707;--bg2:#0e0e0e;--bg3:#151515;--bg4:#1c1c1c;--bg5:#222;--b:rgba(255,255,255,.07);--b2:rgba(255,255,255,.13);--m:rgba(255,255,255,.28);--m2:rgba(255,255,255,.55);--gold:#c8860a;--green:#00c853;--font-head:'Barlow Condensed',sans-serif;--font-body:'Barlow',sans-serif;}
-html{background:var(--bg);color:#fff;font-family:var(--font-body);font-size:14px;min-height:100vh;}
-body{min-height:100vh;display:flex;flex-direction:column;position:relative;}
+html{background:var(--bg);color:#fff;font-family:var(--font-body);font-size:14px;min-height:100vh;text-rendering:optimizeLegibility;}
+body{min-height:100vh;display:flex;flex-direction:column;position:relative;font-weight:400;}
 body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.035'/%3E%3C/svg%3E");opacity:.5;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:none;}}
 @keyframes panelIn{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:none;}}
@@ -223,6 +223,15 @@ tr:hover td{background:rgba(255,255,255,.015);}
 .live-dot{width:7px;height:7px;border-radius:50%;background:var(--r);animation:pulse 1.2s ease-in-out infinite;}
 .tbl-empty{padding:28px;text-align:center;font-family:var(--font-body);color:var(--m);font-size:13px;}
 
+/* ═══ PILOTE ACTIONS ═══ */
+.act-btn{padding:4px 8px;font-size:10px;font-weight:700;border:none;border-radius:3px;cursor:pointer;transition:background .15s;margin:0 2px;font-family:var(--font-head);letter-spacing:1px;text-transform:uppercase;white-space:nowrap;}
+.act-clr{background:rgba(0,200,83,.15);color:#00c853;border:1px solid rgba(0,200,83,.3);}
+.act-clr:hover{background:rgba(0,200,83,.25);}
+.act-inf{background:rgba(255,180,0,.12);color:#ffb400;border:1px solid rgba(255,180,0,.2);}
+.act-inf:hover{background:rgba(255,180,0,.2);}
+.act-dnf{background:rgba(255,100,100,.12);color:#ff6464;border:1px solid rgba(255,100,100,.2);}
+.act-dnf:hover{background:rgba(255,100,100,.2);}
+
 /* ═══ PILOTS EDITOR ═══ */
 .pe-list{display:flex;flex-direction:column;gap:6px;max-height:580px;overflow-y:auto;}
 .pe-cat-hd{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--m);padding:8px 4px 3px;}
@@ -346,7 +355,10 @@ tr:hover td{background:rgba(255,255,255,.015);}
             <button class="btn b-red" id="bStart" onclick="chStart()">▶ START</button>
             <button class="btn b-dk"  id="bStop"  onclick="chStop()" disabled>■ STOP</button>
           </div>
-          <button class="btn b-dk" id="bReset" onclick="chReset()" style="opacity:.4;">↺ RESET</button>
+          <div class="brow" style="margin-bottom:8px;">
+            <button class="btn b-dk" id="bReset" onclick="chReset()" style="opacity:.4;flex:1;">↺ RESET</button>
+            <button class="btn b-dk" onclick="resetHistorique()" style="color:#ffaa00;flex:1;">🔄 Reset Histor.</button>
+          </div>
           <div class="fb" id="fb-ch"></div>
         </div></div>
       </div>
@@ -391,7 +403,11 @@ tr:hover td{background:rgba(255,255,255,.015);}
     <div class="g2">
       <div>
         <div class="sec-hd"><h2>🏎 Sélection pilote</h2></div>
-        <div class="card"><div class="cb" style="padding:10px;"><div class="plist" id="dcList"><div class="ev-empty">Chargement…</div></div></div></div>
+        <div class="card"><div class="cb" style="padding:10px;">
+          <select id="dcSelect" style="width:100%;padding:8px;border:1px solid rgba(255,255,255,.13);background:#1c1c1c;color:white;border-radius:4px;font-size:14px;font-family:var(--font-body);cursor:pointer;" onchange="dcSelectFromDropdown()">
+            <option value="">— Sélectionner un pilote —</option>
+          </select>
+        </div></div>
       </div>
       <div>
         <div class="sec-hd"><h2>🎬 Diffusion OBS</h2></div>
@@ -481,9 +497,9 @@ tr:hover td{background:rgba(255,255,255,.015);}
     </div>
     <div class="card"><div class="cls-wrap">
       <table><thead><tr>
-        <th style="width:40px;">Pos</th><th>Pilote</th><th>Écurie</th><th style="text-align:right;">Temps</th>
+        <th style="width:40px;">Pos</th><th>Pilote</th><th style="width:60px;">Ordre</th><th>Écurie</th><th style="text-align:right;">Temps</th><th style="width:140px;text-align:center;">Actions</th>
       </tr></thead>
-      <tbody id="clsBody"><tr><td colspan="4" class="tbl-empty">Chargement…</td></tr></tbody>
+      <tbody id="clsBody"><tr><td colspan="6" class="tbl-empty">Chargement…</td></tr></tbody>
       </table>
     </div></div>
   </div>
@@ -736,7 +752,7 @@ function fillSelects(){
     s.innerHTML='<option value="">— Sélectionner —</option>';
     pilots.forEach(p=>{
       const o=document.createElement('option');
-      o.value=p.id;o.textContent=p.last_name+' '+p.first_name;
+      o.value=p.id;o.textContent=fmtNameFull(p.first_name,p.last_name);
       if(String(p.id)===prev)o.selected=true;
       s.appendChild(o);
     });
@@ -745,19 +761,20 @@ function fillSelects(){
 function flagOf(nat){const m=(nat||'').match(/(\p{Emoji_Presentation}+)/u);return m?m[1]:'🌍';}
 function catShort(c){return c==='Rally B'?'B':c==='Rally N'?'N':'H';}
 function catCls(c){return c==='Rally B'?'cat-B':c==='Rally N'?'cat-N':'cat-H';}
+function fmtNameFull(firstName,lastName){const ln=(lastName||'').toUpperCase(),fn=(firstName||'').trim();return (ln+' '+fn).trim();}
+function fmtNameNormal(firstName,lastName){return (firstName||'')+' '+(lastName||'');}
 
 function renderDcList(){
-  const el=document.getElementById('dcList');
-  if(!pilots.length){el.innerHTML='<div class="ev-empty">Aucun pilote dans cette catégorie</div>';return;}
-  el.innerHTML=pilots.map(p=>`
-    <div class="pitem ${dcSel===p.id?'sel':''}" style="--tc:${p.team_color||'#e8001c'}" onclick="dcSelect(${p.id})">
-      <div style="flex:1;">
-        <div class="pi-n">${p.last_name} ${p.first_name}<span class="pi-cat ${catCls(p.category)}">${catShort(p.category)}</span></div>
-        <div class="pi-t">${p.team||''}</div>
-      </div>
-      <div style="font-size:14px;">${flagOf(p.country)}</div>
-      <div class="pi-chk">${dcSel===p.id?'✓':''}</div>
-    </div>`).join('');
+  const select=document.getElementById('dcSelect');
+  if(!pilots.length){select.innerHTML='<option value="">Aucun pilote dans cette catégorie</option>';return;}
+  select.innerHTML='<option value="">— Sélectionner un pilote —</option>'+
+    pilots.map(p=>`<option value="${p.id}" ${dcSel===p.id?'selected':''}>${fmtNameFull(p.first_name,p.last_name)} (${p.team||'—'})</option>`).join('');
+  if(dcSel){select.value=dcSel;}
+}
+
+function dcSelectFromDropdown(){
+  const val=document.getElementById('dcSelect').value;
+  if(val){dcSelect(Number(val));}
 }
 
 function renderPeList(){
@@ -769,7 +786,7 @@ function renderPeList(){
     if(!grp.length)return '';
     return `<div class="pe-cat-hd">${cat}</div>`+grp.map(p=>`
       <div class="pe-row">
-        <div class="pe-head"><div class="pe-dot" style="background:${p.team_color||'#e8001c'}"></div><div class="pe-name">${p.last_name} ${p.first_name}</div><div style="font-size:13px;">${flagOf(p.country)}</div></div>
+        <div class="pe-head"><div class="pe-dot" style="background:${p.team_color||'#e8001c'}"></div><div class="pe-name">${fmtNameFull(p.first_name,p.last_name)}</div><div style="font-size:13px;">${flagOf(p.country)}</div></div>
         <div class="pe-team">${p.team||''}${p.sponsor?' · '+p.sponsor:''}</div>
         <div class="pe-acts">
           <button class="btn b-dk b-sm" onclick="piEdit(${p.id})" style="flex:1;">✏️ Modifier</button>
@@ -923,7 +940,7 @@ async function doEvent(type){
 //   3. DNF / DSQ
 async function pollCls(){
   const tbody=document.getElementById('clsBody');
-  if(!pilots.length){tbody.innerHTML='<tr><td colspan="4" class="tbl-empty">Aucun pilote dans cette catégorie</td></tr>';return;}
+  if(!pilots.length){tbody.innerHTML='<tr><td colspan="6" class="tbl-empty">Aucun pilote dans cette catégorie</td></tr>';return;}
 
   // Toutes les entrées classement pour les pilotes de la catégorie
   const ids=pilots.map(p=>p.id);
@@ -935,9 +952,11 @@ async function pollCls(){
   rows.forEach(r=>{clsMap[r.pilote_id]=r;});
 
   // Construire une ligne pour chaque pilote de la catégorie, même sans entrée classement
-  const allRows=pilots.map(p=>{
+  const allRows=pilots.map((p,idx)=>{
     const cls=clsMap[p.id]||{pilote_id:p.id,best_time:'',status:'',penalties:''};
-    return {...cls, _pilot:p};
+    cls._pilot=p;
+    cls._idx=idx;
+    return cls;
   });
 
   const ok  = allRows.filter(r=>r.best_time&&toMs(r.best_time)<Infinity&&r.status!=='DNF'&&r.status!=='DSQ');
@@ -948,7 +967,7 @@ async function pollCls(){
 
   tbody.innerHTML=sorted.map((r,i)=>{
     const p=r._pilot;
-    const name=(p.last_name||'')+' '+(p.first_name||'');
+    const name=fmtNameFull(p.first_name,p.last_name);
     const st=(r.status||'').toUpperCase();
     const hasTime=r.best_time&&toMs(r.best_time)<Infinity;
     const isOut=st==='DNF'||st==='DSQ';
@@ -970,14 +989,59 @@ async function pollCls(){
     else if(st==='INCIDENT')badge='<span class="badge b-inc2">INC</span>';
     const pen=r.penalties?`<span class="pen-note">⚠ ${r.penalties}</span>`:'';
 
+    // Ordre de passage (position dans la liste pour les pilotes sans temps)
+    let ordreHTML='—';
+    if(!hasTime&&!isOut){
+      const noIdx=no.indexOf(r);
+      ordreHTML=`<span style="font-weight:700;color:#ffaa00;">${noIdx+1}</span>`;
+    }
+
+    // Boutons d'action
+    let actions='';
+    if(st==='DNF'||st==='DSQ'||st==='INCIDENT'){
+      actions+=`<button class="act-btn act-clr" onclick="clearStatus(${p.id})">✓ Clr</button>`;
+    }
+    if(st!=='DNF'){
+      actions+=`<button class="act-btn act-dnf" onclick="setStatus(${p.id},'DNF')">DNF</button>`;
+    }
+    if(st!=='INCIDENT'){
+      actions+=`<button class="act-btn act-inf" onclick="setStatus(${p.id},'INCIDENT')">Inc</button>`;
+    }
+
     return `<tr style="${rowStyle}">
       <td class="td-pos" style="${pc};${lb};padding-left:${posNum>=0&&posNum<3?'11px':'14px'}">${pos}</td>
       <td class="td-name">${name.trim()||'?'}${badge}${pen}</td>
+      <td style="text-align:center;font-size:12px;color:#ffaa00;font-weight:700;">${ordreHTML}</td>
       <td class="td-team">${p.team||''}</td>
       <td class="td-time" style="${tc}">${time}</td>
+      <td style="text-align:center;font-size:0;">${actions}</td>
     </tr>`;
   }).join('');
   document.getElementById('clsUpd').textContent=new Date().toLocaleTimeString('fr-FR');
+}
+
+// ══ GESTION STATUTS PILOTES ══
+async function clearStatus(pid){
+  const p=allPilots.find(x=>x.id===pid);
+  const rows=await GET('classement',`?pilote_id=eq.${pid}`);
+  const row=rows&&rows[0];
+  if(row){
+    await PATCH('classement',`?pilote_id=eq.${pid}`,{status:'',updated_at:new Date().toISOString()});
+    addLog('✓',p.first_name+' '+p.last_name,'Statut retiré');
+  }
+  pollCls();
+}
+
+async function setStatus(pid,st){
+  const p=allPilots.find(x=>x.id===pid);
+  const rows=await GET('classement',`?pilote_id=eq.${pid}`);
+  const row=rows&&rows[0];
+  const upd={status:st,updated_at:new Date().toISOString()};
+  if(st==='DNF'||st==='DSQ')upd.best_time='';
+  if(row)await PATCH('classement',`?pilote_id=eq.${pid}`,upd);
+  else await POST('classement',{pilote_id:pid,...upd});
+  addLog(st==='DNF'?'D':'I',p.first_name+' '+p.last_name,st);
+  pollCls();
 }
 
 // ══ DRIVER CARD ══
@@ -985,7 +1049,7 @@ function dcSelect(id){
   dcSel=id;const p=allPilots.find(x=>x.id===id);renderDcList();
   document.getElementById('dcPrev').classList.add('on');
   document.getElementById('dcPrevBar').style.background=p.team_color||'#e8001c';
-  document.getElementById('dcPrevName').textContent=(p.last_name+' '+p.first_name).toUpperCase();
+  document.getElementById('dcPrevName').textContent=fmtNameFull(p.first_name,p.last_name);
   document.getElementById('dcPrevTeam').textContent=p.team||'';
   document.getElementById('bDcShow').disabled=false;
 }
@@ -993,7 +1057,7 @@ async function dcShow(){
   if(!dcSel){fb('fb-dc','Sélectionne un pilote !','err');return;}
   const p=allPilots.find(x=>x.id===dcSel);
   const d=await PATCH('driver_card','?id=eq.1',{pilote_id:dcSel,active:true,duration_ms:dcDur,triggered_at:Date.now()});
-  if(d!==null)fb('fb-dc','▶ '+(p.last_name+' '+p.first_name),'ok');else fb('fb-dc','Erreur Supabase','err');
+  if(d!==null)fb('fb-dc','▶ '+fmtNameFull(p.first_name,p.last_name),'ok');else fb('fb-dc','Erreur Supabase','err');
 }
 async function dcHide(){const d=await PATCH('driver_card','?id=eq.1',{active:false});if(d!==null)fb('fb-dc','✕ Masqué','ok');}
 
@@ -1042,7 +1106,7 @@ function renderCommList(){
   el.innerHTML=allCommentateurs.map(c=>`
     <div class="pitem ${commSel===c.id?'sel':''}" style="--tc:#4466cc" onclick="commSelect(${c.id})">
       <div style="flex:1;">
-        <div class="pi-n">${c.last_name} ${c.first_name}</div>
+        <div class="pi-n">${fmtNameFull(c.first_name,c.last_name)}</div>
         <div class="pi-t">${c.role||''}</div>
       </div>
       <div style="display:flex;gap:6px;align-items:center;">
@@ -1057,7 +1121,7 @@ function commSelect(id){
   commSel=id;
   const c=allCommentateurs.find(x=>x.id===id);
   renderCommList();
-  document.getElementById('commPN').textContent=(c.first_name+' '+c.last_name).toUpperCase();
+  document.getElementById('commPN').textContent=fmtNameFull(c.first_name,c.last_name);
   document.getElementById('commPR').textContent=(c.role||'').toUpperCase();
   document.getElementById('bCommShow').disabled=false;
 }
@@ -1067,7 +1131,7 @@ function commPreview(){
   const ln=document.getElementById('commLast').value.trim();
   const role=document.getElementById('commRole').value.trim();
   if(fn||ln){
-    document.getElementById('commPN').textContent=(fn+' '+ln).toUpperCase();
+    document.getElementById('commPN').textContent=fmtNameFull(fn,ln);
     document.getElementById('commPR').textContent=(role||'').toUpperCase();
   }
 }
@@ -1123,7 +1187,7 @@ async function commShow(){
     active:true,duration_ms:commDur,triggered_at:Date.now()
   });
   if(d!==null){
-    fb('fb-comm','▶ '+(fn+' '+ln).trim(),'ok');
+    fb('fb-comm','▶ '+fmtNameFull(fn,ln),'ok');
     document.getElementById('commDot').classList.add('on');
     document.getElementById('commSt').classList.add('on');
     document.getElementById('commStTxt').textContent='EN DIRECT';
@@ -1151,6 +1215,36 @@ function setDur(btn,ctx){
 function addLog(type,pilot,msg){
   hist.unshift({type,pilot,msg,time:new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})});
   document.getElementById('evLog').innerHTML=hist.slice(0,30).map(e=>`<div class="ev-row"><span class="ev-bdg eb-${e.type}">${e.type}</span><div class="ev-body"><div class="ev-pn">${e.pilot}</div><div class="ev-msg">${e.msg}</div></div><span class="ev-tm">${e.time}</span></div>`).join('');
+}
+async function resetHistorique(){
+  if(!confirm('⚠️ ATTENTION : Cela va effacer TOUS les temps et événements de la session. Êtes-vous sûr ?'))return;
+  
+  lockCh();
+  document.getElementById('evLog').innerHTML='<div class="ev-empty">Historique réinitialisé...</div>';
+  
+  // Effacer tous les temps et statuts
+  const ids=pilots.map(p=>p.id);
+  if(ids.length>0){
+    const rows=await GET('classement',`?select=*&pilote_id=in.(${ids.join(',')})`);
+    if(rows&&rows.length){
+      for(const row of rows){
+        await PATCH('classement',`?pilote_id=eq.${row.pilote_id}`,{best_time:'',status:'',penalties:'',updated_at:new Date().toISOString()});
+      }
+    }
+  }
+  
+  // Réinitialiser l'historique local
+  hist.length=0;
+  bestMs=Infinity;
+  document.getElementById('chB').textContent='—';
+  
+  // Réinitialiser l'affichage
+  document.getElementById('evLog').innerHTML='<div class="ev-empty">Aucun événement</div>';
+  addLog('T','SYSTÈME','🔄 Historique réinitialisé');
+  
+  uiStop(false);
+  fb('fb-ch','🔄 Session réinitialisée','ok');
+  pollCls();
 }
 function fb(id,msg,type){const el=document.getElementById(id);if(!el)return;el.textContent=msg;el.className='fb on '+type;setTimeout(()=>el.className='fb '+type,3500);}
 
