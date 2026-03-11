@@ -795,7 +795,7 @@ function fillSelects(){
 function flagOf(nat){const m=(nat||'').match(/(\p{Emoji_Presentation}+)/u);return m?m[1]:'🌍';}
 function catShort(c){return c==='Rally B'?'B':c==='Rally N'?'N':'H';}
 function catCls(c){return c==='Rally B'?'cat-B':c==='Rally N'?'cat-N':'cat-H';}
-function fmtNameFull(firstName,lastName){const ln=(lastName||'').toUpperCase(),fn=(firstName||'').trim();return (ln+' '+fn).trim();}
+function fmtNameFull(firstName,lastName){return (firstName||'')+' '+(lastName||'').toUpperCase();}
 function fmtNameNormal(firstName,lastName){return (firstName||'')+' '+(lastName||'');}
 
 function renderDcList(){
@@ -1117,17 +1117,25 @@ async function movePassageUp(pid){
   const clsMap={};
   rows.forEach(r=>{clsMap[r.pilote_id]=r;});
   
-  const noRows=pilots.filter(p=>{
-    const cls=clsMap[p.id]||{best_time:'',status:''};
-    return (!cls.best_time||cls.best_time==='')&&cls.status!=='DNF'&&cls.status!=='DSQ';
-  }).sort((a,b)=>(passageOrder.get(a.id)||999)-(passageOrder.get(b.id)||999));
+  const noRows=pilots.map(p=>{
+    const cls=clsMap[p.id]||{pilote_id:p.id,best_time:'',status:'',penalties:''};
+    return {_pilot:p,...cls};
+  }).filter(r=>(!r.best_time||toMs(r.best_time)===Infinity)&&r.status!=='DNF'&&r.status!=='DSQ')
+   .sort((a,b)=>{
+    const ordA=passageOrder.get(a._pilot.id);
+    const ordB=passageOrder.get(b._pilot.id);
+    if(ordA===undefined && ordB===undefined) return 0;
+    if(ordA===undefined) return 1;
+    if(ordB===undefined) return -1;
+    return ordA - ordB;
+  });
   
-  const idx=noRows.findIndex(p=>p.id===pid);
+  const idx=noRows.findIndex(p=>p._pilot.id===pid);
   if(idx > 0 && idx < noRows.length){
-    const ord1=passageOrder.get(noRows[idx-1].id)||999;
-    const ord2=passageOrder.get(noRows[idx].id)||999;
-    passageOrder.set(noRows[idx-1].id, ord2);
-    passageOrder.set(noRows[idx].id, ord1);
+    const ord1=passageOrder.get(noRows[idx-1]._pilot.id)||999;
+    const ord2=passageOrder.get(noRows[idx]._pilot.id)||999;
+    passageOrder.set(noRows[idx-1]._pilot.id, ord2);
+    passageOrder.set(noRows[idx]._pilot.id, ord1);
     pollCls();
   }
 }
@@ -1138,17 +1146,25 @@ async function movePassageDown(pid){
   const clsMap={};
   rows.forEach(r=>{clsMap[r.pilote_id]=r;});
   
-  const noRows=pilots.filter(p=>{
-    const cls=clsMap[p.id]||{best_time:'',status:''};
-    return (!cls.best_time||cls.best_time==='')&&cls.status!=='DNF'&&cls.status!=='DSQ';
-  }).sort((a,b)=>(passageOrder.get(a.id)||999)-(passageOrder.get(b.id)||999));
+  const noRows=pilots.map(p=>{
+    const cls=clsMap[p.id]||{pilote_id:p.id,best_time:'',status:'',penalties:''};
+    return {_pilot:p,...cls};
+  }).filter(r=>(!r.best_time||toMs(r.best_time)===Infinity)&&r.status!=='DNF'&&r.status!=='DSQ')
+   .sort((a,b)=>{
+    const ordA=passageOrder.get(a._pilot.id);
+    const ordB=passageOrder.get(b._pilot.id);
+    if(ordA===undefined && ordB===undefined) return 0;
+    if(ordA===undefined) return 1;
+    if(ordB===undefined) return -1;
+    return ordA - ordB;
+  });
   
-  const idx=noRows.findIndex(p=>p.id===pid);
+  const idx=noRows.findIndex(p=>p._pilot.id===pid);
   if(idx >= 0 && idx < noRows.length-1){
-    const ord1=passageOrder.get(noRows[idx].id)||999;
-    const ord2=passageOrder.get(noRows[idx+1].id)||999;
-    passageOrder.set(noRows[idx].id, ord2);
-    passageOrder.set(noRows[idx+1].id, ord1);
+    const ord1=passageOrder.get(noRows[idx]._pilot.id)||999;
+    const ord2=passageOrder.get(noRows[idx+1]._pilot.id)||999;
+    passageOrder.set(noRows[idx]._pilot.id, ord2);
+    passageOrder.set(noRows[idx+1]._pilot.id, ord1);
     pollCls();
   }
 }
