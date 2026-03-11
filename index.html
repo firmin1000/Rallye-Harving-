@@ -259,17 +259,12 @@ tr:hover td{background:rgba(255,255,255,.015);}
     <div class="boot-logo">W</div>
     <div class="boot-sub">Weazel Rally · Control Center</div>
     <div class="boot-step">
-      <h3>🔌 Connexion Supabase</h3>
-      <div class="boot-f"><label>URL du projet</label><input type="text" id="bootUrl" placeholder="https://xxxxxxxxxxxx.supabase.co"></div>
-      <div class="boot-f"><label>Clé publique (anon key)</label><input type="text" id="bootKey" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9…"></div>
+      <h3>� Code d'accès</h3>
+      <div class="boot-f"><label>Entrez votre code d'accès</label><input type="text" id="bootCode" placeholder="Ex: ABC123" autofocus></div>
     </div>
-    <div class="boot-step">
-      <h3>🔒 Mot de passe dashboard</h3>
-      <div class="boot-f"><label>Partagé avec tous les opérateurs</label><input type="text" id="bootPwd" placeholder="weazel2024"></div>
-    </div>
-    <button class="boot-btn" onclick="doBootstrap()">Connecter et démarrer</button>
+    <button class="boot-btn" onclick="doBootstrap()">Vérifier et accéder</button>
     <div class="boot-err" id="bootErr"></div>
-    <div class="boot-info">Ces infos sont sauvegardées dans Supabase.<br>Les autres opérateurs n'ont qu'à entrer le mot de passe.</div>
+    <div class="boot-info">Votre code d'accès vous donne accès au tableau de bord.</div>
   </div>
 </div>
 
@@ -558,47 +553,24 @@ const hist=[];
 
 // ══ BOOTSTRAP ══
 async function startup(){
-  let lu=localStorage.getItem('sb_url')||'';
-  let lk=localStorage.getItem('sb_key')||'';
+  const lc=localStorage.getItem('sb_code')||'';
+  const lu=localStorage.getItem('sb_url')||'';
+  const lk=localStorage.getItem('sb_key')||'';
+  const lp=localStorage.getItem('app_pwd')||'';
   
-  // Si localStorage vide, charger depuis Supabase avec la clé par défaut
-  if(!lu||!lk){
-    const cfg=await loadConfigWithDefault();
-    if(cfg){
-      lu=cfg.sb_url||DEFAULT_SB_URL;
-      lk=cfg.sb_key||DEFAULT_SB_KEY;
-      localStorage.setItem('sb_url',lu);
-      localStorage.setItem('sb_key',lk);
-    } else {
-      lu=DEFAULT_SB_URL;
-      lk=DEFAULT_SB_KEY;
-    }
-  }
-  
-  SB_URL=lu;SB_KEY=lk;
-  const cfg=await loadConfig();
-  if(cfg){
-    APP_PWD=cfg.app_pwd||'weazel2024';
+  if(lc&&lu&&lk&&lp){
+    SB_URL=lu;SB_KEY=lk;APP_PWD=lp;
     showLogin();
   } else {
     showBootstrap();
   }
 }
 
-function showBootstrap(){document.getElementById('bootstrapScreen').classList.remove('hidden');}
+function showBootstrap(){document.getElementById('bootstrapScreen').classList.remove('hidden');document.getElementById('bootCode').focus();}
 function showLogin(){
   document.getElementById('bootstrapScreen').classList.add('hidden');
   document.getElementById('loginScreen').classList.remove('hidden');
   document.getElementById('pwdInput').focus();
-}
-
-async function loadConfigWithDefault(){
-  try{
-    const r=await fetch(`${DEFAULT_SB_URL}/rest/v1/app_config?id=eq.1`,{headers:{'apikey':DEFAULT_SB_KEY,'Authorization':'Bearer '+DEFAULT_SB_KEY}});
-    if(!r.ok)return null;
-    const d=await r.json();
-    return d&&d.length?d[0]:null;
-  }catch(e){return null;}
 }
 
 async function loadConfig(){
@@ -610,19 +582,41 @@ async function loadConfig(){
   }catch(e){return null;}
 }
 async function doBootstrap(){
-  const u=document.getElementById('bootUrl').value.trim();
-  const k=document.getElementById('bootKey').value.trim();
-  const p=document.getElementById('bootPwd').value.trim()||'weazel2024';
+  const code=document.getElementById('bootCode').value.trim().toUpperCase();
   const err=document.getElementById('bootErr');
-  if(!u.startsWith('http')){err.textContent='URL invalide (doit commencer par https://)';return;}
-  if(!k.startsWith('eyJ')){err.textContent='Clé anon invalide';return;}
-  err.textContent='Connexion en cours…';
-  SB_URL=u;SB_KEY=k;
-  const r=await PATCH('app_config','?id=eq.1',{sb_url:u,sb_key:k,app_pwd:p});
-  if(r===null){err.textContent='❌ Impossible de se connecter — vérifie l\'URL et la clé';return;}
-  APP_PWD=p;
-  localStorage.setItem('sb_url',u);localStorage.setItem('sb_key',k);
-  showLogin();
+  
+  if(!code){err.textContent='⚠️ Veuillez entrer un code d\'accès';return;}
+  
+  err.textContent='Vérification en cours…';
+  
+  try{
+    const r=await fetch(`${DEFAULT_SB_URL}/rest/v1/access_codes?code=eq.${encodeURIComponent(code)}`,{
+      headers:{'apikey':DEFAULT_SB_KEY,'Authorization':'Bearer '+DEFAULT_SB_KEY}
+    });
+    if(!r.ok){err.textContent='❌ Erreur serveur';return;}
+    
+    const d=await r.json();
+    if(!d||!d.length){err.textContent='❌ Code d\'accès invalide';return;}
+    
+    const access=d[0];
+    const u=access.sb_url;
+    const k=access.sb_key;
+    const p=access.app_pwd||'weazel2024';
+    
+    if(!u||!k){err.textContent='❌ Configuration incomplète';return;}
+    
+    localStorage.setItem('sb_code',code);
+    localStorage.setItem('sb_url',u);
+    localStorage.setItem('sb_key',k);
+    localStorage.setItem('app_pwd',p);
+    
+    SB_URL=u;SB_KEY=k;APP_PWD=p;
+    err.textContent='';
+    showLogin();
+  }catch(e){
+    console.error('Erreur:',e);
+    err.textContent='❌ Erreur de connexion';
+  }
 }
 
 // ══ LOGIN ══
