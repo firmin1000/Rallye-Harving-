@@ -404,9 +404,7 @@ tr:hover td{background:rgba(255,255,255,.015);}
       <div>
         <div class="sec-hd"><h2>🏎 Sélection pilote</h2></div>
         <div class="card"><div class="cb" style="padding:10px;">
-          <select id="dcSelect" style="width:100%;padding:8px;border:1px solid rgba(255,255,255,.13);background:#1c1c1c;color:white;border-radius:4px;font-size:14px;font-family:var(--font-body);cursor:pointer;" onchange="dcSelectFromDropdown()">
-            <option value="">— Sélectionner un pilote —</option>
-          </select>
+          <div class="plist" id="dcList" style="max-height:450px;"><div class="ev-empty">Chargement…</div></div>
         </div></div>
       </div>
       <div>
@@ -566,6 +564,7 @@ let allPilots=[],pilots=[];
 let dcSel=null,dcDur=6000,commDur=6000;
 let chRun=false,chTs=0,chRaf=null,bestMs=Infinity;
 const hist=[];
+const passageOrder=new Map(); // pilot_id → order_index
 
 // ══ BOOTSTRAP ══
 async function startup(){
@@ -724,6 +723,12 @@ function setCat(btn){
   btn.classList.add('on');
   currentCat=btn.dataset.cat;
   pilots=allPilots.filter(p=>p.category===currentCat);
+  // Initialise l'ordre de passage pour la nouvelle catégorie
+  pilots.forEach((p,idx)=>{
+    if(!passageOrder.has(p.id)){
+      passageOrder.set(p.id, idx);
+    }
+  });
   commSel=null;
   fillSelects();renderDcList();renderPeList();renderCommList();pollCls();
 }
@@ -744,6 +749,12 @@ async function loadPilots(){
   if(!d)return;
   allPilots=d;
   pilots=allPilots.filter(p=>p.category===currentCat);
+  // Initialise l'ordre de passage si nécessaire
+  pilots.forEach((p,idx)=>{
+    if(!passageOrder.has(p.id)){
+      passageOrder.set(p.id, idx);
+    }
+  });
   fillSelects();renderDcList();renderPeList();
 }
 function fillSelects(){
@@ -765,16 +776,16 @@ function fmtNameFull(firstName,lastName){const ln=(lastName||'').toUpperCase(),f
 function fmtNameNormal(firstName,lastName){return (firstName||'')+' '+(lastName||'');}
 
 function renderDcList(){
-  const select=document.getElementById('dcSelect');
-  if(!pilots.length){select.innerHTML='<option value="">Aucun pilote dans cette catégorie</option>';return;}
-  select.innerHTML='<option value="">— Sélectionner un pilote —</option>'+
-    pilots.map(p=>`<option value="${p.id}" ${dcSel===p.id?'selected':''}>${fmtNameFull(p.first_name,p.last_name)} (${p.team||'—'})</option>`).join('');
-  if(dcSel){select.value=dcSel;}
-}
-
-function dcSelectFromDropdown(){
-  const val=document.getElementById('dcSelect').value;
-  if(val){dcSelect(Number(val));}
+  const el=document.getElementById('dcList');
+  if(!pilots.length){el.innerHTML='<div class="ev-empty">Aucun pilote dans cette catégorie</div>';return;}
+  el.innerHTML=pilots.map(p=>`
+    <div class="pitem ${dcSel===p.id?'sel':''}" style="--tc:${p.team_color||'#e8001c'}" onclick="dcSelect(${p.id})">
+      <div style="flex:1;">
+        <div class="pi-n">${fmtNameFull(p.first_name,p.last_name)}</div>
+        <div class="pi-t">${p.team||''}</div>
+      </div>
+      <div class="pi-chk">${dcSel===p.id?'✓':''}</div>
+    </div>`).join('');
 }
 
 function renderPeList(){
@@ -963,6 +974,15 @@ async function pollCls(){
   const no  = allRows.filter(r=>(!r.best_time||toMs(r.best_time)===Infinity)&&r.status!=='DNF'&&r.status!=='DSQ');
   const out = allRows.filter(r=>r.status==='DNF'||r.status==='DSQ');
   ok.sort((a,b)=>toMs(a.best_time)-toMs(b.best_time));
+  // Tri l'ordre de passage selon passageOrder
+  no.sort((a,b)=>{
+    const ordA=passageOrder.get(a._pilot.id);
+    const ordB=passageOrder.get(b._pilot.id);
+    if(ordA===undefined && ordB===undefined) return 0;
+    if(ordA===undefined) return 1;
+    if(ordB===undefined) return -1;
+    return ordA - ordB;
+  });
   const sorted=[...ok,...no,...out];
 
   tbody.innerHTML=sorted.map((r,i)=>{
@@ -1007,6 +1027,16 @@ async function pollCls(){
     if(st!=='INCIDENT'){
       actions+=`<button class="act-btn act-inf" onclick="setStatus(${p.id},'INCIDENT')">Inc</button>`;
     }
+    // Boutons de réordonner pour les pilotes sans temps
+    if(!hasTime&&!isOut){
+      const noIdx=no.indexOf(r);
+      if(noIdx>0){
+        actions=`<button class="act-btn" style="background:rgba(100,150,255,.15);color:#88aaff;border:1px solid rgba(100,150,255,.3);" onclick="movePassageUp(${p.id})">▲</button>` + actions;
+      }
+      if(noIdx<no.length-1){
+        actions += `<button class="act-btn" style="background:rgba(100,150,255,.15);color:#88aaff;border:1px solid rgba(100,150,255,.3);" onclick="movePassageDown(${p.id})">▼</button>`;
+      }
+    }
 
     return `<tr style="${rowStyle}">
       <td class="td-pos" style="${pc};${lb};padding-left:${posNum>=0&&posNum<3?'11px':'14px'}">${pos}</td>
@@ -1042,6 +1072,49 @@ async function setStatus(pid,st){
   else await POST('classement',{pilote_id:pid,...upd});
   addLog(st==='DNF'?'D':'I',p.first_name+' '+p.last_name,st);
   pollCls();
+}
+
+// ══ GESTION ORDRE DE PASSAGE ══
+async function movePassageUp(pid){
+  const ids=pilots.map(p=>p.id);
+  const rows=await GET('classement',`?select=*&pilote_id=in.(${ids.join(',')})`)||[];
+  const clsMap={};
+  rows.forEach(r=>{clsMap[r.pilote_id]=r;});
+  
+  const noRows=pilots.filter(p=>{
+    const cls=clsMap[p.id]||{best_time:'',status:''};
+    return (!cls.best_time||cls.best_time==='')&&cls.status!=='DNF'&&cls.status!=='DSQ';
+  }).sort((a,b)=>(passageOrder.get(a.id)||999)-(passageOrder.get(b.id)||999));
+  
+  const idx=noRows.findIndex(p=>p.id===pid);
+  if(idx>0){
+    const ord1=passageOrder.get(noRows[idx-1].id)||999;
+    const ord2=passageOrder.get(noRows[idx].id)||999;
+    passageOrder.set(noRows[idx-1].id, ord2);
+    passageOrder.set(noRows[idx].id, ord1);
+    pollCls();
+  }
+}
+
+async function movePassageDown(pid){
+  const ids=pilots.map(p=>p.id);
+  const rows=await GET('classement',`?select=*&pilote_id=in.(${ids.join(',')})`)||[];
+  const clsMap={};
+  rows.forEach(r=>{clsMap[r.pilote_id]=r;});
+  
+  const noRows=pilots.filter(p=>{
+    const cls=clsMap[p.id]||{best_time:'',status:''};
+    return (!cls.best_time||cls.best_time==='')&&cls.status!=='DNF'&&cls.status!=='DSQ';
+  }).sort((a,b)=>(passageOrder.get(a.id)||999)-(passageOrder.get(b.id)||999));
+  
+  const idx=noRows.findIndex(p=>p.id===pid);
+  if(idx<noRows.length-1){
+    const ord1=passageOrder.get(noRows[idx].id)||999;
+    const ord2=passageOrder.get(noRows[idx+1].id)||999;
+    passageOrder.set(noRows[idx].id, ord2);
+    passageOrder.set(noRows[idx+1].id, ord1);
+    pollCls();
+  }
 }
 
 // ══ DRIVER CARD ══
@@ -1237,6 +1310,12 @@ async function resetHistorique(){
   hist.length=0;
   bestMs=Infinity;
   document.getElementById('chB').textContent='—';
+  
+  // Réinitialiser l'ordre de passage
+  passageOrder.clear();
+  pilots.forEach((p,idx)=>{
+    passageOrder.set(p.id, idx);
+  });
   
   // Réinitialiser l'affichage
   document.getElementById('evLog').innerHTML='<div class="ev-empty">Aucun événement</div>';
