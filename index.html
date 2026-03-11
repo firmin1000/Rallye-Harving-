@@ -741,17 +741,31 @@ function setConnErr(msg){
 }
 
 // ══ CATEGORY ══
-function setCat(btn){
+async function setCat(btn){
   document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('on'));
   btn.classList.add('on');
   currentCat=btn.dataset.cat;
   pilots=allPilots.filter(p=>p.category===currentCat);
-  // Initialise l'ordre de passage pour la nouvelle catégorie
+  
+  // Charge les ordres de passage pour la nouvelle catégorie
+  passageOrder.clear();
+  const ids=pilots.map(p=>p.id);
+  if(ids.length>0){
+    const rows=await GET('classement',`?select=pilote_id,passage_order&pilote_id=in.(${ids.join(',')})`)||[];
+    rows.forEach(r=>{
+      if(r.passage_order!==null && r.passage_order!==undefined){
+        passageOrder.set(r.pilote_id, r.passage_order);
+      }
+    });
+  }
+  
+  // Initialise l'ordre de passage si nécessaire (pour les nouveaux pilotes)
   pilots.forEach((p,idx)=>{
     if(!passageOrder.has(p.id)){
       passageOrder.set(p.id, idx);
     }
   });
+  
   commSel=null;
   fillSelects();renderDcList();renderPeList();renderCommList();pollCls();
 }
@@ -772,7 +786,19 @@ async function loadPilots(){
   if(!d)return;
   allPilots=d;
   pilots=allPilots.filter(p=>p.category===currentCat);
-  // Initialise l'ordre de passage si nécessaire
+  
+  // Charge les ordres de passage depuis la DB
+  const ids=pilots.map(p=>p.id);
+  if(ids.length>0){
+    const rows=await GET('classement',`?select=pilote_id,passage_order&pilote_id=in.(${ids.join(',')})`)||[];
+    rows.forEach(r=>{
+      if(r.passage_order!==null && r.passage_order!==undefined){
+        passageOrder.set(r.pilote_id, r.passage_order);
+      }
+    });
+  }
+  
+  // Initialise l'ordre de passage si nécessaire (pour les nouveaux pilotes)
   pilots.forEach((p,idx)=>{
     if(!passageOrder.has(p.id)){
       passageOrder.set(p.id, idx);
@@ -1136,6 +1162,11 @@ async function movePassageUp(pid){
     const ord2=passageOrder.get(noRows[idx]._pilot.id)||999;
     passageOrder.set(noRows[idx-1]._pilot.id, ord2);
     passageOrder.set(noRows[idx]._pilot.id, ord1);
+    
+    // Sauvegarde dans la DB
+    await PATCH('classement',`?pilote_id=eq.${noRows[idx-1]._pilot.id}`,{passage_order:ord2,updated_at:new Date().toISOString()});
+    await PATCH('classement',`?pilote_id=eq.${noRows[idx]._pilot.id}`,{passage_order:ord1,updated_at:new Date().toISOString()});
+    
     pollCls();
   }
 }
@@ -1165,6 +1196,11 @@ async function movePassageDown(pid){
     const ord2=passageOrder.get(noRows[idx+1]._pilot.id)||999;
     passageOrder.set(noRows[idx]._pilot.id, ord2);
     passageOrder.set(noRows[idx+1]._pilot.id, ord1);
+    
+    // Sauvegarde dans la DB
+    await PATCH('classement',`?pilote_id=eq.${noRows[idx]._pilot.id}`,{passage_order:ord2,updated_at:new Date().toISOString()});
+    await PATCH('classement',`?pilote_id=eq.${noRows[idx+1]._pilot.id}`,{passage_order:ord1,updated_at:new Date().toISOString()});
+    
     pollCls();
   }
 }
@@ -1353,7 +1389,7 @@ async function resetHistorique(){
     const rows=await GET('classement',`?select=*&pilote_id=in.(${ids.join(',')})`);
     if(rows&&rows.length){
       for(const row of rows){
-        await PATCH('classement',`?pilote_id=eq.${row.pilote_id}`,{best_time:'',status:'',penalties:'',updated_at:new Date().toISOString()});
+        await PATCH('classement',`?pilote_id=eq.${row.pilote_id}`,{best_time:'',status:'',penalties:'',passage_order:null,updated_at:new Date().toISOString()});
       }
     }
   }
