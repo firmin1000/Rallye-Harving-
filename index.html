@@ -553,13 +553,13 @@ const hist=[];
 
 // ══ BOOTSTRAP ══
 async function startup(){
-  const lc=localStorage.getItem('sb_code')||'';
-  const lu=localStorage.getItem('sb_url')||'';
-  const lk=localStorage.getItem('sb_key')||'';
   const lp=localStorage.getItem('app_pwd')||'';
   
-  if(lc&&lu&&lk&&lp){
-    SB_URL=lu;SB_KEY=lk;APP_PWD=lp;
+  SB_URL=DEFAULT_SB_URL;
+  SB_KEY=DEFAULT_SB_KEY;
+  
+  if(lp){
+    APP_PWD=lp;
     showLogin();
   } else {
     showBootstrap();
@@ -582,16 +582,16 @@ async function loadConfig(){
   }catch(e){return null;}
 }
 async function doBootstrap(){
-  const code=document.getElementById('bootCode').value.trim();
+  const pwd=document.getElementById('bootCode').value.trim();
   const err=document.getElementById('bootErr');
   
-  if(!code){err.textContent='⚠️ Veuillez entrer votre mot de passe';return;}
+  if(!pwd){err.textContent='⚠️ Veuillez entrer votre mot de passe';return;}
   
   err.textContent='Vérification en cours…';
   
   try{
-    console.log('🔍 Recherche app_pwd dans app_config:',code);
-    const r=await fetch(`${DEFAULT_SB_URL}/rest/v1/app_config?app_pwd=eq.${encodeURIComponent(code)}`,{
+    console.log('🔍 Vérification du mot de passe');
+    const r=await fetch(`${DEFAULT_SB_URL}/rest/v1/app_config?id=eq.1`,{
       headers:{'apikey':DEFAULT_SB_KEY,'Authorization':'Bearer '+DEFAULT_SB_KEY}
     });
     console.log('📡 Réponse HTTP:',r.status);
@@ -607,23 +607,21 @@ async function doBootstrap(){
     const d=text?JSON.parse(text):[];
     console.log('✅ Données:',d);
     if(!d||!d.length){
-      err.textContent='❌ Mot de passe invalide';
+      err.textContent='❌ Configuration introuvable';
       return;
     }
     
     const config=d[0];
     console.log('📋 Config:',config);
-    const u=config.sb_url;
-    const k=config.sb_key;
-    const p=code;
     
-    if(!u||!k){err.textContent='❌ Configuration incomplète';return;}
+    if(pwd!==config.app_pwd){
+      err.textContent='❌ Mot de passe incorrect';
+      document.getElementById('bootCode').value='';
+      return;
+    }
     
-    localStorage.setItem('sb_url',u);
-    localStorage.setItem('sb_key',k);
-    localStorage.setItem('app_pwd',p);
-    
-    SB_URL=u;SB_KEY=k;APP_PWD=p;
+    localStorage.setItem('app_pwd',pwd);
+    APP_PWD=pwd;
     err.textContent='';
     console.log('✅ Connexion OK!');
     showLogin();
