@@ -543,6 +543,12 @@ tr:hover td{background:rgba(255,255,255,.015);}
 
 <script>
 'use strict';
+// ════════════════════════════════════
+//  ⚠️  CONFIG SUPABASE FIXE
+// ════════════════════════════════════
+const DEFAULT_SB_URL='https://tnjnxmndvxrisohmiieh.supabase.co';
+const DEFAULT_SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRuam54bW5kdnhyaXNvaG1paWVoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMxNzYyMzcsImV4cCI6MjA4ODc1MjIzN30.oi8kVDp5879LWv2Gwuy384LVFIFSjl3U8dorBuzQHNg';
+
 let SB_URL='',SB_KEY='',APP_PWD='weazel2024';
 let currentCat='Rally B';
 let allPilots=[],pilots=[];
@@ -552,21 +558,49 @@ const hist=[];
 
 // ══ BOOTSTRAP ══
 async function startup(){
-  const lu=localStorage.getItem('sb_url')||'';
-  const lk=localStorage.getItem('sb_key')||'';
-  if(lu&&lk){
-    SB_URL=lu;SB_KEY=lk;
-    const cfg=await loadConfig();
-    if(cfg){APP_PWD=cfg.app_pwd||'weazel2024';showLogin();}
-    else showBootstrap();
-  } else showBootstrap();
+  let lu=localStorage.getItem('sb_url')||'';
+  let lk=localStorage.getItem('sb_key')||'';
+  
+  // Si localStorage vide, charger depuis Supabase avec la clé par défaut
+  if(!lu||!lk){
+    const cfg=await loadConfigWithDefault();
+    if(cfg){
+      lu=cfg.sb_url||DEFAULT_SB_URL;
+      lk=cfg.sb_key||DEFAULT_SB_KEY;
+      localStorage.setItem('sb_url',lu);
+      localStorage.setItem('sb_key',lk);
+    } else {
+      lu=DEFAULT_SB_URL;
+      lk=DEFAULT_SB_KEY;
+    }
+  }
+  
+  SB_URL=lu;SB_KEY=lk;
+  const cfg=await loadConfig();
+  if(cfg){
+    APP_PWD=cfg.app_pwd||'weazel2024';
+    showLogin();
+  } else {
+    showBootstrap();
+  }
 }
+
 function showBootstrap(){document.getElementById('bootstrapScreen').classList.remove('hidden');}
 function showLogin(){
   document.getElementById('bootstrapScreen').classList.add('hidden');
   document.getElementById('loginScreen').classList.remove('hidden');
   document.getElementById('pwdInput').focus();
 }
+
+async function loadConfigWithDefault(){
+  try{
+    const r=await fetch(`${DEFAULT_SB_URL}/rest/v1/app_config?id=eq.1`,{headers:{'apikey':DEFAULT_SB_KEY,'Authorization':'Bearer '+DEFAULT_SB_KEY}});
+    if(!r.ok)return null;
+    const d=await r.json();
+    return d&&d.length?d[0]:null;
+  }catch(e){return null;}
+}
+
 async function loadConfig(){
   try{
     const r=await fetch(`${SB_URL}/rest/v1/app_config?id=eq.1`,{headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}});
