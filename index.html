@@ -412,18 +412,48 @@ tr:hover td{background:rgba(255,255,255,.015);}
 
   <!-- COMMENTATEUR -->
   <div class="panel" id="panel-commentateur">
-    <div class="g2">
+    <div class="g2l">
+      <!-- Colonne gauche : annuaire + affichage rapide -->
       <div>
-        <div class="sec-hd"><h2>🎙 Overlay commentateur</h2></div>
+        <div class="sec-hd"><h2>🎙 Commentateurs enregistrés</h2></div>
+        <div class="card" style="margin-bottom:16px;"><div class="cb" style="padding:10px;">
+          <div class="plist" id="commList"><div class="ev-empty">Chargement…</div></div>
+        </div></div>
+
+        <div class="sec-hd"><h2 id="commFormTitle">➕ Ajouter un commentateur</h2></div>
+        <div class="card"><div class="cb">
+          <input type="hidden" id="commId">
+          <div class="frow">
+            <div class="f"><label class="fl">Prénom</label><input type="text" id="commFirst" placeholder="Jean" oninput="commPreview()"></div>
+            <div class="f"><label class="fl">Nom</label><input type="text" id="commLast" placeholder="DUPONT" oninput="commPreview()"></div>
+          </div>
+          <div class="frow">
+            <div class="f"><label class="fl">Rôle</label><input type="text" id="commRole" placeholder="Commentateur principal" oninput="commPreview()"></div>
+            <div class="f"><label class="fl">Catégorie</label>
+              <select id="commCat">
+                <option value="Rally B">🔵 Rally B</option>
+                <option value="Rally N">🟢 Rally N</option>
+                <option value="Rally Historique">🟡 Rally Historique</option>
+              </select>
+            </div>
+          </div>
+          <div class="brow" style="margin-top:4px;">
+            <button class="btn b-grn" onclick="commSave()">💾 Enregistrer</button>
+            <button class="btn b-dk"  onclick="commClear()">✕ Annuler</button>
+          </div>
+          <div class="fb" id="fb-commForm"></div>
+        </div></div>
+      </div>
+
+      <!-- Colonne droite : diffusion OBS -->
+      <div>
+        <div class="sec-hd"><h2>🎬 Diffusion OBS</h2></div>
         <div class="card"><div class="cb">
           <div class="comm-prev">
             <div class="comm-prev-name" id="commPN">—</div>
             <div class="comm-prev-role" id="commPR">—</div>
             <div class="comm-st" id="commSt"><div class="csdot" id="commDot"></div><span id="commStTxt">INACTIF</span></div>
           </div>
-          <div class="f"><label class="fl">Prénom</label><input type="text" id="commFirst" placeholder="Jean" oninput="commPreview()"></div>
-          <div class="f"><label class="fl">Nom</label><input type="text" id="commLast" placeholder="DUPONT" oninput="commPreview()"></div>
-          <div class="f"><label class="fl">Rôle</label><input type="text" id="commRole" placeholder="Commentateur principal" oninput="commPreview()"></div>
           <div class="f"><label class="fl">Durée</label>
             <div class="dur-grid" id="commDurGrid">
               <div class="dur-btn on" data-ms="6000"  onclick="setDur(this,'comm')">6s</div>
@@ -432,14 +462,10 @@ tr:hover td{background:rgba(255,255,255,.015);}
               <div class="dur-btn"    data-ms="0"     onclick="setDur(this,'comm')">∞</div>
             </div>
           </div>
-          <button class="btn b-blue" onclick="commShow()" style="margin-bottom:8px;">▶ Afficher sur OBS</button>
+          <button class="btn b-blue" id="bCommShow" onclick="commShow()" disabled style="margin-bottom:8px;">▶ Afficher sur OBS</button>
           <button class="btn b-dk"   onclick="commHide()">✕ Masquer</button>
           <div class="fb" id="fb-comm"></div>
         </div></div>
-      </div>
-      <div>
-        <div class="sec-hd"><h2>📋 Historique</h2></div>
-        <div class="card"><div class="cb" style="padding:10px;"><div class="ev-log" id="commLog"><div class="ev-empty">Aucun commentateur affiché</div></div></div></div>
       </div>
     </div>
   </div>
@@ -514,7 +540,7 @@ let currentCat='Rally B';
 let allPilots=[],pilots=[];
 let dcSel=null,dcDur=6000,commDur=6000;
 let chRun=false,chTs=0,chRaf=null,bestMs=Infinity;
-const hist=[],commHist=[];
+const hist=[];
 
 // ══ BOOTSTRAP ══
 async function startup(){
@@ -613,7 +639,8 @@ function setCat(btn){
   btn.classList.add('on');
   currentCat=btn.dataset.cat;
   pilots=allPilots.filter(p=>p.category===currentCat);
-  fillSelects();renderDcList();renderPeList();pollCls();
+  commSel=null;
+  fillSelects();renderDcList();renderPeList();renderCommList();pollCls();
 }
 
 // ══ TABS ══
@@ -623,6 +650,7 @@ function tab(name){
   if(name==='classement')pollCls();
   if(name==='pilotes')renderPeList();
   if(name==='drivercard')renderDcList();
+  if(name==='commentateur'){loadCommentateurs();}
 }
 
 // ══ PILOTES ══
@@ -820,32 +848,65 @@ async function doEvent(type){
 }
 
 // ══ CLASSEMENT ══
+// Affiche TOUS les pilotes de la catégorie :
+//   1. avec chrono (triés du meilleur au moins bon)
+//   2. sans chrono (inscrits, pas encore passés) — position "—"
+//   3. DNF / DSQ
 async function pollCls(){
+  const tbody=document.getElementById('clsBody');
+  if(!pilots.length){tbody.innerHTML='<tr><td colspan="4" class="tbl-empty">Aucun pilote dans cette catégorie</td></tr>';return;}
+
+  // Toutes les entrées classement pour les pilotes de la catégorie
   const ids=pilots.map(p=>p.id);
-  if(!ids.length){document.getElementById('clsBody').innerHTML='<tr><td colspan="4" class="tbl-empty">Aucun pilote dans cette catégorie</td></tr>';return;}
-  const rows=await GET('classement',`?select=*,pilotes(last_name,first_name,team)&pilote_id=in.(${ids.join(',')})&order=best_time.asc.nullslast`);
+  const rows=await GET('classement',`?select=*&pilote_id=in.(${ids.join(',')})`);
   if(!rows)return;
-  const ok=rows.filter(r=>r.best_time&&toMs(r.best_time)<Infinity&&r.status!=='DNF'&&r.status!=='DSQ');
-  const no=rows.filter(r=>(!r.best_time||toMs(r.best_time)===Infinity)&&r.status!=='DNF'&&r.status!=='DSQ');
-  const out=rows.filter(r=>r.status==='DNF'||r.status==='DSQ');
+
+  // Map pilote_id → données classement
+  const clsMap={};
+  rows.forEach(r=>{clsMap[r.pilote_id]=r;});
+
+  // Construire une ligne pour chaque pilote de la catégorie, même sans entrée classement
+  const allRows=pilots.map(p=>{
+    const cls=clsMap[p.id]||{pilote_id:p.id,best_time:'',status:'',penalties:''};
+    return {...cls, _pilot:p};
+  });
+
+  const ok  = allRows.filter(r=>r.best_time&&toMs(r.best_time)<Infinity&&r.status!=='DNF'&&r.status!=='DSQ');
+  const no  = allRows.filter(r=>(!r.best_time||toMs(r.best_time)===Infinity)&&r.status!=='DNF'&&r.status!=='DSQ');
+  const out = allRows.filter(r=>r.status==='DNF'||r.status==='DSQ');
   ok.sort((a,b)=>toMs(a.best_time)-toMs(b.best_time));
   const sorted=[...ok,...no,...out];
-  const tbody=document.getElementById('clsBody');
-  if(!sorted.length){tbody.innerHTML='<tr><td colspan="4" class="tbl-empty">Aucun résultat</td></tr>';return;}
+
   tbody.innerHTML=sorted.map((r,i)=>{
-    const p=r.pilotes||{};const name=(p.last_name||'')+' '+(p.first_name||'');
+    const p=r._pilot;
+    const name=(p.last_name||'')+' '+(p.first_name||'');
     const st=(r.status||'').toUpperCase();
-    const pos=(st==='DNF'||st==='DSQ')?'—':String(i+1);
-    const time=st==='DNF'?'DNF':st==='DSQ'?'DSQ':(r.best_time||'—');
-    const pc=i===0?'color:var(--r)':i===1?'color:#bbb':i===2?'color:var(--gold)':'color:rgba(255,255,255,.14)';
-    const tc=i===0&&st!=='DNF'&&st!=='DSQ'?'color:var(--r)':'';
-    const lb=i===0?'border-left:3px solid var(--r)':i===1?'border-left:3px solid #777':i===2?'border-left:3px solid var(--gold)':'';
+    const hasTime=r.best_time&&toMs(r.best_time)<Infinity;
+    const isOut=st==='DNF'||st==='DSQ';
+
+    // Position : numérotée uniquement pour les pilotes AVEC chrono valide
+    const posNum=ok.indexOf(r); // -1 si pas dans ok
+    const pos=isOut?'—':posNum>=0?String(posNum+1):'—';
+    const time=st==='DNF'?'DNF':st==='DSQ'?'DSQ':hasTime?r.best_time:'—';
+
+    // Couleur position
+    const pc=posNum===0?'color:var(--r)':posNum===1?'color:#bbb':posNum===2?'color:var(--gold)':'color:rgba(255,255,255,.14)';
+    const tc=posNum===0&&!isOut?'color:var(--r)':'color:rgba(255,255,255,.35)';
+    const lb=posNum===0?'border-left:3px solid var(--r)':posNum===1?'border-left:3px solid #777':posNum===2?'border-left:3px solid var(--gold)':'';
+    const rowStyle=!hasTime&&!isOut?'opacity:.55;':'';
+
     let badge='';
     if(st==='DNF')badge='<span class="badge b-dnf2">DNF</span>';
     else if(st==='DSQ')badge='<span class="badge b-dsq2">DSQ</span>';
     else if(st==='INCIDENT')badge='<span class="badge b-inc2">INC</span>';
     const pen=r.penalties?`<span class="pen-note">⚠ ${r.penalties}</span>`:'';
-    return `<tr><td class="td-pos" style="${pc};${lb};padding-left:${i<3?'11px':'14px'}">${pos}</td><td class="td-name">${name.trim()||'?'}${badge}${pen}</td><td class="td-team">${p.team||''}</td><td class="td-time" style="${tc}">${time}</td></tr>`;
+
+    return `<tr style="${rowStyle}">
+      <td class="td-pos" style="${pc};${lb};padding-left:${posNum>=0&&posNum<3?'11px':'14px'}">${pos}</td>
+      <td class="td-name">${name.trim()||'?'}${badge}${pen}</td>
+      <td class="td-team">${p.team||''}</td>
+      <td class="td-time" style="${tc}">${time}</td>
+    </tr>`;
   }).join('');
   document.getElementById('clsUpd').textContent=new Date().toLocaleTimeString('fr-FR');
 }
@@ -868,38 +929,125 @@ async function dcShow(){
 async function dcHide(){const d=await PATCH('driver_card','?id=eq.1',{active:false});if(d!==null)fb('fb-dc','✕ Masqué','ok');}
 
 // ══ COMMENTATEUR ══
+let commSel=null, allCommentateurs=[];
+
+async function loadCommentateurs(){
+  const d=await GET('commentateurs','?order=last_name.asc');
+  if(!d)return;
+  allCommentateurs=d;
+  renderCommList();
+}
+
+function catCommCls(c){return c==='Rally B'?'cat-B':c==='Rally N'?'cat-N':'cat-H';}
+function catCommShort(c){return c==='Rally B'?'B':c==='Rally N'?'N':'H';}
+
+function renderCommList(){
+  const el=document.getElementById('commList');
+  // Filtrer par catégorie active
+  const filtered=allCommentateurs.filter(c=>c.category===currentCat);
+  if(!filtered.length){el.innerHTML='<div class="ev-empty">Aucun commentateur pour cette catégorie</div>';return;}
+  el.innerHTML=filtered.map(c=>`
+    <div class="pitem ${commSel===c.id?'sel':''}" style="--tc:#4466cc" onclick="commSelect(${c.id})">
+      <div style="flex:1;">
+        <div class="pi-n">${c.last_name} ${c.first_name}<span class="pi-cat ${catCommCls(c.category)}">${catCommShort(c.category)}</span></div>
+        <div class="pi-t">${c.role||''}</div>
+      </div>
+      <div style="display:flex;gap:6px;align-items:center;">
+        <button class="btn b-dk b-sm" onclick="event.stopPropagation();commEdit(${c.id})" style="width:auto;padding:5px 10px;">✏️</button>
+        <button class="btn b-dk b-sm" onclick="event.stopPropagation();commDelete(${c.id})" style="width:auto;padding:5px 10px;color:#ff4455;">🗑</button>
+      </div>
+      <div class="pi-chk">${commSel===c.id?'✓':''}</div>
+    </div>`).join('');
+}
+
+function commSelect(id){
+  commSel=id;
+  const c=allCommentateurs.find(x=>x.id===id);
+  renderCommList();
+  document.getElementById('commPN').textContent=(c.first_name+' '+c.last_name).toUpperCase();
+  document.getElementById('commPR').textContent=(c.role||'').toUpperCase();
+  document.getElementById('bCommShow').disabled=false;
+}
+
 function commPreview(){
   const fn=document.getElementById('commFirst').value.trim();
   const ln=document.getElementById('commLast').value.trim();
   const role=document.getElementById('commRole').value.trim();
-  document.getElementById('commPN').textContent=(fn||ln)?(fn+' '+ln).toUpperCase():'—';
-  document.getElementById('commPR').textContent=role||'—';
+  if(fn||ln){
+    document.getElementById('commPN').textContent=(fn+' '+ln).toUpperCase();
+    document.getElementById('commPR').textContent=(role||'').toUpperCase();
+  }
 }
+
+function commEdit(id){
+  const c=allCommentateurs.find(x=>x.id===id);if(!c)return;
+  document.getElementById('commId').value=id;
+  document.getElementById('commFirst').value=c.first_name||'';
+  document.getElementById('commLast').value=c.last_name||'';
+  document.getElementById('commRole').value=c.role||'';
+  document.getElementById('commCat').value=c.category||'Rally B';
+  document.getElementById('commFormTitle').textContent='✏️ Modifier le commentateur';
+  commPreview();
+}
+
+function commClear(){
+  document.getElementById('commId').value='';
+  ['commFirst','commLast','commRole'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('commCat').value='Rally B';
+  document.getElementById('commFormTitle').textContent='➕ Ajouter un commentateur';
+}
+
+async function commSave(){
+  const id=document.getElementById('commId').value;
+  const body={
+    first_name:document.getElementById('commFirst').value.trim(),
+    last_name:document.getElementById('commLast').value.trim(),
+    role:document.getElementById('commRole').value.trim(),
+    category:document.getElementById('commCat').value,
+  };
+  if(!body.first_name&&!body.last_name){fb('fb-commForm','Prénom ou nom requis','err');return;}
+  const d=id?await PATCH('commentateurs',`?id=eq.${id}`,body):await POST('commentateurs',body);
+  if(d!==null){fb('fb-commForm',id?'✔ Modifié':'✔ Commentateur ajouté','ok');commClear();await loadCommentateurs();}
+  else fb('fb-commForm','Erreur Supabase','err');
+}
+
+async function commDelete(id){
+  if(!confirm('Supprimer ce commentateur ?'))return;
+  const d=await DELETE('commentateurs',`?id=eq.${id}`);
+  if(d!==null){if(commSel===id){commSel=null;document.getElementById('bCommShow').disabled=true;}await loadCommentateurs();}
+}
+
 async function commShow(){
-  const fn=document.getElementById('commFirst').value.trim();
-  const ln=document.getElementById('commLast').value.trim();
-  const role=document.getElementById('commRole').value.trim();
-  if(!fn&&!ln){fb('fb-comm','Entre un nom !','err');return;}
-  const d=await PATCH('commentateur','?id=eq.1',{first_name:fn,last_name:ln,role,active:true,duration_ms:commDur,triggered_at:Date.now()});
+  let fn,ln,role;
+  if(commSel){
+    const c=allCommentateurs.find(x=>x.id===commSel);
+    fn=c.first_name;ln=c.last_name;role=c.role;
+  } else {
+    fn=document.getElementById('commFirst').value.trim();
+    ln=document.getElementById('commLast').value.trim();
+    role=document.getElementById('commRole').value.trim();
+  }
+  if(!fn&&!ln){fb('fb-comm','Sélectionne ou saisis un commentateur','err');return;}
+  const d=await PATCH('commentateur','?id=eq.1',{
+    first_name:fn,last_name:ln,role,category:currentCat,
+    active:true,duration_ms:commDur,triggered_at:Date.now()
+  });
   if(d!==null){
     fb('fb-comm','▶ '+(fn+' '+ln).trim(),'ok');
-    document.getElementById('commDot').classList.add('on');document.getElementById('commSt').classList.add('on');
+    document.getElementById('commDot').classList.add('on');
+    document.getElementById('commSt').classList.add('on');
     document.getElementById('commStTxt').textContent='EN DIRECT';
-    addCommLog((fn+' '+ln).trim(),role);
   }else fb('fb-comm','Erreur Supabase','err');
 }
+
 async function commHide(){
   const d=await PATCH('commentateur','?id=eq.1',{active:false});
   if(d!==null){
     fb('fb-comm','✕ Masqué','ok');
-    document.getElementById('commDot').classList.remove('on');document.getElementById('commSt').classList.remove('on');
+    document.getElementById('commDot').classList.remove('on');
+    document.getElementById('commSt').classList.remove('on');
     document.getElementById('commStTxt').textContent='INACTIF';
   }
-}
-function addCommLog(name,role){
-  commHist.unshift({name,role,time:new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})});
-  const el=document.getElementById('commLog');
-  el.innerHTML=commHist.slice(0,20).map(e=>`<div class="ev-row"><span class="ev-bdg eb-C">CMT</span><div class="ev-body"><div class="ev-pn">${e.name}</div><div class="ev-msg">${e.role}</div></div><span class="ev-tm">${e.time}</span></div>`).join('');
 }
 
 // ══ DUR ══
@@ -917,7 +1065,11 @@ function addLog(type,pilot,msg){
 function fb(id,msg,type){const el=document.getElementById(id);if(!el)return;el.textContent=msg;el.className='fb on '+type;setTimeout(()=>el.className='fb '+type,3500);}
 
 // ══ INIT ══
-async function init(){await loadPilots();pollCls();}
+async function init(){
+  await loadPilots();
+  await loadCommentateurs();
+  pollCls();
+}
 setInterval(()=>{if(document.getElementById('panel-classement').classList.contains('on'))pollCls();},2000);
 setInterval(loadPilots,30000);
 startup();
