@@ -92,6 +92,13 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;bac
 .cat-btn[data-cat="Rally B"].on{background:#162a54;border-color:#2255aa;color:#88aaff;}
 .cat-btn[data-cat="Rally N"].on{background:#0e3a12;border-color:#228822;color:#88dd88;}
 .cat-btn[data-cat="Rally Historique"].on{background:#3a2800;border-color:#aa6600;color:#ffcc66;}
+.cat-sep{width:1px;height:22px;background:var(--b);margin:0 4px;flex-shrink:0;}
+.cat-push{background:rgba(232,0,28,.12);color:#ff6677;border:1px solid rgba(232,0,28,.25);border-radius:20px;padding:5px 14px;font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:5px;}
+.cat-push:hover{background:rgba(232,0,28,.2);border-color:rgba(232,0,28,.4);color:white;}
+.cat-push.sent{background:rgba(0,200,83,.1);color:var(--green);border-color:rgba(0,200,83,.25);}
+.cat-overlay-status{display:flex;align-items:center;gap:5px;margin-left:4px;}
+.cat-ovl-lbl{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--m);}
+.cat-ovl-val{font-size:11px;font-weight:700;letter-spacing:1px;color:rgba(255,255,255,.3);font-family:var(--font-head);}
 
 /* ═══ PANELS ═══ */
 .panel{display:none;flex:1;padding:16px 24px 24px;animation:panelIn .2s ease;}
@@ -316,6 +323,14 @@ tr:hover td{background:rgba(255,255,255,.015);}
     <button class="cat-btn on" data-cat="Rally B"           onclick="setCat(this)">🔵 Rally B</button>
     <button class="cat-btn"    data-cat="Rally N"           onclick="setCat(this)">🟢 Rally N</button>
     <button class="cat-btn"    data-cat="Rally Historique"  onclick="setCat(this)">🟡 Rally Historique</button>
+    <div class="cat-sep"></div>
+    <button class="cat-push" id="catPushBtn" onclick="pushCatToOverlay()" title="Envoyer cette catégorie vers l'overlay OBS">
+      <span id="catPushIco">📺</span> <span id="catPushTxt">Overlay OBS</span>
+    </button>
+    <div class="cat-overlay-status">
+      <span class="cat-ovl-lbl">OBS :</span>
+      <span class="cat-ovl-val" id="catOvlVal">—</span>
+    </div>
   </div>
 
   <!-- CHRONO -->
@@ -429,13 +444,6 @@ tr:hover td{background:rgba(255,255,255,.015);}
           </div>
           <div class="frow">
             <div class="f"><label class="fl">Rôle</label><input type="text" id="commRole" placeholder="Commentateur principal" oninput="commPreview()"></div>
-            <div class="f"><label class="fl">Catégorie</label>
-              <select id="commCat">
-                <option value="Rally B">🔵 Rally B</option>
-                <option value="Rally N">🟢 Rally N</option>
-                <option value="Rally Historique">🟡 Rally Historique</option>
-              </select>
-            </div>
           </div>
           <div class="brow" style="margin-top:4px;">
             <button class="btn b-grn" onclick="commSave()">💾 Enregistrer</button>
@@ -928,6 +936,35 @@ async function dcShow(){
 }
 async function dcHide(){const d=await PATCH('driver_card','?id=eq.1',{active:false});if(d!==null)fb('fb-dc','✕ Masqué','ok');}
 
+// ══ OVERLAY CONFIG (catégorie active OBS) ══
+async function pushCatToOverlay(){
+  const btn=document.getElementById('catPushBtn');
+  btn.disabled=true;
+  const d=await PATCH('overlay_config','?id=eq.1',{category:currentCat});
+  if(d!==null){
+    btn.classList.add('sent');
+    document.getElementById('catPushTxt').textContent='Envoyé ✓';
+    document.getElementById('catOvlVal').textContent=currentCat;
+    document.getElementById('catOvlVal').style.color='var(--green)';
+    setTimeout(()=>{
+      btn.classList.remove('sent');
+      document.getElementById('catPushTxt').textContent='Overlay OBS';
+      btn.disabled=false;
+    },2000);
+  } else {
+    document.getElementById('catPushTxt').textContent='Erreur';
+    setTimeout(()=>{document.getElementById('catPushTxt').textContent='Overlay OBS';btn.disabled=false;},2000);
+  }
+}
+
+async function pollOverlayStatus(){
+  const d=await GET('overlay_config','?id=eq.1');
+  if(!d||!d.length)return;
+  const cat=d[0].category||'—';
+  document.getElementById('catOvlVal').textContent=cat;
+  document.getElementById('catOvlVal').style.color=cat===currentCat?'var(--green)':'rgba(255,255,255,.35)';
+}
+
 // ══ COMMENTATEUR ══
 let commSel=null, allCommentateurs=[];
 
@@ -938,18 +975,13 @@ async function loadCommentateurs(){
   renderCommList();
 }
 
-function catCommCls(c){return c==='Rally B'?'cat-B':c==='Rally N'?'cat-N':'cat-H';}
-function catCommShort(c){return c==='Rally B'?'B':c==='Rally N'?'N':'H';}
-
 function renderCommList(){
   const el=document.getElementById('commList');
-  // Filtrer par catégorie active
-  const filtered=allCommentateurs.filter(c=>c.category===currentCat);
-  if(!filtered.length){el.innerHTML='<div class="ev-empty">Aucun commentateur pour cette catégorie</div>';return;}
-  el.innerHTML=filtered.map(c=>`
+  if(!allCommentateurs.length){el.innerHTML='<div class="ev-empty">Aucun commentateur — ajoutez-en un !</div>';return;}
+  el.innerHTML=allCommentateurs.map(c=>`
     <div class="pitem ${commSel===c.id?'sel':''}" style="--tc:#4466cc" onclick="commSelect(${c.id})">
       <div style="flex:1;">
-        <div class="pi-n">${c.last_name} ${c.first_name}<span class="pi-cat ${catCommCls(c.category)}">${catCommShort(c.category)}</span></div>
+        <div class="pi-n">${c.last_name} ${c.first_name}</div>
         <div class="pi-t">${c.role||''}</div>
       </div>
       <div style="display:flex;gap:6px;align-items:center;">
@@ -985,7 +1017,6 @@ function commEdit(id){
   document.getElementById('commFirst').value=c.first_name||'';
   document.getElementById('commLast').value=c.last_name||'';
   document.getElementById('commRole').value=c.role||'';
-  document.getElementById('commCat').value=c.category||'Rally B';
   document.getElementById('commFormTitle').textContent='✏️ Modifier le commentateur';
   commPreview();
 }
@@ -993,7 +1024,6 @@ function commEdit(id){
 function commClear(){
   document.getElementById('commId').value='';
   ['commFirst','commLast','commRole'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('commCat').value='Rally B';
   document.getElementById('commFormTitle').textContent='➕ Ajouter un commentateur';
 }
 
@@ -1003,7 +1033,6 @@ async function commSave(){
     first_name:document.getElementById('commFirst').value.trim(),
     last_name:document.getElementById('commLast').value.trim(),
     role:document.getElementById('commRole').value.trim(),
-    category:document.getElementById('commCat').value,
   };
   if(!body.first_name&&!body.last_name){fb('fb-commForm','Prénom ou nom requis','err');return;}
   const d=id?await PATCH('commentateurs',`?id=eq.${id}`,body):await POST('commentateurs',body);
@@ -1069,8 +1098,10 @@ async function init(){
   await loadPilots();
   await loadCommentateurs();
   pollCls();
+  pollOverlayStatus();
 }
 setInterval(()=>{if(document.getElementById('panel-classement').classList.contains('on'))pollCls();},2000);
+setInterval(pollOverlayStatus, 3000);
 setInterval(loadPilots,30000);
 startup();
 </script>
