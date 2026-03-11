@@ -1079,7 +1079,7 @@ async function commShow(){
   }
   if(!fn&&!ln){fb('fb-comm','Sélectionne ou saisis un commentateur','err');return;}
   const d=await PATCH('commentateur','?id=eq.1',{
-    first_name:fn,last_name:ln,role,category:currentCat,
+    first_name:fn,last_name:ln,role,
     active:true,duration_ms:commDur,triggered_at:Date.now()
   });
   if(d!==null){
@@ -1128,4 +1128,3 @@ startup();
 </script>
 </body>
 </html>
-
