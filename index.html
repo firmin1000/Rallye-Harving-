@@ -756,7 +756,9 @@ function fillSelects(){
   ['selCh','selPen','selEv'].forEach(id=>{
     const s=document.getElementById(id),prev=s.value;
     s.innerHTML='<option value="">— Sélectionner —</option>';
-    pilots.forEach(p=>{
+    // Trier les pilotes selon l'ordre de passage
+    const sorted=[...pilots].sort((a,b)=>(passageOrder.get(a.id)??999)-(passageOrder.get(b.id)??999));
+    sorted.forEach(p=>{
       const o=document.createElement('option');
       o.value=p.id;o.textContent=fmtNameFull(p.first_name,p.last_name);
       if(String(p.id)===prev)o.selected=true;
@@ -1082,6 +1084,7 @@ async function swapPassage(idA,idB,highlightId){
   passageOrder.set(idA,oB);
   passageOrder.set(idB,oA);
   await pollCls(); // Re-render immédiat
+  fillSelects(); // Synchroniser les listes déroulantes
   // Highlight l'élément déplacé
   if(highlightId!==undefined){
     setTimeout(()=>{
