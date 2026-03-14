@@ -292,6 +292,53 @@ tr:hover td{background:rgba(255,255,255,.015);}
 .ev-tm{font-size:9px;color:var(--m);flex-shrink:0;margin-top:1px;}
 .ev-empty{padding:18px;text-align:center;color:var(--m);font-size:12px;}
 ::-webkit-scrollbar{width:4px;height:4px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:#252525;border-radius:2px;}
+/* ═══ ÉCRAN RÔLE ═══ */
+#roleScreen{position:fixed;inset:0;z-index:1000;background:var(--bg);display:flex;align-items:center;justify-content:center;}
+#roleScreen.hidden{display:none;}
+.role-box{width:520px;text-align:center;animation:fadeUp .4s ease;}
+.role-logo{font-family:var(--font-head);font-size:80px;font-weight:900;font-style:italic;color:var(--r);line-height:1;text-shadow:0 0 60px rgba(232,0,28,.35);}
+.role-sub{font-size:11px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--m);margin-bottom:32px;}
+.role-cards{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:0;}
+.role-card{background:var(--bg3);border:1px solid var(--b);border-radius:10px;padding:20px 14px 16px;cursor:pointer;transition:all .18s;position:relative;overflow:hidden;text-align:center;}
+.role-card::before{content:'';position:absolute;inset:0;opacity:0;transition:opacity .18s;}
+.role-card:hover{transform:translateY(-2px);border-color:var(--b2);}
+.role-card:hover::before{opacity:1;}
+.role-card.r-admin::before{background:linear-gradient(135deg,rgba(232,0,28,.07),transparent);}
+.role-card.r-chrono::before{background:linear-gradient(135deg,rgba(255,180,0,.07),transparent);}
+.role-card.r-comm::before{background:linear-gradient(135deg,rgba(34,85,170,.09),transparent);}
+.role-card:hover.r-admin{border-color:rgba(232,0,28,.35);}
+.role-card:hover.r-chrono{border-color:rgba(255,180,0,.35);}
+.role-card:hover.r-comm{border-color:rgba(34,85,170,.35);}
+.role-icon{font-size:32px;margin-bottom:10px;line-height:1;}
+.role-name{font-family:var(--font-head);font-size:18px;font-weight:900;letter-spacing:1px;text-transform:uppercase;margin-bottom:5px;}
+.role-card.r-admin .role-name{color:#ff6677;}
+.role-card.r-chrono .role-name{color:#ffcc44;}
+.role-card.r-comm .role-name{color:#88aaff;}
+.role-desc{font-size:10px;color:var(--m);line-height:1.5;min-height:30px;}
+
+/* Modal mot de passe rôle */
+#rolePwdModal{position:fixed;inset:0;z-index:1001;background:rgba(0,0,0,.82);display:flex;align-items:center;justify-content:center;}
+#rolePwdModal.hidden{display:none;}
+.rpwd-box{width:340px;background:var(--bg3);border:1px solid var(--b2);border-radius:10px;padding:24px;text-align:center;animation:fadeUp .25s ease;}
+.rpwd-icon{font-size:36px;margin-bottom:10px;}
+.rpwd-title{font-family:var(--font-head);font-size:20px;font-weight:900;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;}
+.rpwd-sub{font-size:10px;color:var(--m);margin-bottom:16px;letter-spacing:.5px;}
+.rpwd-inp{width:100%;background:var(--bg4);color:#fff;border:1px solid var(--b);border-radius:6px;padding:12px 16px;font-family:var(--font-body);font-size:15px;text-align:center;letter-spacing:3px;outline:none;transition:border-color .2s;margin-bottom:10px;}
+.rpwd-inp:focus{border-color:var(--b2);}
+.rpwd-inp::placeholder{color:rgba(255,255,255,.15);letter-spacing:1px;}
+.rpwd-btn{width:100%;border:none;border-radius:6px;padding:12px;font-family:var(--font-head);font-size:15px;font-weight:900;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:background .12s;margin-bottom:8px;}
+.rpwd-btn.r-admin{background:var(--r);color:#fff;}.rpwd-btn.r-admin:hover{background:var(--rh);}
+.rpwd-btn.r-chrono{background:rgba(255,180,0,.18);color:#ffcc44;border:1px solid rgba(255,180,0,.3);}.rpwd-btn.r-chrono:hover{background:rgba(255,180,0,.28);}
+.rpwd-btn.r-comm{background:rgba(34,85,170,.2);color:#88aaff;border:1px solid rgba(34,85,170,.3);}.rpwd-btn.r-comm:hover{background:rgba(34,85,170,.3);}
+.rpwd-cancel{background:none;border:none;color:var(--m);font-size:12px;cursor:pointer;text-decoration:underline;font-family:var(--font-body);}
+.rpwd-err{color:#ff4455;font-size:11px;margin-top:6px;min-height:16px;}
+
+/* Badge rôle dans topbar */
+.role-badge{display:flex;align-items:center;gap:5px;padding:3px 10px;border-radius:12px;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;}
+.rb-admin{background:rgba(232,0,28,.12);color:#ff6677;border:1px solid rgba(232,0,28,.2);}
+.rb-chrono{background:rgba(255,180,0,.1);color:#ffcc44;border:1px solid rgba(255,180,0,.2);}
+.rb-comm{background:rgba(34,85,170,.15);color:#88aaff;border:1px solid rgba(34,85,170,.25);}
+
 /* ═══ PANEL COMMENTATEUR — VUE COMPLÈTE ═══ */
 .comm-view{display:flex;height:calc(100vh - 54px - 42px);overflow:hidden;}
 .comm-left{width:260px;min-width:260px;border-right:1px solid var(--b);display:flex;flex-direction:column;background:var(--bg2);}
@@ -402,29 +449,42 @@ tr:hover td{background:rgba(255,255,255,.015);}
 </head>
 <body>
 
-<!-- BOOTSTRAP -->
-<div id="bootstrapScreen">
-  <div class="boot-box">
-    <div class="boot-logo">W</div>
-    <div class="boot-sub">Weazel Rally · Control Center</div>
-    <div class="boot-step">
-      <h3>🔑 Code d'accès</h3>
-      <div class="boot-f"><label>Entrez votre code d'accès</label><input type="text" id="bootCode" placeholder="Ex: ABC123" autofocus></div>
+<!-- SÉLECTION RÔLE -->
+<div id="roleScreen">
+  <div class="role-box">
+    <div class="role-logo">W</div>
+    <div class="role-sub">Weazel Rally · Control Center</div>
+    <div class="role-cards">
+      <div class="role-card r-admin" onclick="selectRole('admin')">
+        <div class="role-icon">⚙️</div>
+        <div class="role-name">Admin</div>
+        <div class="role-desc">Accès complet — chrono, classement, pilotes, overlays OBS</div>
+      </div>
+      <div class="role-card r-chrono" onclick="selectRole('chrono')">
+        <div class="role-icon">⏱️</div>
+        <div class="role-name">Chrono</div>
+        <div class="role-desc">Vue chronomètre, événements et classement en direct</div>
+      </div>
+      <div class="role-card r-comm" onclick="selectRole('comm')">
+        <div class="role-icon">🎙️</div>
+        <div class="role-name">Commentateur</div>
+        <div class="role-desc">Caméras VDO, classement live, notes et chat interne</div>
+      </div>
     </div>
-    <button class="boot-btn" onclick="doBootstrap()">Vérifier et accéder</button>
-    <div class="boot-err" id="bootErr"></div>
-    <div class="boot-info">Votre code d'accès vous donne accès au tableau de bord.</div>
   </div>
 </div>
 
-<!-- LOGIN -->
-<div id="loginScreen" class="hidden">
-  <div class="login-box">
-    <div class="login-logo">W</div>
-    <div class="login-sub">Weazel Rally · Control Center</div>
-    <input type="password" id="pwdInput" class="login-inp" placeholder="Mot de passe">
-    <button class="login-btn" onclick="doLogin()">Accéder</button>
-    <div class="login-err" id="loginErr"></div>
+<!-- MODAL MOT DE PASSE RÔLE -->
+<div id="rolePwdModal" class="hidden">
+  <div class="rpwd-box">
+    <div class="rpwd-icon" id="rpwdIcon">🔑</div>
+    <div class="rpwd-title" id="rpwdTitle">Accès</div>
+    <div class="rpwd-sub" id="rpwdSub">Entrez le mot de passe</div>
+    <input type="password" class="rpwd-inp" id="rpwdInp" placeholder="Mot de passe" autofocus>
+    <button class="rpwd-btn" id="rpwdBtn" onclick="submitRolePwd()">Accéder</button>
+    <br>
+    <button class="rpwd-cancel" onclick="cancelRolePwd()">← Retour</button>
+    <div class="rpwd-err" id="rpwdErr"></div>
   </div>
 </div>
 
@@ -434,12 +494,17 @@ tr:hover td{background:rgba(255,255,255,.015);}
     <h2>⚙️ Configuration</h2>
     <div class="sf"><label>URL Supabase</label><input type="text" id="cfgUrl"></div>
     <div class="sf"><label>Clé anon</label><input type="text" id="cfgKey"></div>
-    <div class="sf"><label>Nouveau mot de passe (vide = inchangé)</label><input type="text" id="cfgPwd" placeholder=""></div>
+    <div style="margin:14px 0 8px;border-top:1px solid rgba(255,255,255,.07);padding-top:12px;">
+      <div style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.28);margin-bottom:10px;">Mots de passe par rôle</div>
+      <div class="sf"><label>🔑 Mot de passe Admin (accès complet)</label><input type="text" id="cfgPwdAdmin" placeholder="Vide = inchangé"></div>
+      <div class="sf"><label>⏱ Mot de passe Chrono</label><input type="text" id="cfgPwdChrono" placeholder="Vide = inchangé"></div>
+      <div class="sf"><label>🎙 Mot de passe Commentateur</label><input type="text" id="cfgPwdComm" placeholder="Vide = inchangé"></div>
+    </div>
     <div class="setup-acts">
       <button class="setup-ok" onclick="saveSetup()">Sauvegarder</button>
       <button class="setup-cl" onclick="closeSetup()">Annuler</button>
     </div>
-    <div class="setup-note">Config stockée dans Supabase — partagée avec tous les opérateurs.</div>
+    <div class="setup-note">Config et mots de passe stockés dans Supabase — partagés avec tous les opérateurs.</div>
   </div>
 </div>
 
@@ -456,9 +521,10 @@ tr:hover td{background:rgba(255,255,255,.015);}
       <button class="tb-btn"     data-tab="pilotes"      onclick="tab('pilotes')">👤 Pilotes</button>
     </nav>
     <div class="tb-right">
+      <span class="role-badge" id="roleBadge"></span>
       <div class="conn-dot" id="connDot"></div>
       <span class="conn-txt" id="connTxt">—</span>
-      <button class="tb-setup" onclick="openSetup()">⚙ Config</button>
+      <button class="tb-setup" id="btnSetup" onclick="openSetup()" style="display:none;">⚙ Config</button>
     </div>
   </header>
 
@@ -785,59 +851,148 @@ const DEFAULT_SB_URL='https://tnjnxmndvxrisohmiieh.supabase.co';
 const DEFAULT_SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRuam54bW5kdnhyaXNvaG1paWVoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMxNzYyMzcsImV4cCI6MjA4ODc1MjIzN30.oi8kVDp5879LWv2Gwuy384LVFIFSjl3U8dorBuzQHNg';
 
 let SB_URL='',SB_KEY='',APP_PWD='weazel2024';
+// Mots de passe par rôle (chargés depuis Supabase)
+let PWD_ADMIN='', PWD_CHRONO='', PWD_COMM='';
+let currentRole=''; // 'admin' | 'chrono' | 'comm'
+let pendingRole='';
+
 let currentCat='Rally B';
 let allPilots=[],pilots=[];
 let dcSel=null,dcDur=6000,commDur=6000;
 let chRun=false,chTs=0,chRaf=null,bestMs=Infinity;
 const hist=[];
-// passage_order : Map pilote_id → index (0=premier à passer)
 const passageOrder=new Map();
 
-// ══ BOOTSTRAP ══
-async function startup(){
-  const lp=localStorage.getItem('app_pwd')||'';
+// ══ RÔLES & MOTS DE PASSE ══
+const ROLE_META={
+  admin:  {icon:'⚙️', title:'Administrateur', sub:'Accès complet',    cls:'r-admin',  badge:'rb-admin',  label:'ADMIN'},
+  chrono: {icon:'⏱️', title:'Chronométreur',  sub:'Vue chrono',       cls:'r-chrono', badge:'rb-chrono', label:'CHRONO'},
+  comm:   {icon:'🎙️', title:'Commentateur',   sub:'Vue commentateur', cls:'r-comm',   badge:'rb-comm',   label:'COMMENTATEUR'},
+};
+
+async function loadRolePwds(){
   SB_URL=DEFAULT_SB_URL; SB_KEY=DEFAULT_SB_KEY;
-  if(lp){APP_PWD=lp;showLogin();}
-  else showBootstrap();
-}
-function showBootstrap(){document.getElementById('bootstrapScreen').classList.remove('hidden');document.getElementById('bootCode').focus();}
-function showLogin(){
-  document.getElementById('bootstrapScreen').classList.add('hidden');
-  document.getElementById('loginScreen').classList.remove('hidden');
-  document.getElementById('pwdInput').focus();
-}
-async function doBootstrap(){
-  const pwd=document.getElementById('bootCode').value.trim();
-  const err=document.getElementById('bootErr');
-  if(!pwd){err.textContent='Veuillez entrer votre mot de passe';return;}
-  err.textContent='Vérification…';
   try{
     const r=await fetch(`${DEFAULT_SB_URL}/rest/v1/app_config?id=eq.1`,{headers:{'apikey':DEFAULT_SB_KEY,'Authorization':'Bearer '+DEFAULT_SB_KEY}});
-    const text=await r.text();
-    if(!r.ok){err.textContent='❌ Erreur serveur ('+r.status+')';return;}
-    const d=text?JSON.parse(text):[];
-    if(!d||!d.length){err.textContent='❌ Config introuvable';return;}
-    if(pwd!==d[0].app_pwd){err.textContent='❌ Mot de passe incorrect';document.getElementById('bootCode').value='';return;}
-    localStorage.setItem('app_pwd',pwd);APP_PWD=pwd;err.textContent='';showLogin();
-  }catch(e){err.textContent='❌ Erreur : '+e.message;}
+    if(!r.ok)return;
+    const d=await r.json();
+    if(d&&d[0]){
+      const row=d[0];
+      APP_PWD      = row.app_pwd      || 'weazel2024';
+      PWD_ADMIN    = row.pwd_admin    || row.app_pwd || 'weazel2024';
+      PWD_CHRONO   = row.pwd_chrono   || row.app_pwd || 'weazel2024';
+      PWD_COMM     = row.pwd_comm     || row.app_pwd || 'weazel2024';
+    }
+  }catch(e){}
 }
 
-// ══ LOGIN ══
-function doLogin(){
-  const v=document.getElementById('pwdInput').value;
-  if(v===APP_PWD){document.getElementById('loginScreen').classList.add('hidden');init();}
-  else{document.getElementById('loginErr').textContent='Mot de passe incorrect';document.getElementById('pwdInput').value='';}
+function selectRole(role){
+  pendingRole=role;
+  const m=ROLE_META[role];
+  document.getElementById('rpwdIcon').textContent=m.icon;
+  document.getElementById('rpwdTitle').textContent=m.title;
+  document.getElementById('rpwdSub').textContent=m.sub+' · Entrez le mot de passe';
+  document.getElementById('rpwdBtn').className='rpwd-btn '+m.cls;
+  document.getElementById('rpwdErr').textContent='';
+  document.getElementById('rpwdInp').value='';
+  document.getElementById('rolePwdModal').classList.remove('hidden');
+  setTimeout(()=>document.getElementById('rpwdInp').focus(),80);
 }
-document.getElementById('pwdInput').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+
+function cancelRolePwd(){
+  document.getElementById('rolePwdModal').classList.add('hidden');
+  pendingRole='';
+}
+
+async function submitRolePwd(){
+  const v=document.getElementById('rpwdInp').value;
+  const err=document.getElementById('rpwdErr');
+  // Charge les mots de passe si pas encore fait
+  if(!PWD_ADMIN){err.textContent='Chargement…';await loadRolePwds();}
+  const expected=pendingRole==='admin'?PWD_ADMIN:pendingRole==='chrono'?PWD_CHRONO:PWD_COMM;
+  if(v!==expected){
+    err.textContent='❌ Mot de passe incorrect';
+    document.getElementById('rpwdInp').value='';
+    document.getElementById('rpwdInp').focus();
+    return;
+  }
+  // OK — on entre
+  currentRole=pendingRole;
+  document.getElementById('rolePwdModal').classList.add('hidden');
+  document.getElementById('roleScreen').classList.add('hidden');
+  applyRole(currentRole);
+  init();
+}
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='Enter'&&!document.getElementById('rolePwdModal').classList.contains('hidden')){
+    submitRolePwd();
+  }
+});
+
+// ══ APPLIQUER LA VUE DU RÔLE ══
+function applyRole(role){
+  const m=ROLE_META[role];
+  // Badge topbar
+  const badge=document.getElementById('roleBadge');
+  if(badge){badge.className='role-badge '+m.badge;badge.textContent=m.label;}
+  // Bouton config : admin seulement
+  const btnSetup=document.getElementById('btnSetup');
+  if(btnSetup)btnSetup.style.display=role==='admin'?'':'none';
+  // Onglets visibles selon le rôle
+  const navMap={
+    admin:  ['chrono','events','drivercard','commentateur','classement','pilotes'],
+    chrono: ['chrono','events','classement'],
+    comm:   ['commentateur'],
+  };
+  const allowed=navMap[role]||[];
+  document.querySelectorAll('.tb-btn[data-tab]').forEach(btn=>{
+    btn.style.display=allowed.includes(btn.dataset.tab)?'':'none';
+  });
+  // Ouvrir le premier onglet autorisé
+  const first=allowed[0];
+  if(first){
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
+    document.querySelectorAll('.tb-btn').forEach(b=>b.classList.remove('on'));
+    const firstPanel=document.getElementById('panel-'+first);
+    const firstBtn=document.querySelector(`.tb-btn[data-tab="${first}"]`);
+    if(firstPanel)firstPanel.classList.add('on');
+    if(firstBtn)firstBtn.classList.add('on');
+    // Commentateur : init direct si c'est le premier onglet
+    if(first==='commentateur'&&!_commViewInited){_commViewInited=true;setTimeout(initCommView,200);}
+  }
+  // Masquer cat-bar pour commentateur pur
+  const catBar=document.querySelector('.cat-bar');
+  if(catBar)catBar.style.display=role==='comm'?'none':'';
+}
+
+async function startup(){
+  await loadRolePwds();
+  // document.getElementById('roleScreen') est déjà visible par défaut
+}
 
 // ══ SETUP ══
-function openSetup(){document.getElementById('cfgUrl').value=SB_URL;document.getElementById('cfgKey').value=SB_KEY;document.getElementById('cfgPwd').value='';document.getElementById('setupModal').classList.remove('hidden');}
+function openSetup(){
+  document.getElementById('cfgUrl').value=SB_URL;
+  document.getElementById('cfgKey').value=SB_KEY;
+  document.getElementById('cfgPwdAdmin').value='';
+  document.getElementById('cfgPwdChrono').value='';
+  document.getElementById('cfgPwdComm').value='';
+  document.getElementById('setupModal').classList.remove('hidden');
+}
 function closeSetup(){document.getElementById('setupModal').classList.add('hidden');}
 async function saveSetup(){
-  const u=document.getElementById('cfgUrl').value.trim(),k=document.getElementById('cfgKey').value.trim(),p=document.getElementById('cfgPwd').value.trim();
+  const u=document.getElementById('cfgUrl').value.trim();
+  const k=document.getElementById('cfgKey').value.trim();
+  const pa=document.getElementById('cfgPwdAdmin').value.trim();
+  const pc=document.getElementById('cfgPwdChrono').value.trim();
+  const pm=document.getElementById('cfgPwdComm').value.trim();
   if(!u||!k){alert('URL et clé requises');return;}
-  SB_URL=u;SB_KEY=k;if(p)APP_PWD=p;
-  const body={sb_url:u,sb_key:k};if(p)body.app_pwd=p;
+  SB_URL=u;SB_KEY=k;
+  const body={sb_url:u,sb_key:k};
+  if(pa){body.pwd_admin=pa;PWD_ADMIN=pa;body.app_pwd=pa;}
+  if(pc){body.pwd_chrono=pc;PWD_CHRONO=pc;}
+  if(pm){body.pwd_comm=pm;PWD_COMM=pm;}
   await PATCH('app_config','?id=eq.1',body);
   closeSetup();fb('fb-ch','✔ Config sauvegardée','ok');
 }
