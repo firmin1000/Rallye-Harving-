@@ -537,6 +537,7 @@ tr:hover td{background:rgba(255,255,255,.015);}
         <div class="sec-hd">
           <h2>📊 Classement en direct</h2>
           <div class="cls-live" style="margin-left:auto;"><div class="live-dot"></div><span id="clsUpd">—</span></div>
+          <button onclick="exportClsPNG()" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.55);border-radius:5px;padding:5px 11px;font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all .15s;margin-left:6px;white-space:nowrap;" onmouseover="this.style.borderColor='rgba(255,255,255,.25)';this.style.color='white'" onmouseout="this.style.borderColor='rgba(255,255,255,.1)';this.style.color='rgba(255,255,255,.55)'">📸 Export PNG</button>
         </div>
         <div class="card"><div class="cls-wrap">
           <table><thead><tr>
@@ -752,13 +753,16 @@ async function loadPassageOrder(){
   all.forEach((x,i)=>passageOrder.set(x.id,i));
 }
 
+// Retourne les pilotes de la catégorie triés par ordre de passage
+function pilotsSorted(){
+  return [...pilots].sort((a,b)=>(passageOrder.get(a.id)??999)-(passageOrder.get(b.id)??999));
+}
+
 function fillSelects(){
   ['selCh','selPen','selEv'].forEach(id=>{
     const s=document.getElementById(id),prev=s.value;
     s.innerHTML='<option value="">— Sélectionner —</option>';
-    // Trier les pilotes selon l'ordre de passage
-    const sorted=[...pilots].sort((a,b)=>(passageOrder.get(a.id)??999)-(passageOrder.get(b.id)??999));
-    sorted.forEach(p=>{
+    pilotsSorted().forEach(p=>{
       const o=document.createElement('option');
       o.value=p.id;o.textContent=fmtNameFull(p.first_name,p.last_name);
       if(String(p.id)===prev)o.selected=true;
@@ -1062,7 +1066,17 @@ async function onDrop(e,targetPid){
   e.preventDefault();
   document.querySelectorAll('.passage-item').forEach(el=>el.classList.remove('drag-over','dragging'));
   if(dragSrcId===null||dragSrcId===targetPid){dragSrcId=null;return;}
-  await swapPassage(dragSrcId,targetPid);
+  // Insère dragSrcId à la position de targetPid (déplace, pas juste échange)
+  const sorted=_lastNoPilots.map(r=>r._pilot.id);
+  const fromIdx=sorted.indexOf(dragSrcId);
+  const toIdx=sorted.indexOf(targetPid);
+  if(fromIdx===-1||toIdx===-1){dragSrcId=null;return;}
+  sorted.splice(fromIdx,1);
+  sorted.splice(toIdx,0,dragSrcId);
+  sorted.forEach((id,i)=>passageOrder.set(id,i));
+  await pollCls();
+  clearTimeout(saveTout);
+  saveTout=setTimeout(savePassageOrderToDB,500);
   dragSrcId=null;
 }
 
@@ -1079,12 +1093,16 @@ async function movePassage(pid,dir){
 // Échange deux pilotes dans passageOrder et sauvegarde
 let saveTout=null;
 async function swapPassage(idA,idB,highlightId){
-  const oA=passageOrder.get(idA)??0;
-  const oB=passageOrder.get(idB)??0;
-  passageOrder.set(idA,oB);
-  passageOrder.set(idB,oA);
+  // Récupère la liste triée actuelle
+  const sorted=_lastNoPilots.map(r=>r._pilot.id);
+  const iA=sorted.indexOf(idA);
+  const iB=sorted.indexOf(idB);
+  if(iA===-1||iB===-1)return;
+  // Swap les positions dans la liste triée
+  [sorted[iA],sorted[iB]]=[sorted[iB],sorted[iA]];
+  // Réassigne des ordres propres continus basés sur la nouvelle liste
+  sorted.forEach((id,i)=>passageOrder.set(id,i));
   await pollCls(); // Re-render immédiat
-  fillSelects(); // Synchroniser les listes déroulantes
   // Highlight l'élément déplacé
   if(highlightId!==undefined){
     setTimeout(()=>{
@@ -1287,6 +1305,220 @@ setInterval(()=>{if(document.getElementById('panel-classement').classList.contai
 setInterval(pollOverlayStatus,3000);
 setInterval(loadPilots,30000);
 startup();
+
+// ══ EXPORT PNG CLASSEMENT ══
+async function exportClsPNG(){
+  const btn=event.currentTarget;
+  const origText=btn.innerHTML;
+  btn.innerHTML='⏳ Génération…';btn.disabled=true;
+
+  // Récupère les données actuelles
+  const ids=pilots.map(p=>p.id);
+  if(!ids.length){btn.innerHTML=origText;btn.disabled=false;alert('Aucun pilote dans cette catégorie.');return;}
+  const rows=await GET('classement',`?select=*&pilote_id=in.(${ids.join(',')})`)||[];
+  const clsMap={};rows.forEach(r=>{clsMap[r.pilote_id]=r;});
+  const allRows=pilots.map(p=>({...(clsMap[p.id]||{pilote_id:p.id,best_time:'',status:'',penalties:''}),_pilot:p}));
+  const ok=allRows.filter(r=>r.best_time&&toMs(r.best_time)<Infinity&&r.status!=='DNF'&&r.status!=='DSQ');
+  const no=allRows.filter(r=>(!r.best_time||toMs(r.best_time)===Infinity)&&r.status!=='DNF'&&r.status!=='DSQ');
+  const out=allRows.filter(r=>r.status==='DNF'||r.status==='DSQ');
+  ok.sort((a,b)=>toMs(a.best_time)-toMs(b.best_time));
+  const sorted=[...ok,...no,...out];
+
+  // Dimensions
+  const W=900, ROW_H=64, HEADER_H=110, FOOTER_H=44, PAD=0;
+  const H=HEADER_H+sorted.length*ROW_H+FOOTER_H;
+
+  const canvas=document.createElement('canvas');
+  canvas.width=W; canvas.height=H;
+  const ctx=canvas.getContext('2d');
+
+  // ── Fond global ──
+  const bgGrad=ctx.createLinearGradient(0,0,0,H);
+  bgGrad.addColorStop(0,'#0a0a0a');bgGrad.addColorStop(1,'#060606');
+  ctx.fillStyle=bgGrad; ctx.fillRect(0,0,W,H);
+
+  // ── Bande rouge header ──
+  ctx.fillStyle='#e8001c';ctx.fillRect(0,0,W,HEADER_H);
+
+  // ── Texture noise sur le header ──
+  ctx.fillStyle='rgba(0,0,0,0.18)';
+  for(let i=0;i<400;i++){ctx.fillRect(Math.random()*W,Math.random()*HEADER_H,1,1);}
+
+  // ── Logo W ──
+  ctx.font='italic 900 72px "Barlow Condensed", "Arial Black", sans-serif';
+  ctx.fillStyle='rgba(255,255,255,0.12)';
+  ctx.textBaseline='middle';ctx.textAlign='left';
+  ctx.fillText('W',W-90,HEADER_H/2+4);
+
+  // ── Titre ──
+  ctx.fillStyle='white';
+  ctx.font='italic 900 38px "Barlow Condensed", "Arial Black", sans-serif';
+  ctx.textAlign='left';ctx.textBaseline='top';
+  ctx.fillText('CLASSEMENT', 28, 18);
+
+  // ── Catégorie ──
+  const catColors={'Rally B':'#88aaff','Rally N':'#88dd88','Rally Historique':'#ffcc66'};
+  const catBg={'Rally B':'rgba(34,85,170,0.55)','Rally N':'rgba(34,136,34,0.55)','Rally Historique':'rgba(170,102,0,0.55)'};
+  ctx.font='700 12px "Barlow", sans-serif';
+  const catLabel=currentCat.toUpperCase();
+  const catW=ctx.measureText(catLabel).width+20;
+  const catX=28, catY=62;
+  ctx.fillStyle=catBg[currentCat]||'rgba(255,255,255,0.15)';
+  roundRect(ctx,catX,catY,catW,22,4);ctx.fill();
+  ctx.fillStyle=catColors[currentCat]||'white';
+  ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.fillText(catLabel,catX+catW/2,catY+11);
+
+  // ── Date & heure ──
+  const now=new Date();
+  const dateStr=now.toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric'});
+  const timeStr=now.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+  ctx.font='600 11px "Barlow", sans-serif';
+  ctx.fillStyle='rgba(255,255,255,0.6)';
+  ctx.textAlign='left';ctx.textBaseline='middle';
+  ctx.fillText(dateStr+' · '+timeStr, 28, HEADER_H-18);
+
+  // ── Pilotes ──
+  sorted.forEach((r,i)=>{
+    const p=r._pilot;
+    const y=HEADER_H+i*ROW_H;
+    const st=(r.status||'').toUpperCase();
+    const hasTime=r.best_time&&toMs(r.best_time)<Infinity;
+    const isOut=st==='DNF'||st==='DSQ';
+    const posNum=ok.indexOf(r);
+    const isPodium=posNum>=0&&posNum<3;
+
+    // Fond alternant
+    ctx.fillStyle=i%2===0?'rgba(255,255,255,0.02)':'rgba(0,0,0,0.0)';
+    ctx.fillRect(0,y,W,ROW_H);
+
+    // Barre latérale couleur écurie
+    const tcol=p.team_color||'#e8001c';
+    ctx.fillStyle=tcol;
+    ctx.fillRect(0,y+8,3,ROW_H-16);
+
+    // Ligne séparatrice
+    ctx.strokeStyle='rgba(255,255,255,0.04)';ctx.lineWidth=1;
+    ctx.beginPath();ctx.moveTo(0,y+ROW_H);ctx.lineTo(W,y+ROW_H);ctx.stroke();
+
+    // ── POSITION ──
+    const pos=isOut?'—':posNum>=0?String(posNum+1):'—';
+    let posColor='rgba(255,255,255,0.14)';
+    if(posNum===0)posColor='#e8001c';
+    else if(posNum===1)posColor='#cccccc';
+    else if(posNum===2)posColor='#c8860a';
+
+    // Fond podium
+    if(isPodium&&!isOut){
+      const podGrad=ctx.createLinearGradient(10,y,260,y);
+      podGrad.addColorStop(0,posNum===0?'rgba(232,0,28,0.08)':posNum===1?'rgba(150,150,150,0.06)':'rgba(200,134,10,0.07)');
+      podGrad.addColorStop(1,'rgba(0,0,0,0)');
+      ctx.fillStyle=podGrad;ctx.fillRect(0,y,W,ROW_H);
+    }
+
+    // Numéro position
+    ctx.font=`italic 900 ${posNum===0?32:26}px "Barlow Condensed", "Arial Black", sans-serif`;
+    ctx.fillStyle=posColor;
+    ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(pos, 42, y+ROW_H/2);
+
+    // ── NOM ──
+    const nameStr=(fmtNameFull(p.first_name,p.last_name)||'?').trim();
+    ctx.font=`700 ${isOut?14:16}px "Barlow Condensed", "Arial Black", sans-serif`;
+    ctx.fillStyle=isOut||(!hasTime&&!isOut)?'rgba(255,255,255,0.35)':'rgba(255,255,255,0.92)';
+    ctx.textAlign='left';ctx.textBaseline='middle';
+    ctx.fillText(nameStr.toUpperCase(), 72, y+ROW_H/2-(r.penalties?7:0));
+
+    // ── PÉNALITÉS ──
+    if(r.penalties&&!isOut){
+      ctx.font='600 9px "Barlow", sans-serif';
+      ctx.fillStyle='#c47900';
+      ctx.fillText('⚠ '+r.penalties.slice(0,60)+(r.penalties.length>60?'…':''), 72, y+ROW_H/2+9);
+    }
+
+    // ── BADGE STATUS ──
+    if(st==='DNF'||st==='DSQ'||st==='INCIDENT'){
+      const badgeColors={DNF:['#ff6b6b','rgba(255,107,107,0.15)'],DSQ:['#ff4455','rgba(255,68,85,0.15)'],INCIDENT:['#ffc800','rgba(255,200,0,0.12)']};
+      const [tc2,bg2]=badgeColors[st]||['white','rgba(255,255,255,0.1)'];
+      ctx.font='700 9px "Barlow", sans-serif';
+      const bw=ctx.measureText(st).width+14;
+      const bx=72+ctx.measureText(nameStr.toUpperCase())+8;
+
+      // Mesure le nom pour positionner le badge
+      ctx.font='700 16px "Barlow Condensed","Arial Black",sans-serif';
+      const nw=ctx.measureText(nameStr.toUpperCase()).width;
+      ctx.font='700 9px "Barlow", sans-serif';
+      const bxFinal=72+nw+10;
+      ctx.fillStyle=bg2;
+      roundRect(ctx,bxFinal,y+ROW_H/2-8,bw,16,2);ctx.fill();
+      ctx.fillStyle=tc2;
+      ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.fillText(st,bxFinal+bw/2,y+ROW_H/2);
+    }
+
+    // ── ÉCURIE ──
+    ctx.font='500 11px "Barlow", sans-serif';
+    ctx.fillStyle='rgba(255,255,255,0.32)';
+    ctx.textAlign='left';ctx.textBaseline='middle';
+    const teamX=360;
+    ctx.fillText((p.team||'').slice(0,28), teamX, y+ROW_H/2);
+
+    // ── TEMPS ──
+    const time=st==='DNF'?'DNF':st==='DSQ'?'DSQ':hasTime?r.best_time:'—';
+    ctx.font=`italic 900 ${hasTime&&!isOut?20:14}px "Barlow Condensed","Arial Black",sans-serif`;
+    ctx.fillStyle=posNum===0&&!isOut?'#e8001c':isOut?'rgba(255,255,255,0.2)':hasTime?'rgba(255,255,255,0.8)':'rgba(255,255,255,0.2)';
+    ctx.textAlign='right';ctx.textBaseline='middle';
+    ctx.fillText(time, W-28, y+ROW_H/2);
+
+    // Gap au leader (sauf 1er et sans-temps)
+    if(posNum>0&&hasTime&&!isOut){
+      const leaderMs=toMs(ok[0]?.best_time||'');
+      const myMs=toMs(r.best_time);
+      if(leaderMs<Infinity&&myMs<Infinity){
+        const diff=myMs-leaderMs;
+        const dSec=(diff/1000).toFixed(3);
+        ctx.font='600 9px "Barlow",sans-serif';
+        ctx.fillStyle='rgba(255,255,255,0.25)';
+        ctx.textAlign='right';ctx.textBaseline='bottom';
+        ctx.fillText('+'+dSec+'s', W-28, y+ROW_H-10);
+      }
+    }
+  });
+
+  // ── FOOTER ──
+  const fy=HEADER_H+sorted.length*ROW_H;
+  ctx.fillStyle='rgba(232,0,28,0.08)';ctx.fillRect(0,fy,W,FOOTER_H);
+  ctx.strokeStyle='rgba(232,0,28,0.25)';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(0,fy);ctx.lineTo(W,fy);ctx.stroke();
+  ctx.font='italic 700 11px "Barlow Condensed","Arial Black",sans-serif';
+  ctx.fillStyle='rgba(232,0,28,0.7)';
+  ctx.textAlign='left';ctx.textBaseline='middle';
+  ctx.fillText('WEAZEL RALLY', 28, fy+FOOTER_H/2);
+  ctx.font='500 10px "Barlow",sans-serif';
+  ctx.fillStyle='rgba(255,255,255,0.2)';
+  ctx.textAlign='right';
+  ctx.fillText(sorted.filter(r=>ok.includes(r)).length+' classés · '+sorted.filter(r=>out.includes(r)).length+' abandons', W-28, fy+FOOTER_H/2);
+
+  // ── Téléchargement ──
+  const link=document.createElement('a');
+  const d2=now.toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit'}).replace('/','');
+  link.download=`classement_${currentCat.replace(/ /g,'_')}_${d2}_${timeStr.replace(':','h')}.png`;
+  link.href=canvas.toDataURL('image/png',1.0);
+  link.click();
+
+  btn.innerHTML='✅ Téléchargé !';
+  setTimeout(()=>{btn.innerHTML=origText;btn.disabled=false;},2000);
+}
+
+// Helper canvas : rectangle arrondi
+function roundRect(ctx,x,y,w,h,r){
+  ctx.beginPath();
+  ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);
+  ctx.arcTo(x+w,y,x+w,y+r,r);ctx.lineTo(x+w,y+h-r);
+  ctx.arcTo(x+w,y+h,x+w-r,y+h,r);ctx.lineTo(x+r,y+h);
+  ctx.arcTo(x,y+h,x,y+h-r,r);ctx.lineTo(x,y+r);
+  ctx.arcTo(x,y,x+r,y,r);ctx.closePath();
+}
 </script>
 </body>
 </html>
