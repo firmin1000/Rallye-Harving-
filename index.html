@@ -356,20 +356,15 @@ tr:hover td{background:rgba(255,255,255,.015);}
 .comm-subpanel.on{display:flex;}
 #cstab-obs{overflow:hidden;}
 
-/* CAMS */
-.cams-toolbar{display:flex;align-items:center;gap:6px;padding:8px 10px;background:var(--bg3);border-bottom:1px solid var(--b);flex-shrink:0;flex-wrap:wrap;}
-.cams-toolbar label{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--m);}
-.cams-sel{background:var(--bg4);color:#fff;border:1px solid var(--b);border-radius:4px;padding:5px 8px;font-family:var(--font-body);font-size:12px;outline:none;cursor:pointer;}
-.cams-url-row{display:flex;gap:5px;width:100%;margin-top:4px;}
-.cams-url-inp{flex:1;background:var(--bg4);color:#fff;border:1px solid var(--b);border-radius:4px;padding:6px 9px;font-size:12px;font-family:var(--font-body);outline:none;}
-.cams-url-inp:focus{border-color:var(--b2);}
-.cams-url-inp::placeholder{color:rgba(255,255,255,.18);}
-.cams-lbl-inp{width:110px;background:var(--bg4);color:#fff;border:1px solid var(--b);border-radius:4px;padding:6px 8px;font-size:12px;font-family:var(--font-body);outline:none;}
-.cams-lbl-inp::placeholder{color:rgba(255,255,255,.18);}
-.cams-add-btn{background:var(--r);color:#fff;border:none;border-radius:4px;padding:6px 12px;font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;white-space:nowrap;transition:background .12s;}
-.cams-add-btn:hover{background:var(--rh);}
-.cams-clr-btn{background:var(--bg4);color:var(--m);border:1px solid var(--b);border-radius:4px;padding:6px 9px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--font-head);}
-.cams-clr-btn:hover{background:var(--bg5);}
+/* CAMS — GESTIONNAIRE */
+/* Barre supérieure */
+.cams-topbar{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--bg3);border-bottom:1px solid var(--b);flex-shrink:0;}
+.cams-topbar-lbl{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--m);}
+.cams-sel{background:var(--bg4);color:#fff;border:1px solid var(--b);border-radius:4px;padding:5px 9px;font-family:var(--font-body);font-size:12px;outline:none;cursor:pointer;transition:border-color .2s;}
+.cams-sel:focus{border-color:var(--b2);}
+.cams-mgr-btn{background:rgba(232,0,28,.12);color:#ff8899;border:1px solid rgba(232,0,28,.22);border-radius:4px;padding:5px 12px;font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;white-space:nowrap;transition:all .15s;margin-left:auto;display:flex;align-items:center;gap:5px;}
+.cams-mgr-btn:hover{background:rgba(232,0,28,.2);color:#fff;}
+/* Grille */
 .cams-grid-wrap{flex:1;overflow:hidden;padding:3px;background:var(--bg);}
 .cams-grid{display:grid;gap:3px;width:100%;height:100%;}
 .cams-grid.g1x1{grid-template-columns:1fr;}
@@ -379,11 +374,57 @@ tr:hover td{background:rgba(255,255,255,.015);}
 .cams-grid.g2x3{grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr 1fr;}
 .cam-cell{background:var(--bg2);border:1px solid var(--b);border-radius:5px;overflow:hidden;position:relative;display:flex;flex-direction:column;}
 .cam-cell.empty{border:2px dashed rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.1);font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;flex-direction:column;gap:5px;cursor:pointer;transition:border-color .2s,color .2s;}
-.cam-cell.empty:hover{border-color:rgba(255,255,255,.14);color:var(--m);}
+.cam-cell.empty:hover{border-color:rgba(232,0,28,.3);color:rgba(255,255,255,.35);}
 .cam-lbl-badge{position:absolute;top:5px;left:6px;z-index:2;background:rgba(0,0,0,.78);color:#fff;font-size:8px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:2px 7px;border-radius:3px;}
+.cam-edit-btn{position:absolute;top:5px;right:28px;z-index:2;background:rgba(0,0,0,.7);color:rgba(255,255,255,.4);border:none;border-radius:3px;width:20px;height:20px;font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+.cam-edit-btn:hover{background:rgba(34,85,170,.8);color:#fff;}
 .cam-rm-btn{position:absolute;top:5px;right:5px;z-index:2;background:rgba(0,0,0,.7);color:rgba(255,255,255,.4);border:none;border-radius:3px;width:20px;height:20px;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;}
 .cam-rm-btn:hover{background:var(--r);color:#fff;}
 .cam-cell iframe{width:100%;height:100%;border:none;flex:1;}
+/* Modal gestionnaire */
+#camModal{position:fixed;inset:0;z-index:600;background:rgba(0,0,0,.85);display:flex;align-items:center;justify-content:center;}
+#camModal.hidden{display:none;}
+.cam-modal-box{width:560px;max-height:90vh;background:var(--bg3);border:1px solid var(--b2);border-radius:10px;display:flex;flex-direction:column;overflow:hidden;animation:fadeUp .25s ease;}
+.cam-modal-hd{padding:16px 18px 12px;border-bottom:1px solid var(--b);display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.cam-modal-hd h3{font-family:var(--font-head);font-size:17px;font-weight:700;letter-spacing:1px;text-transform:uppercase;flex:1;}
+.cam-modal-close{background:none;border:none;color:var(--m);font-size:18px;cursor:pointer;line-height:1;padding:4px;}
+.cam-modal-close:hover{color:#fff;}
+/* Liste des cams dans le modal */
+.cam-list{flex:1;overflow-y:auto;padding:10px 14px;display:flex;flex-direction:column;gap:6px;}
+.cam-list-empty{padding:24px;text-align:center;color:var(--m);font-size:12px;}
+.cam-list-item{background:var(--bg4);border:1px solid var(--b);border-radius:7px;padding:10px 12px;display:flex;align-items:center;gap:10px;transition:border-color .15s;}
+.cam-list-item:hover{border-color:var(--b2);}
+.cam-list-item.editing{border-color:rgba(34,85,170,.5);background:rgba(34,85,170,.05);}
+.cam-slot-num{width:26px;height:26px;border-radius:5px;background:rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;font-family:var(--font-head);font-size:13px;font-weight:700;color:var(--m);flex-shrink:0;}
+.cam-slot-num.filled{background:rgba(232,0,28,.12);color:#ff8899;}
+.cam-item-info{flex:1;min-width:0;}
+.cam-item-lbl{font-family:var(--font-head);font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.cam-item-url{font-size:10px;color:var(--m);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px;font-family:monospace;}
+.cam-item-empty-txt{font-size:11px;color:rgba(255,255,255,.18);font-style:italic;}
+.cam-item-acts{display:flex;gap:5px;flex-shrink:0;}
+.cam-act{border:none;border-radius:4px;padding:5px 9px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--font-head);letter-spacing:.5px;transition:all .12s;}
+.cam-act-edit{background:rgba(34,85,170,.15);color:#88aaff;border:1px solid rgba(34,85,170,.25);}
+.cam-act-edit:hover{background:rgba(34,85,170,.28);}
+.cam-act-del{background:rgba(255,68,85,.1);color:#ff4455;border:1px solid rgba(255,68,85,.2);}
+.cam-act-del:hover{background:rgba(255,68,85,.2);}
+/* Formulaire d'édition inline */
+.cam-edit-form{background:rgba(34,85,170,.06);border:1px solid rgba(34,85,170,.2);border-radius:7px;padding:12px 14px;display:flex;flex-direction:column;gap:9px;}
+.cam-ef-row{display:flex;flex-direction:column;gap:4px;}
+.cam-ef-lbl{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--m);}
+.cam-ef-inp{background:var(--bg4);color:#fff;border:1px solid var(--b);border-radius:5px;padding:9px 12px;font-size:13px;font-family:var(--font-body);outline:none;transition:border-color .2s;width:100%;}
+.cam-ef-inp:focus{border-color:#4488ff;}
+.cam-ef-inp::placeholder{color:rgba(255,255,255,.18);}
+.cam-ef-hint{font-size:9px;color:rgba(255,255,255,.2);margin-top:2px;}
+.cam-ef-acts{display:flex;gap:7px;margin-top:2px;}
+.cam-ef-save{flex:1;background:var(--r);color:#fff;border:none;border-radius:5px;padding:9px;font-family:var(--font-head);font-size:13px;font-weight:900;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:background .12s;}
+.cam-ef-save:hover{background:var(--rh);}
+.cam-ef-cancel{background:var(--bg4);color:var(--m2);border:1px solid var(--b);border-radius:5px;padding:9px 14px;font-family:var(--font-head);font-size:12px;font-weight:700;cursor:pointer;transition:all .12s;}
+.cam-ef-cancel:hover{background:var(--bg5);}
+/* Footer modal */
+.cam-modal-ft{padding:12px 14px;border-top:1px solid var(--b);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;background:var(--bg2);}
+.cam-modal-ft-hint{font-size:9px;color:rgba(255,255,255,.18);letter-spacing:.5px;}
+.cam-add-new-btn{background:rgba(0,200,83,.1);color:var(--green);border:1px solid rgba(0,200,83,.2);border-radius:5px;padding:7px 14px;font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .15s;}
+.cam-add-new-btn:hover{background:rgba(0,200,83,.18);}
 
 /* CHRONO LIVE (colonne gauche) */
 .cv-chrono{padding:12px 14px;border-bottom:1px solid var(--b);flex-shrink:0;}
@@ -692,8 +733,8 @@ tr:hover td{background:rgba(255,255,255,.015);}
 
         <!-- Caméras VDO -->
         <div class="comm-subpanel on" id="cstab-cams">
-          <div class="cams-toolbar">
-            <label>Grille</label>
+          <div class="cams-topbar">
+            <span class="cams-topbar-lbl">Grille</span>
             <select class="cams-sel" id="camGridSel" onchange="camApplyGrid()">
               <option value="g1x1">1 caméra</option>
               <option value="g2x1">2 côte à côte</option>
@@ -701,15 +742,25 @@ tr:hover td{background:rgba(255,255,255,.015);}
               <option value="g3x2">3×2 — 6 cams</option>
               <option value="g2x3">2×3 — 6 cams</option>
             </select>
-            <div class="cams-url-row">
-              <input type="text" class="cams-url-inp" id="camUrlInp" placeholder="https://vdo.ninja/?view=XXXXXX">
-              <input type="text" class="cams-lbl-inp" id="camLblInp" placeholder="Label cam">
-              <button class="cams-add-btn" onclick="camAdd()">+ Ajouter</button>
-              <button class="cams-clr-btn" onclick="camClearAll()">✕</button>
-            </div>
+            <button class="cams-mgr-btn" onclick="camOpenModal()">⚙ Gérer les caméras</button>
           </div>
           <div class="cams-grid-wrap">
             <div class="cams-grid g2x2" id="camsGrid"></div>
+          </div>
+        </div>
+
+        <!-- MODAL GESTIONNAIRE DE CAMÉRAS -->
+        <div id="camModal" class="hidden">
+          <div class="cam-modal-box">
+            <div class="cam-modal-hd">
+              <h3>📹 Gérer les caméras</h3>
+              <button class="cam-modal-close" onclick="camCloseModal()">✕</button>
+            </div>
+            <div class="cam-list" id="camMgrList"></div>
+            <div class="cam-modal-ft">
+              <span class="cam-modal-ft-hint">Cliquez sur un slot vide ou sur ✏️ pour éditer</span>
+              <button class="cam-add-new-btn" onclick="camAddNew()">+ Nouvelle caméra</button>
+            </div>
           </div>
         </div>
 
@@ -1908,10 +1959,22 @@ function fixCommHeight(){
 window.addEventListener('resize',fixCommHeight);
 
 // ══ CAMÉRAS VDO ══
+// ══ GESTIONNAIRE CAMÉRAS ══
 let camList=JSON.parse(localStorage.getItem('wz_cams')||'[]');
 let camGrid=localStorage.getItem('wz_cam_grid')||'g2x2';
 
 function camGridCount(){return{g1x1:1,g2x1:2,g2x2:4,g3x2:6,g2x3:6}[camGrid]||4;}
+function camSave(){localStorage.setItem('wz_cams',JSON.stringify(camList));}
+
+function camNormalizeUrl(url){
+  url=url.trim();
+  if(!url)return '';
+  if(!url.startsWith('http'))url='https://'+url;
+  if(url.includes('vdo.ninja')&&!url.includes('clean')){
+    url+=(url.includes('?')?'&':'?')+'clean&autostart&muted=0&hide';
+  }
+  return url;
+}
 
 function camRenderGrid(){
   const sel=document.getElementById('camGridSel');
@@ -1924,15 +1987,19 @@ function camRenderGrid(){
   for(let i=0;i<n;i++){
     const cam=camList[i];
     const cell=document.createElement('div');
-    if(cam){
+    if(cam&&cam.url){
       cell.className='cam-cell';
-      cell.innerHTML=`<div class="cam-lbl-badge">${cam.label||('Cam '+(i+1))}</div>
-        <button class="cam-rm-btn" onclick="camRemove(${i})">✕</button>
-        <iframe src="${cam.url}" allow="camera;microphone;fullscreen;picture-in-picture" allowfullscreen loading="lazy"></iframe>`;
+      cell.innerHTML=
+        `<div class="cam-lbl-badge">${cam.label||('Cam '+(i+1))}</div>`+
+        `<button class="cam-edit-btn" onclick="camOpenModal(${i})" title="Modifier">✏️</button>`+
+        `<button class="cam-rm-btn" onclick="camRemove(${i})" title="Supprimer">✕</button>`+
+        `<iframe src="${cam.url}" allow="camera;microphone;fullscreen;picture-in-picture" allowfullscreen loading="lazy"></iframe>`;
     }else{
       cell.className='cam-cell empty';
-      cell.innerHTML=`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:.2"><path d="M15 10l4.553-2.069A1 1 0 0121 8.868v6.264a1 1 0 01-1.447.894L15 14M3 8a2 2 0 012-2h10a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z"/></svg><span>Ajouter une URL</span>`;
-      cell.onclick=()=>{document.getElementById('camUrlInp')?.focus();};
+      cell.innerHTML=
+        `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:.2"><path d="M15 10l4.553-2.069A1 1 0 0121 8.868v6.264a1 1 0 01-1.447.894L15 14M3 8a2 2 0 012-2h10a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z"/></svg>`+
+        `<span>Slot ${i+1} — Cliquer pour ajouter</span>`;
+      cell.onclick=()=>camOpenModal(i);
     }
     grid.appendChild(cell);
   }
@@ -1942,36 +2009,114 @@ function camApplyGrid(){
   camGrid=document.getElementById('camGridSel').value;
   localStorage.setItem('wz_cam_grid',camGrid);
   camRenderGrid();
+  camRenderModal();
 }
 
-function camAdd(){
-  let url=(document.getElementById('camUrlInp')?.value||'').trim();
-  const lbl=(document.getElementById('camLblInp')?.value||'').trim();
-  const inp=document.getElementById('camUrlInp');
-  if(!url){if(inp)inp.style.borderColor='var(--r)';return;}
-  if(inp)inp.style.borderColor='';
-  if(!url.startsWith('http'))url='https://'+url;
-  if(url.includes('vdo.ninja')&&!url.includes('clean')){
-    url+=(url.includes('?')?'&':'?')+'clean&autostart&muted=0&hide';
-  }
-  // Cherche le premier slot vide
+// ── Modal ──
+function camOpenModal(editIdx){
+  document.getElementById('camModal').classList.remove('hidden');
+  camRenderModal();
+  if(editIdx!==undefined) setTimeout(()=>camStartEdit(editIdx),40);
+}
+function camCloseModal(){
+  document.getElementById('camModal').classList.add('hidden');
+}
+
+function camRenderModal(){
   const n=camGridCount();
-  let placed=false;
+  while(camList.length<n)camList.push(null);
+  const el=document.getElementById('camMgrList');
+  if(!el)return;
+  let html='';
   for(let i=0;i<n;i++){
-    if(!camList[i]){camList[i]={url,label:lbl||('Cam '+(i+1))};placed=true;break;}
+    const cam=camList[i];
+    const filled=cam&&cam.url;
+    html+=`<div class="cam-list-item" id="camItem-${i}">
+      <div class="cam-slot-num ${filled?'filled':''}">${i+1}</div>
+      <div class="cam-item-info">
+        ${filled
+          ?`<div class="cam-item-lbl">${cam.label||('Cam '+(i+1))}</div>
+            <div class="cam-item-url">${cam.url.replace(/[?&]clean.*$/,'')}</div>`
+          :`<div class="cam-item-empty-txt">Slot vide</div>`}
+      </div>
+      <div class="cam-item-acts">
+        <button class="cam-act cam-act-edit" onclick="camStartEdit(${i})">${filled?'✏️ Modifier':'＋ Ajouter'}</button>
+        ${filled?`<button class="cam-act cam-act-del" onclick="camRemove(${i},true)">🗑</button>`:''}
+      </div>
+    </div>
+    <div id="camForm-${i}" style="display:none;padding:0 0 8px;"></div>`;
   }
-  if(!placed){
-    if(camList.length<n)camList.push({url,label:lbl||('Cam '+(camList.length+1))});
-    else{alert('Grille pleine. Supprimez une caméra ou agrandissez la grille.');return;}
-  }
-  localStorage.setItem('wz_cams',JSON.stringify(camList));
-  camRenderGrid();
-  if(document.getElementById('camUrlInp'))document.getElementById('camUrlInp').value='';
-  if(document.getElementById('camLblInp'))document.getElementById('camLblInp').value='';
+  el.innerHTML=html;
 }
 
-function camRemove(i){camList[i]=null;localStorage.setItem('wz_cams',JSON.stringify(camList));camRenderGrid();}
-function camClearAll(){if(!confirm('Effacer toutes les caméras ?'))return;camList=[];localStorage.setItem('wz_cams','[]');camRenderGrid();}
+function camStartEdit(i){
+  document.querySelectorAll('[id^="camForm-"]').forEach(el=>{el.style.display='none';});
+  document.querySelectorAll('.cam-list-item').forEach(el=>el.classList.remove('editing'));
+  const cam=camList[i]||{url:'',label:''};
+  const rawUrl=(cam.url||'').replace(/[?&]clean[^]*$/,'').replace(/[?&]autostart[^]*/,'').replace(/[?&]muted[^]*/,'').replace(/[?&]hide[^]*/,'').replace(/[?&]+$/,'');
+  const form=document.getElementById(`camForm-${i}`);
+  const item=document.getElementById(`camItem-${i}`);
+  if(!form)return;
+  item.classList.add('editing');
+  form.style.display='block';
+  form.innerHTML=`<div class="cam-edit-form">
+    <div class="cam-ef-row">
+      <label class="cam-ef-lbl">Label</label>
+      <input type="text" class="cam-ef-inp" id="camEfLbl-${i}" value="${cam.label||''}" placeholder="Ex: Caméra départ, Virage 3…">
+    </div>
+    <div class="cam-ef-row">
+      <label class="cam-ef-lbl">URL VDO.ninja</label>
+      <input type="text" class="cam-ef-inp" id="camEfUrl-${i}" value="${rawUrl}" placeholder="https://vdo.ninja/?view=XXXXXX  ou juste le code court">
+      <span class="cam-ef-hint">Colle l'URL complète ou juste le code VDO (ex: seH9huU). Les paramètres sont ajoutés automatiquement.</span>
+    </div>
+    <div class="cam-ef-acts">
+      <button class="cam-ef-save" onclick="camSaveEdit(${i})">💾 Enregistrer</button>
+      <button class="cam-ef-cancel" onclick="camCancelEdit(${i})">Annuler</button>
+    </div>
+  </div>`;
+  const lblI=document.getElementById(`camEfLbl-${i}`);
+  const urlI=document.getElementById(`camEfUrl-${i}`);
+  setTimeout(()=>{(rawUrl?lblI:urlI)?.focus();},40);
+  [lblI,urlI].forEach(inp=>inp?.addEventListener('keydown',e=>{
+    if(e.key==='Enter'){e.preventDefault();camSaveEdit(i);}
+    if(e.key==='Escape'){e.preventDefault();camCancelEdit(i);}
+  }));
+}
+
+function camSaveEdit(i){
+  let url=(document.getElementById(`camEfUrl-${i}`)?.value||'').trim();
+  const lbl=(document.getElementById(`camEfLbl-${i}`)?.value||'').trim();
+  const urlI=document.getElementById(`camEfUrl-${i}`);
+  if(!url){if(urlI){urlI.style.borderColor='var(--r)';urlI.focus();}return;}
+  if(!url.includes('.')&&!url.includes('/'))url=`https://vdo.ninja/?view=${url}`;
+  url=camNormalizeUrl(url);
+  camList[i]={url,label:lbl||('Cam '+(i+1))};
+  camSave();
+  camRenderGrid();
+  camRenderModal();
+}
+
+function camCancelEdit(i){
+  const f=document.getElementById(`camForm-${i}`);
+  const it=document.getElementById(`camItem-${i}`);
+  if(f)f.style.display='none';
+  if(it)it.classList.remove('editing');
+}
+
+function camAddNew(){
+  const n=camGridCount();
+  for(let i=0;i<n;i++){if(!camList[i]||!camList[i].url){camStartEdit(i);return;}}
+  alert('Tous les slots sont occupés. Agrandissez la grille ou supprimez une caméra.');
+}
+
+function camRemove(i,fromModal=false){
+  if(!confirm(`Supprimer la caméra du slot ${i+1} ?`))return;
+  camList[i]=null;
+  camSave();
+  camRenderGrid();
+  if(fromModal)camRenderModal();
+}
+
 
 // ══ CHRONO LIVE COMMENTATEUR ══
 let cvChRun=false,cvChTs=0,cvChRaf=null,cvBestMs=Infinity;
