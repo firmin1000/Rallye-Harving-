@@ -396,6 +396,14 @@ tr:hover td{background:rgba(255,255,255,.015);}
 .cv-best{font-size:10px;color:var(--m);margin-top:3px;font-weight:600;}
 .cv-best b{color:var(--gold);}
 
+/* SÉLECTEUR CATÉGORIE COMMENTATEUR */
+.cv-cat-bar{display:flex;gap:5px;padding:8px 10px;border-bottom:1px solid var(--b);flex-shrink:0;background:var(--bg3);}
+.cv-cat-btn{flex:1;background:var(--bg4);color:var(--m2);border:1px solid var(--b);border-radius:14px;padding:5px 6px;font-family:var(--font-head);font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;cursor:pointer;transition:all .15s;text-align:center;line-height:1.2;}
+.cv-cat-btn:hover{border-color:var(--b2);color:#fff;}
+.cv-cat-btn[data-cat="Rally B"].on{background:#162a54;border-color:#2255aa;color:#88aaff;}
+.cv-cat-btn[data-cat="Rally N"].on{background:#0e3a12;border-color:#228822;color:#88dd88;}
+.cv-cat-btn[data-cat="Rally Historique"].on{background:#3a2800;border-color:#aa6600;color:#ffcc66;}
+
 /* CLASSEMENT (colonne gauche) */
 .cv-cls{flex:1;overflow:hidden;display:flex;flex-direction:column;}
 .cv-cls-hd{padding:7px 14px 5px;border-bottom:1px solid var(--b);display:flex;align-items:center;gap:6px;flex-shrink:0;}
@@ -427,25 +435,30 @@ tr:hover td{background:rgba(255,255,255,.015);}
 .cv-chat-hd{padding:8px 14px 6px;border-bottom:1px solid var(--b);display:flex;align-items:center;gap:6px;flex-shrink:0;}
 .cv-chat-hd h3{font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
 .cv-chat-online{font-size:8px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--green);margin-left:auto;display:flex;align-items:center;gap:4px;}
-.cv-chat-msgs{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:1px;}
-@keyframes msgIn{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:none;}}
-.cv-msg{padding:5px 14px;border-radius:0;transition:background .1s;}
-.cv-msg:hover{background:rgba(255,255,255,.02);}
-.cv-msg.mine{background:rgba(232,0,28,.04);}
-.cv-msg.new{animation:msgIn .22s ease;}
-.cv-msg-head{display:flex;align-items:center;gap:7px;margin-bottom:2px;}
-.cv-author{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--r);}
+.cv-chat-msgs{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:0;}
+@keyframes msgIn{from{opacity:0;transform:translateY(5px);}to{opacity:1;transform:none;}}
+.cv-msg{padding:8px 14px;transition:background .1s;}
+.cv-msg:hover{background:rgba(255,255,255,.025);}
+.cv-msg.mine{background:rgba(232,0,28,.05);border-left:2px solid rgba(232,0,28,.3);}
+.cv-msg.new{animation:msgIn .25s ease;}
+.cv-msg-head{display:flex;align-items:center;gap:8px;margin-bottom:3px;}
+.cv-author{font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--r);}
 .cv-author.other{color:#88aaff;}
-.cv-mtime{font-size:8px;color:var(--m);}
-.cv-mtext{font-size:12px;color:rgba(255,255,255,.75);line-height:1.4;}
-.cv-chat-empty{padding:16px;text-align:center;color:var(--m);font-size:11px;}
-.cv-chat-inp{display:flex;gap:5px;padding:7px 10px;border-top:1px solid var(--b);flex-shrink:0;}
-.cv-name-inp{width:82px;background:var(--bg4);color:#fff;border:1px solid var(--b);border-radius:4px;padding:6px 8px;font-size:12px;font-family:var(--font-body);outline:none;transition:border-color .2s;}
+.cv-mtime{font-size:9px;color:var(--m);}
+.cv-mtext{font-size:13px;color:rgba(255,255,255,.82);line-height:1.5;}
+.cv-chat-empty{padding:24px 16px;text-align:center;color:var(--m);font-size:12px;}
+/* Zone de saisie chat — plus grande et confortable */
+.cv-chat-inp{display:flex;flex-direction:column;gap:7px;padding:10px 12px 12px;border-top:1px solid var(--b);flex-shrink:0;background:var(--bg3);}
+.cv-chat-inp-top{display:flex;align-items:center;gap:6px;}
+.cv-name-inp{width:110px;background:var(--bg4);color:#fff;border:1px solid var(--b);border-radius:5px;padding:8px 10px;font-size:12px;font-family:var(--font-body);outline:none;transition:border-color .2s;font-weight:600;}
 .cv-name-inp:focus{border-color:var(--b2);}
-.cv-txt-inp{flex:1;background:var(--bg4);color:#fff;border:1px solid var(--b);border-radius:4px;padding:6px 9px;font-size:12px;font-family:var(--font-body);outline:none;transition:border-color .2s;}
+.cv-name-inp::placeholder{color:rgba(255,255,255,.2);}
+.cv-name-lbl{font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--m);}
+.cv-chat-inp-bottom{display:flex;gap:7px;align-items:flex-end;}
+.cv-txt-inp{flex:1;background:var(--bg4);color:#fff;border:1px solid var(--b);border-radius:5px;padding:10px 12px;font-size:13px;font-family:var(--font-body);outline:none;transition:border-color .2s;resize:none;min-height:42px;max-height:100px;line-height:1.4;}
 .cv-txt-inp:focus{border-color:var(--b2);}
-.cv-txt-inp::placeholder{color:rgba(255,255,255,.15);}
-.cv-send-btn{background:var(--r);color:#fff;border:none;border-radius:4px;padding:6px 12px;font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:1px;cursor:pointer;transition:background .12s;white-space:nowrap;}
+.cv-txt-inp::placeholder{color:rgba(255,255,255,.18);}
+.cv-send-btn{background:var(--r);color:#fff;border:none;border-radius:5px;padding:10px 16px;font-family:var(--font-head);font-size:13px;font-weight:900;letter-spacing:1px;cursor:pointer;transition:background .12s;white-space:nowrap;height:42px;display:flex;align-items:center;gap:5px;flex-shrink:0;}
 .cv-send-btn:hover{background:var(--rh);}
 
 </style>
@@ -649,6 +662,12 @@ tr:hover td{background:rgba(255,255,255,.015);}
 
       <!-- COLONNE GAUCHE : chrono live + classement -->
       <div class="comm-left">
+        <!-- Sélecteur catégorie — local au commentateur, ne touche pas l'overlay OBS -->
+        <div class="cv-cat-bar">
+          <button class="cv-cat-btn on" data-cat="Rally B"          onclick="cvSetCat(this)">🔵 Rally B</button>
+          <button class="cv-cat-btn"    data-cat="Rally N"          onclick="cvSetCat(this)">🟢 Rally N</button>
+          <button class="cv-cat-btn"    data-cat="Rally Historique" onclick="cvSetCat(this)">🟡 Historique</button>
+        </div>
         <div class="cv-chrono">
           <div class="cv-ch-lbl"><div class="cv-ch-dot" id="cvChDot"></div>CHRONO EN COURS</div>
           <div class="cv-pilot" id="cvChPilot">—</div>
@@ -759,9 +778,14 @@ tr:hover td{background:rgba(255,255,255,.015);}
           </div>
           <div class="cv-chat-msgs" id="cvChatMsgs"><div class="cv-chat-empty">Aucun message</div></div>
           <div class="cv-chat-inp">
-            <input type="text" class="cv-name-inp" id="cvChatName" placeholder="Pseudo" maxlength="16">
-            <input type="text" class="cv-txt-inp"  id="cvChatTxt"  placeholder="Message…" maxlength="200">
-            <button class="cv-send-btn" onclick="cvSendChat()">➤</button>
+            <div class="cv-chat-inp-top">
+              <span class="cv-name-lbl">Pseudo</span>
+              <input type="text" class="cv-name-inp" id="cvChatName" placeholder="Votre nom…" maxlength="16">
+            </div>
+            <div class="cv-chat-inp-bottom">
+              <textarea class="cv-txt-inp" id="cvChatTxt" placeholder="Écrire un message…" maxlength="400" rows="2"></textarea>
+              <button class="cv-send-btn" onclick="cvSendChat()">➤ Envoyer</button>
+            </div>
           </div>
         </div>
       </div>
@@ -1952,6 +1976,26 @@ function camClearAll(){if(!confirm('Effacer toutes les caméras ?'))return;camLi
 // ══ CHRONO LIVE COMMENTATEUR ══
 let cvChRun=false,cvChTs=0,cvChRaf=null,cvBestMs=Infinity;
 let cvClockOffset=0;
+// Catégorie locale au panel commentateur — indépendante de currentCat et de l'overlay OBS
+let cvCat='Rally B';
+
+function cvSetCat(btn){
+  document.querySelectorAll('.cv-cat-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  cvCat=btn.dataset.cat;
+  // Reset chrono si le pilote en cours n'est plus dans cette catégorie
+  cvChRun=false;
+  cancelAnimationFrame(cvChRaf);
+  const dot=document.getElementById('cvChDot');
+  const time=document.getElementById('cvChTime');
+  const pilot=document.getElementById('cvChPilot');
+  if(dot)dot.classList.remove('run');
+  if(time){time.classList.remove('run');time.textContent='00:00.000';}
+  if(pilot)pilot.textContent='—';
+  // Rafraîchit immédiatement le classement
+  cvPollCls();
+  cvPollChrono();
+}
 
 async function cvCalibrateClock(){
   try{
@@ -1981,7 +2025,7 @@ async function cvPollChrono(){
   if(!d||!d.length)return;
   const row=d[0];
   const pilotCat=row.pilotes?.category||'';
-  const relevant=pilotCat===currentCat;
+  const relevant=pilotCat===cvCat; // catégorie locale commentateur
   if(row.status==='START'&&Number(row.started_at)>0&&relevant){
     const ts=Number(row.started_at);
     const name=row.pilotes?(row.pilotes.first_name+' '+(row.pilotes.last_name||'').toUpperCase()):'';
@@ -2010,12 +2054,14 @@ async function cvPollChrono(){
 
 // ══ CLASSEMENT LIVE COMMENTATEUR ══
 async function cvPollCls(){
-  const ids=pilots.map(p=>p.id);
-  if(!ids.length){const el=document.getElementById('cvClsList');if(el)el.innerHTML='<div class="ev-empty">Aucun pilote</div>';return;}
+  // Charge les pilotes de la catégorie locale cvCat (indépendant de currentCat)
+  const cvPilots=allPilots.filter(p=>p.category===cvCat);
+  const ids=cvPilots.map(p=>p.id);
+  if(!ids.length){const el=document.getElementById('cvClsList');if(el)el.innerHTML='<div class="ev-empty">Aucun pilote dans cette catégorie</div>';return;}
   const rows=await GET('classement',`?select=*&pilote_id=in.(${ids.join(',')})`);
   if(!rows)return;
   const clsMap={};rows.forEach(r=>{clsMap[r.pilote_id]=r;});
-  const allR=pilots.map(p=>({...(clsMap[p.id]||{pilote_id:p.id,best_time:'',status:'',penalties:''}),_p:p}));
+  const allR=cvPilots.map(p=>({...(clsMap[p.id]||{pilote_id:p.id,best_time:'',status:'',penalties:''}),_p:p}));
   const ok=allR.filter(r=>r.best_time&&toMs(r.best_time)<Infinity&&r.status!=='DNF'&&r.status!=='DSQ');
   const no=allR.filter(r=>(!r.best_time||toMs(r.best_time)===Infinity)&&r.status!=='DNF'&&r.status!=='DSQ');
   const out=allR.filter(r=>r.status==='DNF'||r.status==='DSQ');
@@ -2120,6 +2166,7 @@ async function cvSendChat(){
   if(!msg||!name)return;
   if(name!==cvMyName){cvMyName=name;localStorage.setItem('wz_comm_name',name);}
   txtInp.value='';
+  txtInp.style.height='auto';
   const res=await POST('chat_messages',{author:name,message:msg});
   // Optimistic : affiche immédiatement sans attendre le poll
   if(res&&res[0]){
@@ -2144,11 +2191,16 @@ function initCommView(){
   const inp=document.getElementById('cvChatName');
   if(inp&&n)inp.value=n;
   cvMyName=n;
-  // Keydown sur l'input chat — Enter pour envoyer
+  // Keydown sur le textarea chat — Enter envoie, Shift+Enter = nouvelle ligne
   const txtInp=document.getElementById('cvChatTxt');
   if(txtInp){
     txtInp.addEventListener('keydown',e=>{
       if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();cvSendChat();}
+    });
+    // Auto-resize du textarea
+    txtInp.addEventListener('input',()=>{
+      txtInp.style.height='auto';
+      txtInp.style.height=Math.min(txtInp.scrollHeight,100)+'px';
     });
   }
   // Init modules
