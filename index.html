@@ -165,6 +165,8 @@ input[type=color]{width:38px;height:37px;padding:2px;border-radius:5px;border:1p
 
 /* PILOT LIST */
 .plist{display:flex;flex-direction:column;gap:12px;max-height:400px;overflow-y:auto;}
+/* Dans le panel OBS, la liste commentateurs scroll avec la page */
+#cstab-obs .plist{max-height:none;overflow:visible;}
 .pitem{display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--bg4);border:1px solid var(--b);border-radius:6px;cursor:pointer;transition:all .12s;position:relative;overflow:hidden;}
 .pitem::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--tc,var(--r));}
 .pitem:hover{background:var(--bg5);transform:translateX(2px);}
@@ -340,7 +342,7 @@ tr:hover td{background:rgba(255,255,255,.015);}
 .rb-comm{background:rgba(34,85,170,.15);color:#88aaff;border:1px solid rgba(34,85,170,.25);}
 
 /* ═══ PANEL COMMENTATEUR — VUE COMPLÈTE ═══ */
-.comm-view{display:flex;height:calc(100vh - 54px - 42px);overflow:hidden;}
+.comm-view{display:flex;height:calc(100vh - 54px - 44px);overflow:hidden;min-height:0;}
 .comm-left{width:260px;min-width:260px;border-right:1px solid var(--b);display:flex;flex-direction:column;background:var(--bg2);}
 .comm-center{flex:1;display:flex;flex-direction:column;overflow:hidden;border-right:1px solid var(--b);}
 .comm-right{width:300px;min-width:300px;display:flex;flex-direction:column;background:var(--bg2);}
@@ -350,8 +352,9 @@ tr:hover td{background:rgba(255,255,255,.015);}
 .comm-stab{flex:1;padding:8px 4px;font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--m);background:none;border:none;cursor:pointer;border-bottom:2px solid transparent;transition:color .15s,border-color .15s;}
 .comm-stab:hover{color:#fff;}
 .comm-stab.on{color:#fff;border-bottom-color:var(--r);}
-.comm-subpanel{display:none;flex:1;flex-direction:column;overflow:hidden;}
+.comm-subpanel{display:none;flex:1;flex-direction:column;overflow:hidden;min-height:0;}
 .comm-subpanel.on{display:flex;}
+#cstab-obs{overflow:hidden;}
 
 /* CAMS */
 .cams-toolbar{display:flex;align-items:center;gap:6px;padding:8px 10px;background:var(--bg3);border-bottom:1px solid var(--b);flex-shrink:0;flex-wrap:wrap;}
@@ -641,7 +644,7 @@ tr:hover td{background:rgba(255,255,255,.015);}
   </div>
 
   <!-- COMMENTATEUR — Vue complète intégrée -->
-  <div class="panel" id="panel-commentateur" style="padding:0;">
+  <div class="panel" id="panel-commentateur" style="padding:0;overflow:hidden;">
     <div class="comm-view">
 
       <!-- COLONNE GAUCHE : chrono live + classement -->
@@ -663,13 +666,12 @@ tr:hover td{background:rgba(255,255,255,.015);}
 
       <!-- COLONNE CENTRE : caméras VDO + OBS commentateur -->
       <div class="comm-center">
-        <!-- Sous-tabs -->
         <div class="comm-subtabs">
-          <button class="comm-stab on" data-stab="cams"   onclick="commStab('cams')">📹 Caméras</button>
-          <button class="comm-stab"    data-stab="obs"    onclick="commStab('obs')">🎬 OBS Overlay</button>
+          <button class="comm-stab on" data-stab="cams" onclick="commStab('cams')">📹 Caméras</button>
+          <button class="comm-stab"    data-stab="obs"  onclick="commStab('obs')">🎬 OBS Overlay</button>
         </div>
 
-        <!-- Sous-panel : Caméras VDO -->
+        <!-- Caméras VDO -->
         <div class="comm-subpanel on" id="cstab-cams">
           <div class="cams-toolbar">
             <label>Grille</label>
@@ -692,52 +694,57 @@ tr:hover td{background:rgba(255,255,255,.015);}
           </div>
         </div>
 
-        <!-- Sous-panel : OBS Commentateur (annuaire + diffusion) -->
-        <div class="comm-subpanel" id="cstab-obs" style="padding:16px;overflow-y:auto;">
-          <div class="sec-hd" style="margin-bottom:12px;"><h2>🎙 Commentateurs enregistrés</h2></div>
-          <div class="card" style="margin-bottom:16px;"><div class="cb" style="padding:10px;">
-            <div class="plist" id="commList"><div class="ev-empty">Chargement…</div></div>
-          </div></div>
-          <div class="sec-hd" style="margin-bottom:12px;"><h2 id="commFormTitle">➕ Ajouter un commentateur</h2></div>
-          <div class="card" style="margin-bottom:16px;"><div class="cb">
-            <input type="hidden" id="commId">
-            <div class="frow">
-              <div class="f"><label class="fl">Prénom</label><input type="text" id="commFirst" placeholder="Jean" oninput="commPreview()"></div>
-              <div class="f"><label class="fl">Nom</label><input type="text" id="commLast" placeholder="DUPONT" oninput="commPreview()"></div>
-            </div>
-            <div class="f"><label class="fl">Rôle</label><input type="text" id="commRole" placeholder="Commentateur principal" oninput="commPreview()"></div>
-            <div class="brow" style="margin-top:4px;">
-              <button class="btn b-grn" onclick="commSave()">💾 Enregistrer</button>
-              <button class="btn b-dk"  onclick="commClear()">✕ Annuler</button>
-            </div>
-            <div class="fb" id="fb-commForm"></div>
-          </div></div>
-          <div class="sec-hd" style="margin-bottom:12px;"><h2>🎬 Diffusion OBS</h2></div>
-          <div class="card"><div class="cb">
-            <div class="comm-prev">
-              <div class="comm-prev-name" id="commPN">—</div>
-              <div class="comm-prev-role" id="commPR">—</div>
-              <div class="comm-st" id="commSt"><div class="csdot" id="commDot"></div><span id="commStTxt">INACTIF</span></div>
-            </div>
-            <div class="f"><label class="fl">Durée</label>
-              <div class="dur-grid" id="commDurGrid">
-                <div class="dur-btn on" data-ms="6000"  onclick="setDur(this,'comm')">6s</div>
-                <div class="dur-btn"    data-ms="8000"  onclick="setDur(this,'comm')">8s</div>
-                <div class="dur-btn"    data-ms="12000" onclick="setDur(this,'comm')">12s</div>
-                <div class="dur-btn"    data-ms="0"     onclick="setDur(this,'comm')">∞</div>
+        <!-- OBS Commentateur — scrollable librement -->
+        <div class="comm-subpanel" id="cstab-obs">
+          <div style="padding:16px;overflow-y:auto;flex:1;">
+            <div class="sec-hd" style="margin-bottom:12px;"><h2>🎙 Commentateurs enregistrés</h2></div>
+            <div class="card" style="margin-bottom:16px;"><div class="cb" style="padding:10px;">
+              <!-- Liste sans max-height fixe — scrolle avec la page -->
+              <div style="display:flex;flex-direction:column;gap:10px;" id="commList"><div class="ev-empty">Chargement…</div></div>
+            </div></div>
+
+            <div class="sec-hd" style="margin-bottom:12px;"><h2 id="commFormTitle">➕ Ajouter un commentateur</h2></div>
+            <div class="card" style="margin-bottom:16px;"><div class="cb">
+              <input type="hidden" id="commId">
+              <div class="frow">
+                <div class="f"><label class="fl">Prénom</label><input type="text" id="commFirst" placeholder="Jean" oninput="commPreview()"></div>
+                <div class="f"><label class="fl">Nom</label><input type="text" id="commLast" placeholder="DUPONT" oninput="commPreview()"></div>
               </div>
-            </div>
-            <button class="btn b-blue" id="bCommShow" onclick="commShow()" disabled style="margin-bottom:8px;">▶ Afficher sur OBS</button>
-            <button class="btn b-dk"   onclick="commHide()">✕ Masquer</button>
-            <div class="fb" id="fb-comm"></div>
-          </div></div>
+              <div class="f"><label class="fl">Rôle</label><input type="text" id="commRole" placeholder="Commentateur principal" oninput="commPreview()"></div>
+              <div class="brow" style="margin-top:4px;">
+                <button class="btn b-grn" onclick="commSave()">💾 Enregistrer</button>
+                <button class="btn b-dk"  onclick="commClear()">✕ Annuler</button>
+              </div>
+              <div class="fb" id="fb-commForm"></div>
+            </div></div>
+
+            <div class="sec-hd" style="margin-bottom:12px;"><h2>🎬 Diffusion OBS</h2></div>
+            <div class="card"><div class="cb">
+              <div class="comm-prev">
+                <div class="comm-prev-name" id="commPN">—</div>
+                <div class="comm-prev-role" id="commPR">—</div>
+                <div class="comm-st" id="commSt"><div class="csdot" id="commDot"></div><span id="commStTxt">INACTIF</span></div>
+              </div>
+              <div class="f"><label class="fl">Durée</label>
+                <div class="dur-grid" id="commDurGrid">
+                  <div class="dur-btn on" data-ms="6000"  onclick="setDur(this,'comm')">6s</div>
+                  <div class="dur-btn"    data-ms="8000"  onclick="setDur(this,'comm')">8s</div>
+                  <div class="dur-btn"    data-ms="12000" onclick="setDur(this,'comm')">12s</div>
+                  <div class="dur-btn"    data-ms="0"     onclick="setDur(this,'comm')">∞</div>
+                </div>
+              </div>
+              <button class="btn b-blue" id="bCommShow" onclick="commShow()" disabled style="margin-bottom:8px;">▶ Afficher sur OBS</button>
+              <button class="btn b-dk"   onclick="commHide()">✕ Masquer</button>
+              <div class="fb" id="fb-comm"></div>
+            </div></div>
+          </div>
         </div>
       </div>
 
       <!-- COLONNE DROITE : notes + chat -->
       <div class="comm-right">
         <!-- Notes -->
-        <div class="cv-notes" style="max-height:42%;border-bottom:1px solid var(--b);">
+        <div class="cv-notes" style="height:40%;border-bottom:1px solid var(--b);flex-shrink:0;">
           <div class="cv-notes-hd">
             <h3>📝 Notes</h3>
             <span class="cv-notes-saved" id="cvNotesSaved">✔ Sauvegardé</span>
@@ -761,7 +768,6 @@ tr:hover td{background:rgba(255,255,255,.015);}
 
     </div>
   </div>
-
   <!-- CLASSEMENT -->
   <div class="panel" id="panel-classement">
     <div class="g2">
@@ -1957,6 +1963,8 @@ async function cvCalibrateClock(){
       cvClockOffset=(new Date(json[0].updated_at).getTime()+(t1-t0)/2)-t1;
     }
   }catch(e){}
+  // retourne toujours une Promise résolue
+  return Promise.resolve();
 }
 function cvNow(){return Date.now()+cvClockOffset;}
 
@@ -2067,33 +2075,38 @@ function cvMsgHtml(m){
 }
 
 async function cvPollChat(){
+  // Vérifie que la table existe avant de requêter
   const d=await GET('chat_messages','?order=id.desc&limit=40');
-  if(!d)return;
-  if(!cvChatSynced){
-    cvChatLastId=d[0]?.id||0;
-    cvChatSynced=true;
+  if(!d){
+    // Table n'existe probablement pas — affiche un message d'info
     const el=document.getElementById('cvChatMsgs');
-    if(!el)return;
+    if(el&&!cvChatSynced){el.innerHTML='<div class="cv-chat-empty" style="color:#ff6677;font-size:10px;">⚠ Table chat_messages manquante.<br>Exécute supabase_chat.sql dans Supabase.</div>';}
+    return;
+  }
+  const el=document.getElementById('cvChatMsgs');
+  if(!el)return;
+  if(!cvChatSynced){
+    cvChatSynced=true;
+    cvChatLastId=d.length?d[0].id:0;
     const msgs=[...d].reverse();
     if(msgs.length){
       el.innerHTML=msgs.map(m=>cvMsgHtml(m)).join('');
-      el.scrollTop=el.scrollHeight;
+    }else{
+      el.innerHTML='<div class="cv-chat-empty">Aucun message — dites bonjour !</div>';
     }
+    el.scrollTop=el.scrollHeight;
     return;
   }
   const news=d.filter(m=>m.id>cvChatLastId).reverse();
   if(!news.length)return;
   cvChatLastId=d[0].id;
-  const el=document.getElementById('cvChatMsgs');
-  if(!el)return;
   const wasEmpty=el.querySelector('.cv-chat-empty');
   if(wasEmpty)el.innerHTML='';
   news.forEach(m=>{
     const div=document.createElement('div');
     div.innerHTML=cvMsgHtml(m);
     const node=div.firstElementChild;
-    node.classList.add('new');
-    el.appendChild(node);
+    if(node){node.classList.add('new');el.appendChild(node);}
   });
   el.scrollTop=el.scrollHeight;
 }
@@ -2102,19 +2115,27 @@ async function cvSendChat(){
   const nameInp=document.getElementById('cvChatName');
   const txtInp=document.getElementById('cvChatTxt');
   if(!nameInp||!txtInp)return;
-  const name=nameInp.value.trim()||cvMyName||'Opérateur';
+  const name=(nameInp.value.trim()||cvMyName||'Opérateur').slice(0,16);
   const msg=txtInp.value.trim();
-  if(!msg)return;
+  if(!msg||!name)return;
   if(name!==cvMyName){cvMyName=name;localStorage.setItem('wz_comm_name',name);}
   txtInp.value='';
-  await POST('chat_messages',{author:name,message:msg});
-}
-
-document.addEventListener('keydown',e=>{
-  if(e.key==='Enter'&&document.activeElement===document.getElementById('cvChatTxt')){
-    e.preventDefault();cvSendChat();
+  const res=await POST('chat_messages',{author:name,message:msg});
+  // Optimistic : affiche immédiatement sans attendre le poll
+  if(res&&res[0]){
+    const el=document.getElementById('cvChatMsgs');
+    if(el){
+      const wasEmpty=el.querySelector('.cv-chat-empty');
+      if(wasEmpty)el.innerHTML='';
+      const div=document.createElement('div');
+      div.innerHTML=cvMsgHtml(res[0]);
+      const node=div.firstElementChild;
+      if(node){node.classList.add('new');el.appendChild(node);}
+      el.scrollTop=el.scrollHeight;
+      cvChatLastId=Math.max(cvChatLastId,res[0].id||0);
+    }
   }
-});
+}
 
 // ══ INIT COMMENTATEUR VIEW ══
 function initCommView(){
@@ -2123,15 +2144,30 @@ function initCommView(){
   const inp=document.getElementById('cvChatName');
   if(inp&&n)inp.value=n;
   cvMyName=n;
+  // Keydown sur l'input chat — Enter pour envoyer
+  const txtInp=document.getElementById('cvChatTxt');
+  if(txtInp){
+    txtInp.addEventListener('keydown',e=>{
+      if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();cvSendChat();}
+    });
+  }
   // Init modules
   camRenderGrid();
   cvInitNotes();
   fixCommHeight();
-  cvCalibrateClock();
-  // Intervals spécifiques au panel commentateur
-  setInterval(cvPollChrono,900);
-  setInterval(cvPollCls,2000);
-  setInterval(cvPollChat,1500);
+  cvCalibrateClock().then(()=>{
+    // Premiers polls immédiats après calibration
+    cvPollChrono();
+    cvPollCls();
+    cvPollChat();
+  });
+  // Intervals — stockés pour éviter les doublons
+  if(!window._cvIntervals){
+    window._cvIntervals=true;
+    setInterval(cvPollChrono,900);
+    setInterval(cvPollCls,2000);
+    setInterval(cvPollChat,1500);
+  }
 }
 
 </script>
