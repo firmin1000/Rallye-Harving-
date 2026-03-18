@@ -2766,120 +2766,150 @@ setInterval(()=>{
 // ═══ MODE VIEWER DIFFUSION (activé si ?view=ID dans l'URL) ═══
 (function(){
   const vwId = new URLSearchParams(location.search).get('view');
-  if(!vwId) return; // Pas en mode viewer — ne fait rien, laisse le site normal
+  if(!vwId) return;
 
-  // Active le mode viewer dès que le DOM est prêt
   document.addEventListener('DOMContentLoaded', function(){
     document.body.classList.add('viewer-mode');
-    vwStart(vwId);
+    vwRun(vwId);
   });
 
-  const VW_ICE = [{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'}];
-  const VW_HDR = {'Content-Type':'application/json','apikey':DEFAULT_SB_KEY,'Authorization':'Bearer '+DEFAULT_SB_KEY,'Prefer':'return=representation'};
+  // STUN + TURN publics pour meilleure connectivité
+  const VW_ICE = [
+    {urls:'stun:stun.l.google.com:19302'},
+    {urls:'stun:stun1.l.google.com:19302'},
+    {urls:'stun:stun2.l.google.com:19302'},
+    {urls:'stun:stun.cloudflare.com:3478'}
+  ];
+  const VW_HDR = {
+    'Content-Type':'application/json',
+    'apikey':DEFAULT_SB_KEY,
+    'Authorization':'Bearer '+DEFAULT_SB_KEY,
+    'Prefer':'return=representation'
+  };
   let vwPc = null;
+  let vwDone = false;
 
-  async function vwFetch(id){ try{ const r=await fetch(`${DEFAULT_SB_URL}/rest/v1/diffusions?id=eq.${id}`,{headers:VW_HDR}); const d=await r.json(); return d&&d[0]||null; }catch(e){ return null; } }
-  async function vwSend(id,body){ body.updated_at=new Date().toISOString(); await fetch(`${DEFAULT_SB_URL}/rest/v1/diffusions?id=eq.${id}`,{method:'PATCH',headers:VW_HDR,body:JSON.stringify(body)}); }
+  function vwStatus(txt){ const el=document.getElementById('vwStatusTxt'); if(el) el.textContent=txt; }
 
-  async function vwStart(id){
-    const statusEl = document.getElementById('vwStatusTxt');
-    const row = await vwFetch(id);
-    if(!row){ if(statusEl) statusEl.textContent='❌ Session introuvable'; return; }
-    if(statusEl) statusEl.textContent='En attente du diffuseur…';
+  async function vwGet(id){
+    try{
+      const r=await fetch(`${DEFAULT_SB_URL}/rest/v1/diffusions?id=eq.${id}`,{headers:VW_HDR});
+      const d=await r.json(); return d&&d[0]||null;
+    }catch(e){ return null; }
+  }
+  async function vwPatch(id,body){
+    body.updated_at=new Date().toISOString();
+    try{ await fetch(`${DEFAULT_SB_URL}/rest/v1/diffusions?id=eq.${id}`,{method:'PATCH',headers:VW_HDR,body:JSON.stringify(body)}); }catch(e){}
+  }
 
-    vwPc = new RTCPeerConnection({iceServers:VW_ICE});
+  async function vwRun(id){
+    vwStatus('Connexion à Supabase…');
+    const row = await vwGet(id);
+    if(!row){ vwStatus('❌ Session introuvable — vérifiez le lien'); return; }
+    if(row.status!=='live'){ vwStatus('⏸ Diffuseur hors ligne'); }
 
+    vwStatus('Initialisation WebRTC…');
+    vwPc = new RTCPeerConnection({iceServers:VW_ICE,iceCandidatePoolSize:10});
+
+    // Affichage du flux dès réception
     vwPc.ontrack = function(e){
-      const vid = document.getElementById('vwVid');
+      const vid=document.getElementById('vwVid');
       if(!vid) return;
-      vid.srcObject = e.streams[0];
-      vid.onloadedmetadata = function(){
-        const st = document.getElementById('vwStatus');
-        if(st) st.style.display='none';
+      vid.srcObject=e.streams[0];
+      vid.play().catch(()=>{});
+      vid.onloadedmetadata=function(){ 
+        const s=document.getElementById('vwStatus');
+        if(s) s.style.display='none';
+        vwDone=true;
       };
     };
 
-    const iceView = [];
-    vwPc.onicecandidate = async function(e){
+    // Envoi des ICE candidates en batch toutes les 200ms
+    const iceQueue=[];
+    let iceSendTimer=null;
+    vwPc.onicecandidate=function(e){
       if(!e.candidate) return;
-      iceView.push(e.candidate.toJSON());
-      await vwSend(id, {ice_view: JSON.stringify(iceView)});
+      iceQueue.push(e.candidate.toJSON());
+      clearTimeout(iceSendTimer);
+      iceSendTimer=setTimeout(function(){
+        if(iceQueue.length) vwPatch(id,{ice_view:JSON.stringify(iceQueue.slice())});
+      },200);
     };
 
-    vwWaitOffer(id);
+    // Suivi état connexion
+    vwPc.onconnectionstatechange=function(){
+      const s=vwPc.connectionState;
+      if(s==='connected'){ vwDone=true; }
+      else if(s==='failed'){ vwStatus('❌ Connexion échouée — relancez OBS'); }
+      else if(s==='disconnected'){ vwStatus('⚠ Déconnecté'); }
+    };
+    vwPc.oniceconnectionstatechange=function(){
+      if(vwPc.iceConnectionState==='checking') vwStatus('Connexion en cours…');
+      if(vwPc.iceConnectionState==='connected'||vwPc.iceConnectionState==='completed') vwStatus('✅ Connecté');
+    };
+
+    // Attendre l'offer du diffuseur (polling rapide 300ms)
+    vwStatus('En attente du diffuseur…');
+    await vwWaitAndConnect(id, row);
   }
 
-  async function vwWaitOffer(id){
-    const row = await vwFetch(id);
-    if(!row) return;
-    if(row.offer){ await vwHandleOffer(id, row); return; }
-    setTimeout(function(){ vwWaitOffer(id); }, 800);
-  }
+  async function vwWaitAndConnect(id, initialRow){
+    let attempts=0;
+    const maxAttempts=60; // 60 × 300ms = 18s timeout
 
-  async function vwHandleOffer(id, row){
-    try{
-      await vwPc.setRemoteDescription(JSON.parse(row.offer));
-      const answer = await vwPc.createAnswer();
-      await vwPc.setLocalDescription(answer);
-      await vwSend(id, {answer: JSON.stringify(answer)});
-      const ice = JSON.parse(row.ice_diff||'[]');
-      for(const ci of ice){ try{ await vwPc.addIceCandidate(ci); }catch(e){} }
-      vwPollIce(id, ice.length);
-    }catch(e){
-      const st = document.getElementById('vwStatusTxt');
-      if(st) st.textContent='Erreur WebRTC : '+e.message;
+    // Si l'offer est déjà là dès le départ
+    if(initialRow.offer){
+      await vwConnect(id, initialRow);
+      return;
     }
+
+    const poll=setInterval(async function(){
+      attempts++;
+      if(vwDone){ clearInterval(poll); return; }
+      if(attempts>maxAttempts){
+        clearInterval(poll);
+        vwStatus('⏱ Timeout — le diffuseur ne répond pas. Vérifiez que le diffuseur est actif.');
+        return;
+      }
+      const row=await vwGet(id);
+      if(!row){ clearInterval(poll); vwStatus('❌ Session perdue'); return; }
+      if(row.offer){
+        clearInterval(poll);
+        await vwConnect(id, row);
+      }
+    },300);
   }
 
-  async function vwPollIce(id, known){
-    const row = await vwFetch(id);
-    if(!row) return;
-    const ice = JSON.parse(row.ice_diff||'[]');
-    for(let i=known; i<ice.length; i++){ try{ await vwPc.addIceCandidate(ice[i]); }catch(e){} }
-    if(vwPc && vwPc.connectionState!=='connected' && vwPc.connectionState!=='closed'){
-      setTimeout(function(){ vwPollIce(id, ice.length); }, 800);
+  async function vwConnect(id, row){
+    try{
+      vwStatus('Échange des clés WebRTC…');
+      await vwPc.setRemoteDescription(JSON.parse(row.offer));
+      const answer=await vwPc.createAnswer();
+      await vwPc.setLocalDescription(answer);
+      await vwPatch(id,{answer:JSON.stringify(answer)});
+
+      // ICE candidates du diffuseur déjà disponibles
+      const ice=JSON.parse(row.ice_diff||'[]');
+      for(const ci of ice){ try{ await vwPc.addIceCandidate(ci); }catch(e){} }
+
+      // Poll ICE restants (rapide, 300ms)
+      let knownIce=ice.length;
+      const iceInterval=setInterval(async function(){
+        if(vwDone||!vwPc||vwPc.connectionState==='closed'){ clearInterval(iceInterval); return; }
+        const r=await vwGet(id);
+        if(!r){ clearInterval(iceInterval); return; }
+        const newIce=JSON.parse(r.ice_diff||'[]');
+        for(let i=knownIce;i<newIce.length;i++){ try{ await vwPc.addIceCandidate(newIce[i]); }catch(e){} }
+        knownIce=newIce.length;
+        if(vwPc.connectionState==='connected'||vwPc.connectionState==='closed') clearInterval(iceInterval);
+      },300);
+
+    }catch(e){
+      vwStatus('❌ Erreur WebRTC : '+e.message);
     }
   }
 })();
 
 </script>
-</body>
-</html>
-
-<!-- DIFFUSIONS -->
-  <div class="panel" id="panel-diffusions">
-    <div class="diff-hd-bar">
-      <h2>📡 Diffusions en cours</h2>
-      <span class="diff-count" id="diffCount">0 live</span>
-      <button class="diff-refresh-btn" onclick="loadDiffusions()">↺ Actualiser</button>
-    </div>
-    <div id="diffGrid" class="diff-grid">
-      <div class="diff-empty">
-        <div class="diff-empty-ico">📡</div>
-        <div class="diff-empty-txt">Aucune diffusion active.<br>Les diffuseurs apparaîtront ici automatiquement.</div>
-      </div>
-    </div>
-  </div>
-
-</div>
-
-<!-- ═══ MODE VIEWER DIFFUSION (pour OBS) ═══ -->
-<div id="viewerMode">
-  <div id="vwStatus">
-    <div class="s-dot"></div>
-    <div id="vwStatusTxt">Connexion en cours…</div>
-  </div>
-  <video id="vwVid" autoplay playsinline muted style="width:100%;height:100%;object-fit:contain;display:block;"></video>
-
-</div>
-
-<!-- ═══ MODE VIEWER DIFFUSION (pour OBS) ═══ -->
-<div id="viewerMode">
-  <div id="vwStatus">
-    <div class="s-dot"></div>
-    <div id="vwStatusTxt">Connexion en cours…</div>
-  </div>
-  <video id="vwVid" autoplay playsinline muted style="width:100%;height:100%;object-fit:contain;display:block;"></video>
-</div>
 </body>
 </html>
