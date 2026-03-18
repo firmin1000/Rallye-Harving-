@@ -2596,7 +2596,7 @@ async function diffStart(){
     // Capture écran
     diffStream = await navigator.mediaDevices.getDisplayMedia({video:{frameRate:30,width:{ideal:1920}},audio:false});
   }catch(e){
-    err.textContent = e.name==='NotAllowedError'?'❌ Partage annulé — autorisez le partage d'écran':'❌ Erreur : '+e.message;
+    err.textContent = e.name==='NotAllowedError'?'❌ Partage annulé — autorisez le partage d\'écran':'❌ Erreur : '+e.message;
     btn.disabled=false; btn.innerHTML='<span>▶</span> Démarrer la diffusion';
     return;
   }
@@ -2615,7 +2615,7 @@ async function diffStart(){
   document.getElementById('diffScreen').classList.add('hidden');
   document.getElementById('diffLiveScreen').classList.remove('hidden');
   document.getElementById('diffLivePseudo').textContent=pseudo;
-  document.getElementById('diffLiveStatusTxt').textContent='En attente d'un viewer…';
+  document.getElementById('diffLiveStatusTxt').textContent='En attente d\'un viewer…';
 
   // Aperçu local
   const vid = document.getElementById('diffPreviewVid');
