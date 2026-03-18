@@ -502,6 +502,84 @@ tr:hover td{background:rgba(255,255,255,.015);}
 .cv-send-btn{background:var(--r);color:#fff;border:none;border-radius:5px;padding:10px 16px;font-family:var(--font-head);font-size:13px;font-weight:900;letter-spacing:1px;cursor:pointer;transition:background .12s;white-space:nowrap;height:42px;display:flex;align-items:center;gap:5px;flex-shrink:0;}
 .cv-send-btn:hover{background:var(--rh);}
 
+
+/* ═══ PANEL DIFFUSIONS (admin) ═══ */
+.diff-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;padding:18px 24px;}
+.diff-card{background:var(--bg3);border:1px solid var(--b);border-radius:8px;overflow:hidden;transition:border-color .2s;}
+.diff-card.live{border-color:rgba(0,200,83,.3);}
+.diff-card.offline{opacity:.5;}
+.diff-card-top{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--b);}
+.diff-status-dot{width:9px;height:9px;border-radius:50%;background:#333;flex-shrink:0;}
+.diff-card.live .diff-status-dot{background:var(--green);box-shadow:0 0 8px rgba(0,200,83,.5);animation:pulse 1.5s ease-in-out infinite;}
+.diff-pseudo{font-family:var(--font-head);font-size:16px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;flex:1;}
+.diff-status-lbl{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;}
+.diff-card.live .diff-status-lbl{color:var(--green);}
+.diff-card.offline .diff-status-lbl{color:var(--m);}
+.diff-card-body{padding:12px 14px;}
+.diff-info-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;font-size:11px;color:var(--m);}
+.diff-info-row b{color:var(--m2);}
+.diff-url-row{display:flex;gap:6px;align-items:center;}
+.diff-url-inp{flex:1;background:var(--bg4);color:rgba(255,255,255,.55);border:1px solid var(--b);border-radius:4px;padding:7px 10px;font-size:11px;font-family:monospace;outline:none;cursor:text;}
+.diff-copy-btn{background:rgba(34,85,170,.15);color:#88aaff;border:1px solid rgba(34,85,170,.25);border-radius:4px;padding:7px 12px;font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:1px;cursor:pointer;white-space:nowrap;transition:all .15s;}
+.diff-copy-btn:hover{background:rgba(34,85,170,.28);color:#fff;}
+.diff-copy-btn.copied{background:rgba(0,200,83,.12);color:var(--green);border-color:rgba(0,200,83,.2);}
+.diff-empty{padding:60px 24px;text-align:center;color:var(--m);}
+.diff-empty-ico{font-size:40px;margin-bottom:12px;opacity:.3;}
+.diff-empty-txt{font-size:13px;line-height:1.8;}
+.diff-hd-bar{display:flex;align-items:center;padding:12px 24px 0;gap:10px;}
+.diff-hd-bar h2{font-family:var(--font-head);font-size:17px;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
+.diff-count{font-size:10px;font-weight:700;letter-spacing:2px;padding:3px 9px;border-radius:10px;background:rgba(0,200,83,.1);color:var(--green);border:1px solid rgba(0,200,83,.18);}
+.diff-refresh-btn{margin-left:auto;background:none;border:1px solid var(--b);color:var(--m);border-radius:4px;padding:5px 11px;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;font-family:var(--font-head);transition:all .15s;}
+.diff-refresh-btn:hover{border-color:var(--b2);color:#fff;}
+
+/* ═══ VUE DIFFUSEUR ═══ */
+#diffScreen{position:fixed;inset:0;z-index:1000;background:var(--bg);display:flex;align-items:center;justify-content:center;}
+#diffScreen.hidden{display:none;}
+.diff-box{width:480px;text-align:center;animation:fadeUp .4s ease;}
+.diff-logo{font-family:var(--font-head);font-size:64px;font-weight:900;font-style:italic;color:var(--r);line-height:1;text-shadow:0 0 50px rgba(232,0,28,.35);}
+.diff-sub{font-size:10px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--m);margin-bottom:28px;}
+.diff-step{background:var(--bg3);border:1px solid var(--b);border-radius:8px;padding:20px;margin-bottom:12px;text-align:left;}
+.diff-step h3{font-family:var(--font-head);font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--m2);margin-bottom:14px;text-align:center;}
+.diff-inp{width:100%;background:var(--bg4);color:#fff;border:1px solid var(--b);border-radius:5px;padding:12px 14px;font-family:var(--font-body);font-size:15px;outline:none;transition:border-color .2s;margin-bottom:10px;}
+.diff-inp:focus{border-color:var(--b2);}
+.diff-inp::placeholder{color:rgba(255,255,255,.18);}
+.diff-start-btn{width:100%;background:var(--r);color:#fff;border:none;border-radius:6px;padding:14px;font-family:var(--font-head);font-size:16px;font-weight:900;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:background .12s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.diff-start-btn:hover{background:var(--rh);}
+.diff-start-btn:disabled{opacity:.4;cursor:not-allowed;}
+.diff-err{color:#ff4455;font-size:11px;margin-top:8px;text-align:center;min-height:16px;}
+
+/* Vue live diffuseur */
+#diffLiveScreen{position:fixed;inset:0;z-index:1001;background:#000;display:flex;flex-direction:column;}
+#diffLiveScreen.hidden{display:none;}
+.diff-live-bar{height:48px;background:rgba(0,0,0,.9);border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;padding:0 18px;gap:12px;flex-shrink:0;}
+.diff-live-logo{font-family:var(--font-head);font-size:22px;font-weight:900;font-style:italic;color:var(--r);}
+.diff-live-status{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.4);}
+.diff-live-dot{width:8px;height:8px;border-radius:50%;background:#333;}
+.diff-live-dot.on{background:var(--r);box-shadow:0 0 8px rgba(232,0,28,.5);animation:pulse 1.2s ease-in-out infinite;}
+.diff-live-pseudo{font-family:var(--font-head);font-size:14px;font-weight:700;text-transform:uppercase;color:rgba(255,255,255,.6);}
+.diff-stop-btn{margin-left:auto;background:rgba(255,68,85,.12);color:#ff4455;border:1px solid rgba(255,68,85,.25);border-radius:5px;padding:7px 16px;font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .15s;}
+.diff-stop-btn:hover{background:rgba(255,68,85,.22);color:#fff;}
+.diff-preview-wrap{flex:1;position:relative;display:flex;align-items:center;justify-content:center;background:#000;}
+.diff-preview-wrap video{max-width:100%;max-height:100%;object-fit:contain;}
+.diff-preview-empty{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:rgba(255,255,255,.2);font-family:var(--font-head);font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
+
+/* ═══ MODE VIEWER DIFFUSION (OBS) ═══ */
+#viewerMode{display:none;position:fixed;inset:0;background:#000;}
+body.viewer-mode #viewerMode{display:block;}
+body.viewer-mode #roleScreen,
+body.viewer-mode #diffScreen,
+body.viewer-mode #diffLiveScreen,
+body.viewer-mode #rolePwdModal,
+body.viewer-mode #app{display:none!important;}
+
+/* Viewer styles */
+*{margin:0;padding:0;box-sizing:border-box;}
+#viewerMode{background:#000;}
+#viewerMode video{width:100%;height:100%;object-fit:contain;display:block;}
+#viewerMode #vwStatus{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;color:rgba(255,255,255,.5);font-family:sans-serif;font-size:14px;background:#000;}
+#status.hidden{display:none;}
+#viewerMode .s-dot{width:10px;height:10px;border-radius:50%;background:#e8001c;animation:vwPulse 1.2s ease-in-out infinite;margin:0 auto;}
+@keyframes vwPulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.2;transform:scale(.5);}}
 </style>
 </head>
 <body>
@@ -527,6 +605,11 @@ tr:hover td{background:rgba(255,255,255,.015);}
         <div class="role-name">Commentateur</div>
         <div class="role-desc">Caméras VDO, classement live, notes et chat interne</div>
       </div>
+    </div>
+    <div style="margin-top:16px;">
+      <button onclick="showDiffScreen()" style="background:none;border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.35);border-radius:20px;padding:8px 20px;font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .2s;" onmouseover="this.style.borderColor='rgba(255,255,255,.25)';this.style.color='rgba(255,255,255,.7)'" onmouseout="this.style.borderColor='rgba(255,255,255,.1)';this.style.color='rgba(255,255,255,.35)'">
+        📡 Diffuser mon écran
+      </button>
     </div>
   </div>
 </div>
@@ -565,6 +648,46 @@ tr:hover td{background:rgba(255,255,255,.015);}
   </div>
 </div>
 
+<!-- ÉCRAN DIFFUSEUR — Saisie pseudo -->
+<div id="diffScreen" class="hidden">
+  <div class="diff-box">
+    <div class="diff-logo">W</div>
+    <div class="diff-sub">Weazel Rally · Diffusion écran</div>
+    <div class="diff-step">
+      <h3>📡 Diffuser mon écran</h3>
+      <input type="text" class="diff-inp" id="diffPseudo" placeholder="Votre pseudo (ex: Jean-Pierre)" maxlength="30" autofocus>
+      <button class="diff-start-btn" id="diffStartBtn" onclick="diffStart()">
+        <span>▶</span> Démarrer la diffusion
+      </button>
+      <div class="diff-err" id="diffErr"></div>
+    </div>
+    <div style="font-size:10px;color:rgba(255,255,255,.18);line-height:1.6;">
+      Votre écran sera visible par l'admin dans le panel Diffusions.<br>
+      Un lien unique sera généré pour OBS.
+    </div>
+  </div>
+</div>
+
+<!-- ÉCRAN LIVE DIFFUSEUR -->
+<div id="diffLiveScreen" class="hidden">
+  <div class="diff-live-bar">
+    <div class="diff-logo" style="font-size:22px;">W</div>
+    <div class="diff-live-status">
+      <div class="diff-live-dot" id="diffLiveDot"></div>
+      <span id="diffLiveStatusTxt">Connexion…</span>
+    </div>
+    <span class="diff-live-pseudo" id="diffLivePseudo"></span>
+    <button class="diff-stop-btn" onclick="diffStop()">⏹ Arrêter</button>
+  </div>
+  <div class="diff-preview-wrap">
+    <video id="diffPreviewVid" autoplay playsinline muted style="max-width:100%;max-height:100%;"></video>
+    <div class="diff-preview-empty" id="diffPreviewEmpty">
+      <span style="font-size:32px;opacity:.3;">🖥️</span>
+      <span>Aperçu de votre partage d'écran</span>
+    </div>
+  </div>
+</div>
+
 <!-- APP -->
 <div id="app">
   <header class="topbar">
@@ -576,6 +699,7 @@ tr:hover td{background:rgba(255,255,255,.015);}
       <button class="tb-btn"     data-tab="commentateur" onclick="tab('commentateur')">🎙 Commentateur</button>
       <button class="tb-btn"     data-tab="classement"   onclick="tab('classement')">📊 Classement</button>
       <button class="tb-btn"     data-tab="pilotes"      onclick="tab('pilotes')">👤 Pilotes</button>
+      <button class="tb-btn"     data-tab="diffusions"   onclick="tab('diffusions')">📡 Diffusions</button>
     </nav>
     <div class="tb-right">
       <span class="role-badge" id="roleBadge"></span>
@@ -924,6 +1048,30 @@ tr:hover td{background:rgba(255,255,255,.015);}
       </div>
     </div>
   </div>
+  <!-- DIFFUSIONS -->
+  <div class="panel" id="panel-diffusions">
+    <div class="diff-hd-bar">
+      <h2>📡 Diffusions en cours</h2>
+      <span class="diff-count" id="diffCount">0 live</span>
+      <button class="diff-refresh-btn" onclick="loadDiffusions()">↺ Actualiser</button>
+    </div>
+    <div id="diffGrid" class="diff-grid">
+      <div class="diff-empty">
+        <div class="diff-empty-ico">📡</div>
+        <div class="diff-empty-txt">Aucune diffusion active.<br>Les diffuseurs apparaîtront ici automatiquement.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══ MODE VIEWER DIFFUSION (pour OBS) ═══ -->
+<div id="viewerMode">
+  <div id="vwStatus">
+    <div class="s-dot"></div>
+    <div id="vwStatusTxt">Connexion en cours…</div>
+  </div>
+  <video id="vwVid" autoplay playsinline muted style="width:100%;height:100%;object-fit:contain;display:block;"></video>
 </div>
 
 <script>
@@ -1022,7 +1170,7 @@ function applyRole(role){
   if(btnSetup)btnSetup.style.display=role==='admin'?'':'none';
   // Onglets visibles selon le rôle
   const navMap={
-    admin:  ['chrono','events','drivercard','commentateur','classement','pilotes'],
+    admin:  ['chrono','events','drivercard','commentateur','classement','pilotes','diffusions'],
     chrono: ['chrono','events','classement'],
     comm:   ['commentateur'],
   };
@@ -1143,6 +1291,7 @@ function tab(name){
     if(!_commViewInited){_commViewInited=true;initCommView();}
     else{fixCommHeight();cvPollChrono();cvPollCls();}
   }
+  if(name==='diffusions') loadDiffusions();
 }
 
 // ══ PILOTES ══
@@ -2366,6 +2515,359 @@ function initCommView(){
     setInterval(cvPollChat,1500);
   }
 }
+
+
+// ══ DIFFUSIONS — ÉCRAN DIFFUSEUR ══
+const SB_BASE = DEFAULT_SB_URL;
+const SB_HDR  = () => ({'Content-Type':'application/json','apikey':DEFAULT_SB_KEY,'Authorization':'Bearer '+DEFAULT_SB_KEY,'Prefer':'return=representation'});
+const ICE_CFG = {iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'}]};
+
+let diffId=null, diffPc=null, diffStream=null, diffPollT=null;
+
+function showDiffScreen(){
+  document.getElementById('roleScreen').classList.add('hidden');
+  document.getElementById('diffScreen').classList.remove('hidden');
+  setTimeout(()=>document.getElementById('diffPseudo').focus(),100);
+}
+document.getElementById('diffPseudo')?.addEventListener('keydown',e=>{if(e.key==='Enter')diffStart();});
+
+async function diffStart(){
+  const pseudo = document.getElementById('diffPseudo').value.trim();
+  const err    = document.getElementById('diffErr');
+  if(!pseudo){err.textContent='Entrez votre pseudo';return;}
+  const btn = document.getElementById('diffStartBtn');
+  btn.disabled=true; err.textContent='';
+  btn.innerHTML='<span style="animation:pulse 1s infinite;display:inline-block;">●</span> Démarrage…';
+
+  try{
+    // Capture écran
+    diffStream = await navigator.mediaDevices.getDisplayMedia({video:{frameRate:30,width:{ideal:1920}},audio:false});
+  }catch(e){
+    err.textContent = e.name==='NotAllowedError'?'❌ Partage annulé — autorisez le partage d'écran':'❌ Erreur : '+e.message;
+    btn.disabled=false; btn.innerHTML='<span>▶</span> Démarrer la diffusion';
+    return;
+  }
+
+  // Arrêt si l'utilisateur ferme le partage depuis le navigateur
+  diffStream.getVideoTracks()[0].addEventListener('ended',()=>diffStop());
+
+  // Crée la session dans Supabase
+  diffId = crypto.randomUUID();
+  await fetch(`${SB_BASE}/rest/v1/diffusions`,{
+    method:'POST', headers:SB_HDR(),
+    body:JSON.stringify({id:diffId, pseudo, status:'live', offer:'', answer:'', ice_diff:'[]', ice_view:'[]'})
+  });
+
+  // Interface live
+  document.getElementById('diffScreen').classList.add('hidden');
+  document.getElementById('diffLiveScreen').classList.remove('hidden');
+  document.getElementById('diffLivePseudo').textContent=pseudo;
+  document.getElementById('diffLiveStatusTxt').textContent='En attente d'un viewer…';
+
+  // Aperçu local
+  const vid = document.getElementById('diffPreviewVid');
+  vid.srcObject = diffStream;
+  document.getElementById('diffPreviewEmpty').style.display='none';
+
+  // WebRTC — crée l'offre
+  diffPc = new RTCPeerConnection(ICE_CFG);
+  diffStream.getTracks().forEach(t=>diffPc.addTrack(t,diffStream));
+
+  const iceDiff=[];
+  diffPc.onicecandidate = async e=>{
+    if(!e.candidate)return;
+    iceDiff.push(e.candidate.toJSON());
+    await diffPatch({ice_diff:JSON.stringify(iceDiff)});
+  };
+
+  diffPc.onconnectionstatechange = ()=>{
+    const s=diffPc.connectionState;
+    const dot=document.getElementById('diffLiveDot');
+    const txt=document.getElementById('diffLiveStatusTxt');
+    if(s==='connected'){dot.classList.add('on');txt.textContent='Connecté ✓';}
+    else if(s==='disconnected'||s==='failed'){dot.classList.remove('on');txt.textContent='Déconnecté';}
+  };
+
+  const offer = await diffPc.createOffer();
+  await diffPc.setLocalDescription(offer);
+  await diffPatch({offer:JSON.stringify(offer)});
+
+  // Attend la réponse du viewer
+  diffPollAnswer();
+}
+
+async function diffPollAnswer(){
+  try{
+    const r=await fetch(`${SB_BASE}/rest/v1/diffusions?id=eq.${diffId}`,{headers:SB_HDR()});
+    const d=await r.json();
+    const row=d&&d[0];
+    if(!row){clearTimeout(diffPollT);return;}
+    if(row.answer&&diffPc.signalingState!=='stable'){
+      await diffPc.setRemoteDescription(JSON.parse(row.answer));
+      // ICE candidates du viewer
+      const iceV=JSON.parse(row.ice_view||'[]');
+      for(const ci of iceV){try{await diffPc.addIceCandidate(ci);}catch(e){}}
+      diffPollIceView(iceV.length);
+      return;
+    }
+  }catch(e){}
+  diffPollT=setTimeout(diffPollAnswer,800);
+}
+
+async function diffPollIceView(known){
+  try{
+    const r=await fetch(`${SB_BASE}/rest/v1/diffusions?id=eq.${diffId}`,{headers:SB_HDR()});
+    const d=await r.json();
+    const row=d&&d[0];
+    if(!row)return;
+    const iceV=JSON.parse(row.ice_view||'[]');
+    for(let i=known;i<iceV.length;i++){try{await diffPc.addIceCandidate(iceV[i]);}catch(e){}}
+    if(diffPc.connectionState!=='connected'&&diffPc.connectionState!=='closed'){
+      setTimeout(()=>diffPollIceView(iceV.length),800);
+    }
+  }catch(e){}
+}
+
+async function diffStop(){
+  clearTimeout(diffPollT);
+  if(diffStream){diffStream.getTracks().forEach(t=>t.stop());diffStream=null;}
+  if(diffPc){diffPc.close();diffPc=null;}
+  if(diffId){
+    await fetch(`${SB_BASE}/rest/v1/diffusions?id=eq.${diffId}`,{
+      method:'PATCH',headers:SB_HDR(),body:JSON.stringify({status:'offline',updated_at:new Date().toISOString()})
+    });
+    diffId=null;
+  }
+  document.getElementById('diffLiveScreen').classList.add('hidden');
+  document.getElementById('diffScreen').classList.remove('hidden');
+  const btn=document.getElementById('diffStartBtn');
+  btn.disabled=false; btn.innerHTML='<span>▶</span> Démarrer la diffusion';
+}
+
+async function diffPatch(body){
+  body.updated_at=new Date().toISOString();
+  await fetch(`${SB_BASE}/rest/v1/diffusions?id=eq.${diffId}`,{method:'PATCH',headers:SB_HDR(),body:JSON.stringify(body)});
+}
+
+// ══ DIFFUSIONS — PANEL ADMIN ══
+const VIEWER_BASE = location.origin + location.pathname;
+
+async function loadDiffusions(){
+  const grid=document.getElementById('diffGrid');
+  if(!grid)return;
+  const d=await GET('diffusions','?order=updated_at.desc&limit=30');
+  if(!d){grid.innerHTML='<div class="diff-empty"><div class="diff-empty-ico">⚠️</div><div class="diff-empty-txt">Erreur de chargement</div></div>';return;}
+
+  // Considère "live" = status live ET updated_at < 30s
+  const now=Date.now();
+  const live=d.filter(r=>r.status==='live'&&(now-new Date(r.updated_at).getTime())<60000);
+  const recent=d.filter(r=>r.status==='offline'&&(now-new Date(r.updated_at).getTime())<300000);
+  const all=[...live,...recent];
+
+  const countEl=document.getElementById('diffCount');
+  if(countEl)countEl.textContent=live.length+' live';
+
+  if(!all.length){
+    grid.innerHTML='<div class="diff-empty"><div class="diff-empty-ico">📡</div><div class="diff-empty-txt">Aucune diffusion active.<br>Les diffuseurs apparaîtront ici automatiquement.</div></div>';
+    return;
+  }
+
+  grid.innerHTML=all.map(r=>{
+    const isLive=live.includes(r);
+    const obsUrl=`${VIEWER_BASE}?view=${r.id}`;
+    const ago=Math.round((now-new Date(r.updated_at).getTime())/1000);
+    const agoStr=ago<60?ago+'s':Math.round(ago/60)+'min';
+    return `<div class="diff-card ${isLive?'live':'offline'}">
+      <div class="diff-card-top">
+        <div class="diff-status-dot"></div>
+        <span class="diff-pseudo">${r.pseudo||'?'}</span>
+        <span class="diff-status-lbl">${isLive?'🔴 LIVE':'OFFLINE'}</span>
+      </div>
+      <div class="diff-card-body">
+        <div class="diff-info-row">
+          <b>Dernière activité :</b> il y a ${agoStr}
+        </div>
+        <div class="diff-url-row">
+          <input class="diff-url-inp" id="diffUrl-${r.id}" value="${obsUrl}" readonly onclick="this.select()">
+          <button class="diff-copy-btn" id="diffCpy-${r.id}" onclick="diffCopyUrl('${r.id}','${obsUrl}')">📋 Copier</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function diffCopyUrl(id,url){
+  navigator.clipboard.writeText(url).then(()=>{
+    const btn=document.getElementById(`diffCpy-${id}`);
+    if(btn){btn.textContent='✓ Copié !';btn.classList.add('copied');setTimeout(()=>{btn.textContent='📋 Copier';btn.classList.remove('copied');},2000);}
+  });
+}
+
+// Auto-refresh quand le panel est visible
+setInterval(()=>{
+  if(document.getElementById('panel-diffusions')?.classList.contains('on')) loadDiffusions();
+},5000);
+
+
+
+// ═══ MODE VIEWER (activé si ?view=ID dans l'URL) ═══
+(function(){
+  const vwId = new URLSearchParams(location.search).get('view');
+  if(!vwId) return; // pas en mode viewer
+  // Passe en mode viewer dès le chargement
+  document.addEventListener('DOMContentLoaded',()=>{
+    document.body.classList.add('viewer-mode');
+    document.getElementById('vwStatusTxt').textContent='Connexion en cours…';
+    vwInit(vwId);
+  });
+
+'use strict';
+const SB_URL = 'https://tnjnxmndvxrisohmiieh.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRuam54bW5kdnhyaXNvaG1paWVoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMxNzYyMzcsImV4cCI6MjA4ODc1MjIzN30.oi8kVDp5879LWv2Gwuy384LVFIFSjl3U8dorBuzQHNg';
+
+const VW_H = {'Content-Type':'application/json','apikey':DEFAULT_SB_KEY,'Authorization':'Bearer '+DEFAULT_SB_KEY,'Prefer':'return=representation'};
+
+
+
+const VW_ICE_SERVERS = [{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'}];
+let vwPc, vwPollT;
+
+async function vwInit(){
+  const row = await vwGetRow();
+  if(!row){ document.getElementById('vwStatusTxt').textContent='❌ Session introuvable'; return; }
+  document.getElementById('vwStatusTxt').textContent='En attente du diffuseur…';
+
+  vwPc = new RTCPeerConnection({iceServers:VW_ICE_SERVERS});
+
+  // Réception du flux
+  vwPc.ontrack = e => {
+    const vid = document.getElementById('vwVid');
+    vid.srcObject = e.streams[0];
+    vid.onloadedmetadata = () => {
+      document.getElementById('vwStatus').classList.add('hidden');
+    };
+  };
+
+  // ICE candidates du viewer → Supabase
+  const iceView = [];
+  vwPc.onicecandidate = async e => {
+    if(!e.candidate) return;
+    iceView.push(e.candidate.toJSON());
+    await vwPatch({ice_view: JSON.stringify(iceView)});
+  };
+
+  // Attend l'offer du diffuseur
+  vwWaitForOffer();
+}
+
+async function vwWaitForOffer(){
+  const row = await vwGetRow();
+  if(!row) return;
+  if(row.offer){
+    await vwHandleOffer(row);
+    return;
+  }
+  vwPollT = setTimeout(vwWaitForOffer, 800);
+}
+
+async function vwHandleOffer(row){
+  try{
+    await vwPc.setRemoteDescription(JSON.parse(row.offer));
+    const answer = await vwPc.createAnswer();
+    await vwPc.setLocalDescription(answer);
+    await vwPatch({answer: JSON.stringify(answer)});
+
+    // Applique les ICE candidates du diffuseur déjà reçus
+    const ice = JSON.parse(row.ice_diff||'[]');
+    for(const c of ice){
+      try{ await vwPc.addIceCandidate(c); }catch(e){}
+    }
+
+    // Poll pour les ICE candidates du diffuseur à venir
+    pollIceDiff(ice.length);
+  }catch(e){
+    document.getElementById('vwStatusTxt').textContent='Erreur WebRTC : '+e.message;
+  }
+}
+
+async function vwPollIceDiff(knownCount){
+  const row = await vwGetRow();
+  if(!row) return;
+  const ice = JSON.parse(row.ice_diff||'[]');
+  for(let i=knownCount; i<ice.length; i++){
+    try{ await vwPc.addIceCandidate(ice[i]); }catch(e){}
+  }
+  if(vwPc.connectionState !== 'connected' && vwPc.connectionState !== 'closed'){
+    setTimeout(()=>vwPollIceDiff(ice.length), 800);
+  }
+}
+
+async function vwGetRow(){
+  try{
+    const r = await fetch(`${DEFAULT_SB_URL}/rest/v1/diffusions?id=eq.${id}`,{headers:VW_H});
+    const d = await r.json();
+    return d&&d[0]||null;
+  }catch(e){ return null; }
+}
+async function vwPatch(body){
+  body.updated_at = new Date().toISOString();
+  await fetch(`${DEFAULT_SB_URL}/rest/v1/diffusions?id=eq.${id}`,{method:'PATCH',headers:H,body:JSON.stringify(body)});
+}
+  async function vwInit(id){
+    const row = await vwGetRow(id);
+    if(!row){ document.getElementById('vwStatusTxt').textContent='❌ Session introuvable'; return; }
+    document.getElementById('vwStatusTxt').textContent='En attente du diffuseur…';
+    vwPc = new RTCPeerConnection({iceServers:VW_ICE_SERVERS});
+    vwPc.ontrack = e => {
+      const vid = document.getElementById('vwVid');
+      vid.srcObject = e.streams[0];
+      vid.onloadedmetadata = () => { document.getElementById('vwStatus').style.display='none'; };
+    };
+    const iceView=[];
+    vwPc.onicecandidate = async e => {
+      if(!e.candidate)return;
+      iceView.push(e.candidate.toJSON());
+      await vwPatch(id,{ice_view:JSON.stringify(iceView)});
+    };
+    vwWaitForOffer(id);
+  }
+  async function vwGetRow(id){
+    try{
+      const r=await fetch(`${DEFAULT_SB_URL}/rest/v1/diffusions?id=eq.${id}`,{headers:VW_H});
+      const d=await r.json(); return d&&d[0]||null;
+    }catch(e){return null;}
+  }
+  async function vwPatch(id,body){
+    body.updated_at=new Date().toISOString();
+    await fetch(`${DEFAULT_SB_URL}/rest/v1/diffusions?id=eq.${id}`,{method:'PATCH',headers:VW_H,body:JSON.stringify(body)});
+  }
+  async function vwWaitForOffer(id){
+    const row=await vwGetRow(id);
+    if(!row)return;
+    if(row.offer){await vwHandleOffer(id,row);return;}
+    setTimeout(()=>vwWaitForOffer(id),800);
+  }
+  async function vwHandleOffer(id,row){
+    try{
+      await vwPc.setRemoteDescription(JSON.parse(row.offer));
+      const answer=await vwPc.createAnswer();
+      await vwPc.setLocalDescription(answer);
+      await vwPatch(id,{answer:JSON.stringify(answer)});
+      const ice=JSON.parse(row.ice_diff||'[]');
+      for(const ci of ice){try{await vwPc.addIceCandidate(ci);}catch(e){}}
+      vwPollIceDiff(id,ice.length);
+    }catch(e){document.getElementById('vwStatusTxt').textContent='Erreur : '+e.message;}
+  }
+  async function vwPollIceDiff(id,known){
+    const row=await vwGetRow(id);
+    if(!row)return;
+    const ice=JSON.parse(row.ice_diff||'[]');
+    for(let i=known;i<ice.length;i++){try{await vwPc.addIceCandidate(ice[i]);}catch(e){}}
+    if(vwPc.connectionState!=='connected'&&vwPc.connectionState!=='closed'){
+      setTimeout(()=>vwPollIceDiff(id,ice.length),800);
+    }
+  }
+})();
 
 </script>
 </body>
