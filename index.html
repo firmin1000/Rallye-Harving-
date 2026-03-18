@@ -2719,161 +2719,81 @@ setInterval(()=>{
 
 
 
-// ═══ MODE VIEWER (activé si ?view=ID dans l'URL) ═══
+// ═══ MODE VIEWER DIFFUSION (activé si ?view=ID dans l'URL) ═══
 (function(){
   const vwId = new URLSearchParams(location.search).get('view');
-  if(!vwId) return; // pas en mode viewer
-  // Passe en mode viewer dès le chargement
-  document.addEventListener('DOMContentLoaded',()=>{
+  if(!vwId) return; // Pas en mode viewer — ne fait rien, laisse le site normal
+
+  // Active le mode viewer dès que le DOM est prêt
+  document.addEventListener('DOMContentLoaded', function(){
     document.body.classList.add('viewer-mode');
-    document.getElementById('vwStatusTxt').textContent='Connexion en cours…';
-    vwInit(vwId);
+    vwStart(vwId);
   });
 
-'use strict';
-const SB_URL = 'https://tnjnxmndvxrisohmiieh.supabase.co';
-const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRuam54bW5kdnhyaXNvaG1paWVoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMxNzYyMzcsImV4cCI6MjA4ODc1MjIzN30.oi8kVDp5879LWv2Gwuy384LVFIFSjl3U8dorBuzQHNg';
+  const VW_ICE = [{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'}];
+  const VW_HDR = {'Content-Type':'application/json','apikey':DEFAULT_SB_KEY,'Authorization':'Bearer '+DEFAULT_SB_KEY,'Prefer':'return=representation'};
+  let vwPc = null;
 
-const VW_H = {'Content-Type':'application/json','apikey':DEFAULT_SB_KEY,'Authorization':'Bearer '+DEFAULT_SB_KEY,'Prefer':'return=representation'};
+  async function vwFetch(id){ try{ const r=await fetch(`${DEFAULT_SB_URL}/rest/v1/diffusions?id=eq.${id}`,{headers:VW_HDR}); const d=await r.json(); return d&&d[0]||null; }catch(e){ return null; } }
+  async function vwSend(id,body){ body.updated_at=new Date().toISOString(); await fetch(`${DEFAULT_SB_URL}/rest/v1/diffusions?id=eq.${id}`,{method:'PATCH',headers:VW_HDR,body:JSON.stringify(body)}); }
 
+  async function vwStart(id){
+    const statusEl = document.getElementById('vwStatusTxt');
+    const row = await vwFetch(id);
+    if(!row){ if(statusEl) statusEl.textContent='❌ Session introuvable'; return; }
+    if(statusEl) statusEl.textContent='En attente du diffuseur…';
 
+    vwPc = new RTCPeerConnection({iceServers:VW_ICE});
 
-const VW_ICE_SERVERS = [{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'}];
-let vwPc, vwPollT;
-
-async function vwInit(){
-  const row = await vwGetRow();
-  if(!row){ document.getElementById('vwStatusTxt').textContent='❌ Session introuvable'; return; }
-  document.getElementById('vwStatusTxt').textContent='En attente du diffuseur…';
-
-  vwPc = new RTCPeerConnection({iceServers:VW_ICE_SERVERS});
-
-  // Réception du flux
-  vwPc.ontrack = e => {
-    const vid = document.getElementById('vwVid');
-    vid.srcObject = e.streams[0];
-    vid.onloadedmetadata = () => {
-      document.getElementById('vwStatus').classList.add('hidden');
-    };
-  };
-
-  // ICE candidates du viewer → Supabase
-  const iceView = [];
-  vwPc.onicecandidate = async e => {
-    if(!e.candidate) return;
-    iceView.push(e.candidate.toJSON());
-    await vwPatch({ice_view: JSON.stringify(iceView)});
-  };
-
-  // Attend l'offer du diffuseur
-  vwWaitForOffer();
-}
-
-async function vwWaitForOffer(){
-  const row = await vwGetRow();
-  if(!row) return;
-  if(row.offer){
-    await vwHandleOffer(row);
-    return;
-  }
-  vwPollT = setTimeout(vwWaitForOffer, 800);
-}
-
-async function vwHandleOffer(row){
-  try{
-    await vwPc.setRemoteDescription(JSON.parse(row.offer));
-    const answer = await vwPc.createAnswer();
-    await vwPc.setLocalDescription(answer);
-    await vwPatch({answer: JSON.stringify(answer)});
-
-    // Applique les ICE candidates du diffuseur déjà reçus
-    const ice = JSON.parse(row.ice_diff||'[]');
-    for(const c of ice){
-      try{ await vwPc.addIceCandidate(c); }catch(e){}
-    }
-
-    // Poll pour les ICE candidates du diffuseur à venir
-    pollIceDiff(ice.length);
-  }catch(e){
-    document.getElementById('vwStatusTxt').textContent='Erreur WebRTC : '+e.message;
-  }
-}
-
-async function vwPollIceDiff(knownCount){
-  const row = await vwGetRow();
-  if(!row) return;
-  const ice = JSON.parse(row.ice_diff||'[]');
-  for(let i=knownCount; i<ice.length; i++){
-    try{ await vwPc.addIceCandidate(ice[i]); }catch(e){}
-  }
-  if(vwPc.connectionState !== 'connected' && vwPc.connectionState !== 'closed'){
-    setTimeout(()=>vwPollIceDiff(ice.length), 800);
-  }
-}
-
-async function vwGetRow(){
-  try{
-    const r = await fetch(`${DEFAULT_SB_URL}/rest/v1/diffusions?id=eq.${id}`,{headers:VW_H});
-    const d = await r.json();
-    return d&&d[0]||null;
-  }catch(e){ return null; }
-}
-async function vwPatch(body){
-  body.updated_at = new Date().toISOString();
-  await fetch(`${DEFAULT_SB_URL}/rest/v1/diffusions?id=eq.${id}`,{method:'PATCH',headers:H,body:JSON.stringify(body)});
-}
-  async function vwInit(id){
-    const row = await vwGetRow(id);
-    if(!row){ document.getElementById('vwStatusTxt').textContent='❌ Session introuvable'; return; }
-    document.getElementById('vwStatusTxt').textContent='En attente du diffuseur…';
-    vwPc = new RTCPeerConnection({iceServers:VW_ICE_SERVERS});
-    vwPc.ontrack = e => {
+    vwPc.ontrack = function(e){
       const vid = document.getElementById('vwVid');
+      if(!vid) return;
       vid.srcObject = e.streams[0];
-      vid.onloadedmetadata = () => { document.getElementById('vwStatus').style.display='none'; };
+      vid.onloadedmetadata = function(){
+        const st = document.getElementById('vwStatus');
+        if(st) st.style.display='none';
+      };
     };
-    const iceView=[];
-    vwPc.onicecandidate = async e => {
-      if(!e.candidate)return;
+
+    const iceView = [];
+    vwPc.onicecandidate = async function(e){
+      if(!e.candidate) return;
       iceView.push(e.candidate.toJSON());
-      await vwPatch(id,{ice_view:JSON.stringify(iceView)});
+      await vwSend(id, {ice_view: JSON.stringify(iceView)});
     };
-    vwWaitForOffer(id);
+
+    vwWaitOffer(id);
   }
-  async function vwGetRow(id){
-    try{
-      const r=await fetch(`${DEFAULT_SB_URL}/rest/v1/diffusions?id=eq.${id}`,{headers:VW_H});
-      const d=await r.json(); return d&&d[0]||null;
-    }catch(e){return null;}
+
+  async function vwWaitOffer(id){
+    const row = await vwFetch(id);
+    if(!row) return;
+    if(row.offer){ await vwHandleOffer(id, row); return; }
+    setTimeout(function(){ vwWaitOffer(id); }, 800);
   }
-  async function vwPatch(id,body){
-    body.updated_at=new Date().toISOString();
-    await fetch(`${DEFAULT_SB_URL}/rest/v1/diffusions?id=eq.${id}`,{method:'PATCH',headers:VW_H,body:JSON.stringify(body)});
-  }
-  async function vwWaitForOffer(id){
-    const row=await vwGetRow(id);
-    if(!row)return;
-    if(row.offer){await vwHandleOffer(id,row);return;}
-    setTimeout(()=>vwWaitForOffer(id),800);
-  }
-  async function vwHandleOffer(id,row){
+
+  async function vwHandleOffer(id, row){
     try{
       await vwPc.setRemoteDescription(JSON.parse(row.offer));
-      const answer=await vwPc.createAnswer();
+      const answer = await vwPc.createAnswer();
       await vwPc.setLocalDescription(answer);
-      await vwPatch(id,{answer:JSON.stringify(answer)});
-      const ice=JSON.parse(row.ice_diff||'[]');
-      for(const ci of ice){try{await vwPc.addIceCandidate(ci);}catch(e){}}
-      vwPollIceDiff(id,ice.length);
-    }catch(e){document.getElementById('vwStatusTxt').textContent='Erreur : '+e.message;}
+      await vwSend(id, {answer: JSON.stringify(answer)});
+      const ice = JSON.parse(row.ice_diff||'[]');
+      for(const ci of ice){ try{ await vwPc.addIceCandidate(ci); }catch(e){} }
+      vwPollIce(id, ice.length);
+    }catch(e){
+      const st = document.getElementById('vwStatusTxt');
+      if(st) st.textContent='Erreur WebRTC : '+e.message;
+    }
   }
-  async function vwPollIceDiff(id,known){
-    const row=await vwGetRow(id);
-    if(!row)return;
-    const ice=JSON.parse(row.ice_diff||'[]');
-    for(let i=known;i<ice.length;i++){try{await vwPc.addIceCandidate(ice[i]);}catch(e){}}
-    if(vwPc.connectionState!=='connected'&&vwPc.connectionState!=='closed'){
-      setTimeout(()=>vwPollIceDiff(id,ice.length),800);
+
+  async function vwPollIce(id, known){
+    const row = await vwFetch(id);
+    if(!row) return;
+    const ice = JSON.parse(row.ice_diff||'[]');
+    for(let i=known; i<ice.length; i++){ try{ await vwPc.addIceCandidate(ice[i]); }catch(e){} }
+    if(vwPc && vwPc.connectionState!=='connected' && vwPc.connectionState!=='closed'){
+      setTimeout(function(){ vwPollIce(id, ice.length); }, 800);
     }
   }
 })();
