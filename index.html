@@ -615,10 +615,45 @@ body.viewer-mode #app{display:none!important;}
         <div class="role-desc">Caméras VDO, classement live, notes et chat interne</div>
       </div>
     </div>
-    <div style="margin-top:16px;">
-      <button onclick="showDiffScreen()" style="background:none;border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.35);border-radius:20px;padding:8px 20px;font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .2s;" onmouseover="this.style.borderColor='rgba(255,255,255,.25)';this.style.color='rgba(255,255,255,.7)'" onmouseout="this.style.borderColor='rgba(255,255,255,.1)';this.style.color='rgba(255,255,255,.35)'">
-        📡 Diffuser mon écran
+  </div>
+</div>
+
+<!-- ÉCRAN DIFFUSEUR — Saisie pseudo -->
+<div id="diffScreen" class="hidden">
+  <div class="diff-box">
+    <div class="diff-logo">W</div>
+    <div class="diff-sub">Weazel Rally · Diffusion écran</div>
+    <div class="diff-step">
+      <h3>📡 Diffuser mon écran</h3>
+      <input type="text" class="diff-inp" id="diffPseudo" placeholder="Votre pseudo (ex: Jean-Pierre)" maxlength="30" autofocus>
+      <button class="diff-start-btn" id="diffStartBtn" onclick="diffStart()">
+        <span>▶</span> Démarrer la diffusion
       </button>
+      <div class="diff-err" id="diffErr"></div>
+    </div>
+    <div style="font-size:10px;color:rgba(255,255,255,.18);line-height:1.6;">
+      Votre écran sera visible par l'admin dans le panel Diffusions.<br>
+      Un lien unique sera généré pour OBS.
+    </div>
+  </div>
+</div>
+
+<!-- ÉCRAN LIVE DIFFUSEUR -->
+<div id="diffLiveScreen" class="hidden">
+  <div class="diff-live-bar">
+    <div class="diff-logo" style="font-size:22px;">W</div>
+    <div class="diff-live-status">
+      <div class="diff-live-dot" id="diffLiveDot"></div>
+      <span id="diffLiveStatusTxt">Connexion…</span>
+    </div>
+    <span class="diff-live-pseudo" id="diffLivePseudo"></span>
+    <button class="diff-stop-btn" onclick="diffStop()">⏹ Arrêter</button>
+  </div>
+  <div class="diff-preview-wrap">
+    <video id="diffPreviewVid" autoplay playsinline muted style="max-width:100%;max-height:100%;"></video>
+    <div class="diff-preview-empty" id="diffPreviewEmpty">
+      <span style="font-size:32px;opacity:.3;">🖥️</span>
+      <span>Aperçu de votre partage d'écran</span>
     </div>
   </div>
 </div>
@@ -2799,5 +2834,43 @@ setInterval(()=>{
 })();
 
 </script>
+</body>
+</html>
+
+<!-- DIFFUSIONS -->
+  <div class="panel" id="panel-diffusions">
+    <div class="diff-hd-bar">
+      <h2>📡 Diffusions en cours</h2>
+      <span class="diff-count" id="diffCount">0 live</span>
+      <button class="diff-refresh-btn" onclick="loadDiffusions()">↺ Actualiser</button>
+    </div>
+    <div id="diffGrid" class="diff-grid">
+      <div class="diff-empty">
+        <div class="diff-empty-ico">📡</div>
+        <div class="diff-empty-txt">Aucune diffusion active.<br>Les diffuseurs apparaîtront ici automatiquement.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══ MODE VIEWER DIFFUSION (pour OBS) ═══ -->
+<div id="viewerMode">
+  <div id="vwStatus">
+    <div class="s-dot"></div>
+    <div id="vwStatusTxt">Connexion en cours…</div>
+  </div>
+  <video id="vwVid" autoplay playsinline muted style="width:100%;height:100%;object-fit:contain;display:block;"></video>
+
+</div>
+
+<!-- ═══ MODE VIEWER DIFFUSION (pour OBS) ═══ -->
+<div id="viewerMode">
+  <div id="vwStatus">
+    <div class="s-dot"></div>
+    <div id="vwStatusTxt">Connexion en cours…</div>
+  </div>
+  <video id="vwVid" autoplay playsinline muted style="width:100%;height:100%;object-fit:contain;display:block;"></video>
+</div>
 </body>
 </html>
