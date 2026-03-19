@@ -2664,7 +2664,7 @@ async function diffGenerate(){
 
   // URLs VDO.ninja
   const pushUrl=`https://vdo.ninja/?push=${vid}&label=${encodeURIComponent(pseudo)}&quality=0&screenshare`;
-  const viewUrl=`https://vdo.ninja/?view=${vid}&clean&autostart&muted=0`;
+  const viewUrl=`https://vdo.ninja/?view=${vid}&clean&muted=0&buffer=0&codec=av1`;
 
   // Enregistrer dans Supabase
   await fetch(`${DEFAULT_SB_URL}/rest/v1/diffusions`,{
@@ -2719,7 +2719,7 @@ async function loadDiffusions(){
 
   grid.innerHTML=all.map(r=>{
     // Le lien view est stocké dans "offer"
-    const obsUrl=r.offer||`https://vdo.ninja/?view=${r.id}&clean&autostart&muted=0`;
+    const obsUrl=r.offer||`https://vdo.ninja/?view=${r.id}&clean&muted=0&buffer=0&codec=av1`;
     const pushUrl=`https://vdo.ninja/?push=${r.id}&label=${encodeURIComponent(r.pseudo||'')}`;
     const ago=Math.round((now-new Date(r.updated_at).getTime())/1000);
     const agoStr=ago<60?ago+'s':Math.round(ago/60)+'min';
