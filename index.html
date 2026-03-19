@@ -551,6 +551,9 @@ tr:hover td{background:rgba(255,255,255,.015);}
 .diff-count{font-size:10px;font-weight:700;letter-spacing:2px;padding:3px 9px;border-radius:10px;background:rgba(0,200,83,.1);color:var(--green);border:1px solid rgba(0,200,83,.18);}
 .diff-refresh-btn{margin-left:auto;background:none;border:1px solid var(--b);color:var(--m);border-radius:4px;padding:5px 11px;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;font-family:var(--font-head);transition:all .15s;}
 .diff-refresh-btn:hover{border-color:var(--b2);color:#fff;}
+.diff-close-btn{background:rgba(255,68,85,.1);color:#ff4455;border:1px solid rgba(255,68,85,.2);border-radius:4px;padding:5px 10px;font-family:var(--font-head);font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .15s;white-space:nowrap;}
+.diff-close-btn:hover{background:rgba(255,68,85,.22);color:#fff;border-color:rgba(255,68,85,.4);}
+.diff-card-actions{display:flex;gap:6px;margin-top:10px;padding-top:10px;border-top:1px solid var(--b);}
 
 /* ═══ VUE DIFFUSEUR ═══ */
 #diffScreen{position:fixed;inset:0;z-index:1000;background:var(--bg);display:flex;align-items:center;justify-content:center;}
@@ -2697,7 +2700,6 @@ function diffClose(){
 function diffStop(){} // compatibilité
 
 // ══ DIFFUSIONS — PANEL ADMIN ══
-const VIEWER_BASE=location.origin+location.pathname;
 
 async function loadDiffusions(){
   const grid=document.getElementById('diffGrid');
@@ -2706,39 +2708,82 @@ async function loadDiffusions(){
   if(!d){grid.innerHTML='<div class="diff-empty"><div class="diff-empty-ico">⚠️</div><div class="diff-empty-txt">Erreur de chargement</div></div>';return;}
 
   const now=Date.now();
-  const live=d.filter(r=>r.status==='live'&&(now-new Date(r.updated_at).getTime())<3600000);
-  const all=live;
+  // Affiche les sessions live (créées dans les dernières 4h)
+  const live=d.filter(r=>r.status==='live'&&(now-new Date(r.updated_at).getTime())<14400000);
 
   const countEl=document.getElementById('diffCount');
   if(countEl)countEl.textContent=live.length+' live';
 
-  if(!all.length){
+  if(!live.length){
     grid.innerHTML='<div class="diff-empty"><div class="diff-empty-ico">📡</div><div class="diff-empty-txt">Aucune diffusion active.<br>Les diffuseurs apparaîtront ici automatiquement.</div></div>';
     return;
   }
 
-  grid.innerHTML=all.map(r=>{
-    // Le lien view est stocké dans "offer"
+  grid.innerHTML=live.map(r=>{
     const obsUrl=r.offer||`https://vdo.ninja/?view=${r.id}&clean&muted=0&buffer=0&codec=av1`;
-    const pushUrl=`https://vdo.ninja/?push=${r.id}&label=${encodeURIComponent(r.pseudo||'')}`;
     const ago=Math.round((now-new Date(r.updated_at).getTime())/1000);
     const agoStr=ago<60?ago+'s':Math.round(ago/60)+'min';
-    return `<div class="diff-card live">
+    return `<div class="diff-card live" id="diffCard-${r.id}">
       <div class="diff-card-top">
         <div class="diff-status-dot"></div>
         <span class="diff-pseudo">${r.pseudo||'?'}</span>
-        <span class="diff-status-lbl">🔴 LIVE</span>
+        <span class="diff-status-lbl" id="diffLbl-${r.id}">🔴 LIVE</span>
       </div>
       <div class="diff-card-body">
-        <div class="diff-info-row"><b>Dernière activité :</b> il y a ${agoStr}</div>
-        <div style="font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--m);margin-bottom:5px;">Lien OBS (Browser Source)</div>
+        <div class="diff-info-row"><b>Créé il y a</b> ${agoStr}</div>
+        <div style="font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--m);margin-bottom:5px;">Lien OBS — Browser Source</div>
         <div class="diff-url-row">
           <input class="diff-url-inp" id="diffUrl-${r.id}" value="${obsUrl}" readonly onclick="this.select()">
           <button class="diff-copy-btn" id="diffCpy-${r.id}" onclick="diffCopyUrl('${r.id}','${obsUrl}')">📋 Copier</button>
         </div>
+        <div class="diff-card-actions">
+          <button class="diff-close-btn" onclick="diffCloseSession('${r.id}')">✕ Fermer la session</button>
+          <span style="flex:1;font-size:9px;color:var(--m);align-self:center;text-align:right;" id="diffVdoStatus-${r.id}">Vérification…</span>
+        </div>
       </div>
     </div>`;
   }).join('');
+
+  // Vérifier le statut VDO.ninja pour chaque session
+  live.forEach(r=>checkVdoStatus(r.id));
+}
+
+// Vérifie si le push VDO.ninja est toujours actif via leur API stats
+async function checkVdoStatus(id){
+  try{
+    const r=await fetch(`https://api.vdo.ninja/stats/?room=&push=${id}`,{mode:'cors'});
+    const d=await r.json();
+    const active=d&&d.length>0;
+    const lbl=document.getElementById(`diffLbl-${id}`);
+    const vstatus=document.getElementById(`diffVdoStatus-${id}`);
+    const card=document.getElementById(`diffCard-${id}`);
+    if(active){
+      if(lbl){lbl.textContent='🔴 LIVE';}
+      if(vstatus){vstatus.textContent='✅ VDO actif';}
+    }else{
+      if(lbl){lbl.textContent='⚫ Déconnecté';}
+      if(vstatus){vstatus.textContent='⚠ VDO hors ligne';}
+      if(card){card.style.opacity='0.5';}
+      // Auto-fermer si VDO est coupé depuis la BDD aussi
+    }
+  }catch(e){
+    // API VDO indisponible — on ne peut pas vérifier, pas grave
+    const vstatus=document.getElementById(`diffVdoStatus-${id}`);
+    if(vstatus)vstatus.textContent='';
+  }
+}
+
+async function diffCloseSession(id){
+  if(!confirm('Fermer cette session de diffusion ?'))return;
+  await PATCH('diffusions',`?id=eq.${id}`,{status:'offline',updated_at:new Date().toISOString()});
+  // Retirer la carte immédiatement
+  const card=document.getElementById(`diffCard-${id}`);
+  if(card){
+    card.style.transition='opacity .3s,transform .3s';
+    card.style.opacity='0';
+    card.style.transform='scale(0.95)';
+    setTimeout(()=>{card.remove();loadDiffusions();},320);
+  }
 }
 
 function diffCopyUrl(id,url){
@@ -2748,9 +2793,10 @@ function diffCopyUrl(id,url){
   });
 }
 
+// Auto-refresh : panel ouvert = toutes les 8s + vérification VDO
 setInterval(()=>{
   if(document.getElementById('panel-diffusions')?.classList.contains('on')) loadDiffusions();
-},5000);
+},8000);
 
 
 // ═══ MODE VIEWER DIFFUSION (activé si ?view=ID dans l'URL) ═══
