@@ -665,7 +665,7 @@ body.viewer-mode #app{display:none!important;}
       <div style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--m);margin-bottom:8px;">📺 Votre lien de diffusion (à ouvrir dans Chrome)</div>
       <div style="display:flex;gap:6px;margin-bottom:12px;">
         <input type="text" id="diffPushUrl" style="flex:1;background:var(--bg4);color:#fff;border:1px solid var(--b);border-radius:4px;padding:8px 10px;font-size:11px;font-family:monospace;outline:none;" readonly onclick="this.select()">
-        <button onclick="diffCopyPush()" style="background:var(--r);color:#fff;border:none;border-radius:4px;padding:8px 14px;font-family:var(--font-head);font-size:11px;font-weight:700;cursor:pointer;">Copier</button>
+        <button id="diffCopyBtn" onclick="diffCopyPush(this)" style="background:var(--r);color:#fff;border:none;border-radius:4px;padding:8px 14px;font-family:var(--font-head);font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;min-width:90px;display:flex;align-items:center;justify-content:center;gap:5px;">📋 Copier</button>
       </div>
       <div style="font-size:10px;color:rgba(255,255,255,.4);line-height:1.8;">
         1. Copiez ce lien et ouvrez-le dans <b style="color:var(--m2);">Chrome</b><br>
@@ -734,7 +734,7 @@ body.viewer-mode #app{display:none!important;}
       <div style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--m);margin-bottom:8px;">📺 Votre lien de diffusion (à ouvrir dans Chrome)</div>
       <div style="display:flex;gap:6px;margin-bottom:12px;">
         <input type="text" id="diffPushUrl" style="flex:1;background:var(--bg4);color:#fff;border:1px solid var(--b);border-radius:4px;padding:8px 10px;font-size:11px;font-family:monospace;outline:none;" readonly onclick="this.select()">
-        <button onclick="diffCopyPush()" style="background:var(--r);color:#fff;border:none;border-radius:4px;padding:8px 14px;font-family:var(--font-head);font-size:11px;font-weight:700;cursor:pointer;">Copier</button>
+        <button id="diffCopyBtn" onclick="diffCopyPush(this)" style="background:var(--r);color:#fff;border:none;border-radius:4px;padding:8px 14px;font-family:var(--font-head);font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;min-width:90px;display:flex;align-items:center;justify-content:center;gap:5px;">📋 Copier</button>
       </div>
       <div style="font-size:10px;color:rgba(255,255,255,.4);line-height:1.8;">
         1. Copiez ce lien et ouvrez-le dans <b style="color:var(--m2);">Chrome</b><br>
@@ -2228,12 +2228,53 @@ function fixCommHeight(){
 window.addEventListener('resize',fixCommHeight);
 
 // ══ CAMÉRAS VDO ══
-// ══ GESTIONNAIRE CAMÉRAS ══
-let camList=JSON.parse(localStorage.getItem('wz_cams')||'[]');
-let camGrid=localStorage.getItem('wz_cam_grid')||'g2x2';
+// ══ GESTIONNAIRE CAMÉRAS — PARTAGÉ VIA SUPABASE ══
+let camList = [];
+let camGrid = 'g2x2';
+let _camPollInterval = null;
 
 function camGridCount(){return{g1x1:1,g2x1:2,g2x2:4,g3x2:6,g2x3:6}[camGrid]||4;}
-function camSave(){localStorage.setItem('wz_cams',JSON.stringify(camList));}
+
+// Sauvegarde dans Supabase ET localStorage (fallback)
+async function camSave(){
+  localStorage.setItem('wz_cams', JSON.stringify(camList));
+  localStorage.setItem('wz_cam_grid', camGrid);
+  await PATCH('shared_cams','?id=eq.1',{
+    cams: JSON.stringify(camList),
+    grid: camGrid,
+    updated_at: new Date().toISOString()
+  });
+}
+
+// Charge depuis Supabase, fallback localStorage
+async function camLoad(){
+  const d = await GET('shared_cams','?id=eq.1');
+  if(d && d[0]){
+    try{ camList = JSON.parse(d[0].cams||'[]'); }catch(e){ camList=[]; }
+    camGrid = d[0].grid || 'g2x2';
+  } else {
+    // Fallback localStorage
+    try{ camList = JSON.parse(localStorage.getItem('wz_cams')||'[]'); }catch(e){ camList=[]; }
+    camGrid = localStorage.getItem('wz_cam_grid')||'g2x2';
+  }
+}
+
+// Poll Supabase pour détecter les changements des autres commentateurs
+let _camLastUpdated = '';
+async function camPollShared(){
+  const d = await GET('shared_cams','?id=eq.1&select=cams,grid,updated_at');
+  if(!d||!d[0]) return;
+  const ts = d[0].updated_at||'';
+  if(ts && ts !== _camLastUpdated){
+    _camLastUpdated = ts;
+    try{ camList = JSON.parse(d[0].cams||'[]'); }catch(e){}
+    camGrid = d[0].grid||'g2x2';
+    camRenderGrid();
+    // Met à jour le select grille
+    const sel=document.getElementById('camGridSel');
+    if(sel) sel.value=camGrid;
+  }
+}
 
 function camNormalizeUrl(url){
   url=url.trim();
@@ -2274,9 +2315,9 @@ function camRenderGrid(){
   }
 }
 
-function camApplyGrid(){
+async function camApplyGrid(){
   camGrid=document.getElementById('camGridSel').value;
-  localStorage.setItem('wz_cam_grid',camGrid);
+  await camSave();
   camRenderGrid();
   camRenderModal();
 }
@@ -2336,7 +2377,7 @@ function camStartEdit(i){
     <div class="cam-ef-row">
       <label class="cam-ef-lbl">URL VDO.ninja</label>
       <input type="text" class="cam-ef-inp" id="camEfUrl-${i}" value="${rawUrl}" placeholder="https://vdo.ninja/?view=XXXXXX  ou juste le code court">
-      <span class="cam-ef-hint">Colle l'URL complète ou juste le code VDO (ex: seH9huU). Les paramètres sont ajoutés automatiquement.</span>
+      <span class="cam-ef-hint">Colle l'URL complète ou juste le code VDO. Les paramètres sont ajoutés automatiquement.</span>
     </div>
     <div class="cam-ef-acts">
       <button class="cam-ef-save" onclick="camSaveEdit(${i})">💾 Enregistrer</button>
@@ -2352,7 +2393,7 @@ function camStartEdit(i){
   }));
 }
 
-function camSaveEdit(i){
+async function camSaveEdit(i){
   let url=(document.getElementById(`camEfUrl-${i}`)?.value||'').trim();
   const lbl=(document.getElementById(`camEfLbl-${i}`)?.value||'').trim();
   const urlI=document.getElementById(`camEfUrl-${i}`);
@@ -2360,7 +2401,7 @@ function camSaveEdit(i){
   if(!url.includes('.')&&!url.includes('/'))url=`https://vdo.ninja/?view=${url}`;
   url=camNormalizeUrl(url);
   camList[i]={url,label:lbl||('Cam '+(i+1))};
-  camSave();
+  await camSave();
   camRenderGrid();
   camRenderModal();
 }
@@ -2378,10 +2419,10 @@ function camAddNew(){
   alert('Tous les slots sont occupés. Agrandissez la grille ou supprimez une caméra.');
 }
 
-function camRemove(i,fromModal=false){
+async function camRemove(i,fromModal=false){
   if(!confirm(`Supprimer la caméra du slot ${i+1} ?`))return;
   camList[i]=null;
-  camSave();
+  await camSave();
   camRenderGrid();
   if(fromModal)camRenderModal();
 }
@@ -2599,7 +2640,7 @@ async function cvSendChat(){
 }
 
 // ══ INIT COMMENTATEUR VIEW ══
-function initCommView(){
+async function initCommView(){
   // Nom depuis localStorage
   const n=localStorage.getItem('wz_comm_name')||'';
   const inp=document.getElementById('cvChatName');
@@ -2617,12 +2658,13 @@ function initCommView(){
       txtInp.style.height=Math.min(txtInp.scrollHeight,100)+'px';
     });
   }
-  // Init modules
+  // Init cams depuis Supabase
+  await camLoad();
   camRenderGrid();
+  // Init autres modules
   cvInitNotes();
   fixCommHeight();
   cvCalibrateClock().then(()=>{
-    // Premiers polls immédiats après calibration
     cvPollChrono();
     cvPollCls();
     cvPollChat();
@@ -2633,6 +2675,8 @@ function initCommView(){
     setInterval(cvPollChrono,900);
     setInterval(cvPollCls,2000);
     setInterval(cvPollChat,1500);
+    // Poll cams partagées toutes les 3s
+    setInterval(camPollShared,3000);
   }
 }
 
@@ -2682,13 +2726,29 @@ async function diffGenerate(){
   document.getElementById('diffStartBtn').style.display='none';
 }
 
-function diffCopyPush(){
+function diffCopyPush(btn){
   const url=document.getElementById('diffPushUrl').value;
+  if(!btn)btn=document.getElementById('diffCopyBtn');
   navigator.clipboard.writeText(url).then(()=>{
-    const btn=event.currentTarget;
-    btn.textContent='✓ Copié !';
-    btn.style.background='rgba(0,200,83,.8)';
-    setTimeout(()=>{btn.textContent='Copier';btn.style.background='var(--r)';},2000);
+    // Animation succès
+    btn.innerHTML='✅ Copié !';
+    btn.style.background='var(--green)';
+    btn.style.transform='scale(1.05)';
+    btn.disabled=true;
+    setTimeout(()=>{
+      btn.innerHTML='📋 Copier';
+      btn.style.background='var(--r)';
+      btn.style.transform='scale(1)';
+      btn.disabled=false;
+    },2500);
+  }).catch(()=>{
+    // Fallback si clipboard API bloquée
+    const inp=document.getElementById('diffPushUrl');
+    inp.select();
+    document.execCommand('copy');
+    btn.innerHTML='✅ Copié !';
+    btn.style.background='var(--green)';
+    setTimeout(()=>{btn.innerHTML='📋 Copier';btn.style.background='var(--r)';},2000);
   });
 }
 
