@@ -75,10 +75,13 @@ html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--t);font-f
 }
 .tb-brand{display:flex;align-items:center;gap:12px;margin-right:24px;position:relative;padding-left:6px;}
 .tb-logo{
-  font-family:var(--font-head);font-size:32px;font-weight:900;font-style:italic;
-  color:var(--r);line-height:1;
-  text-shadow:0 0 30px rgba(232,0,28,.4);
-  letter-spacing:-1px;
+  font-family:var(--font-head);font-size:28px;font-weight:900;font-style:italic;
+  color:#fff;line-height:1;letter-spacing:-1px;
+  background:var(--r);
+  padding:3px 10px 3px 8px;
+  border-radius:2px;
+  text-shadow:none;
+  box-shadow:2px 2px 0 rgba(0,0,0,.4);
 }
 .tb-brand-line{width:1px;height:28px;background:var(--b2);}
 .tb-stack{display:flex;flex-direction:column;gap:1px;}
@@ -731,6 +734,84 @@ body.viewer-mode #roleScreen,body.viewer-mode #diffScreen,body.viewer-mode #diff
 #diffScreen.hidden,
 #diffLiveScreen.hidden,
 #viewerMode.hidden{display:none!important;}
+
+/* ── LISTE PILOTES — style fiches rallye ── */
+.pe-cat-hd{
+  font-family:var(--font-head);font-size:8px;font-weight:700;letter-spacing:4px;
+  text-transform:uppercase;color:var(--r);
+  padding:10px 4px 4px;margin-top:4px;
+  border-bottom:1px solid rgba(232,0,28,.2);
+  display:flex;align-items:center;gap:6px;
+}
+.pe-cat-hd::before{content:'';flex:none;width:3px;height:12px;background:var(--r);border-radius:1px;}
+.pe-row{
+  display:flex;flex-direction:column;gap:0;
+  background:var(--bg3);border:1px solid var(--b);border-radius:2px;
+  margin-bottom:4px;overflow:hidden;
+  transition:border-color .12s;
+  position:relative;
+}
+.pe-row::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--team-color,#333);}
+.pe-row:hover{border-color:var(--b2);}
+.pe-row-top{display:flex;align-items:center;gap:8px;padding:9px 10px 6px 16px;}
+.pe-row-bot{display:flex;align-items:center;justify-content:space-between;padding:4px 10px 7px 16px;border-top:1px solid var(--b);}
+.pe-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.pe-name{font-family:var(--font-head);font-size:16px;font-weight:900;font-style:italic;text-transform:uppercase;letter-spacing:.5px;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.pe-flag{font-size:14px;flex-shrink:0;}
+.pe-team{font-size:9px;font-weight:600;color:var(--m);letter-spacing:.5px;}
+.pe-cat-badge{font-family:var(--font-head);font-size:7px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:2px 7px;border-radius:1px;background:rgba(255,255,255,.05);color:var(--m);border:1px solid var(--b);}
+.pe-acts{display:flex;gap:4px;}
+.b-sm{padding:5px 10px;font-size:9px;letter-spacing:1px;}
+
+/* ── CLASSEMENT — pénalités et statuts ── */
+.td-pos{font-family:var(--font-head);font-size:18px;font-weight:900;width:44px;text-align:center;padding:0 0 0 4px;}
+.td-name{font-family:var(--font-head);font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;}
+.td-name-sub{display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-top:2px;}
+.td-team{font-size:10px;color:var(--m);letter-spacing:.3px;}
+.td-time{font-family:var(--font-head);font-size:14px;font-weight:700;font-variant-numeric:tabular-nums;text-align:right;padding-right:10px;}
+/* Badges statut */
+.badge{display:inline-flex;align-items:center;font-family:var(--font-head);font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:2px 6px;border-radius:1px;margin-left:6px;vertical-align:middle;}
+.b-dnf2{background:rgba(255,107,107,.12);color:#ff6b6b;border:1px solid rgba(255,107,107,.2);}
+.b-dsq2{background:rgba(232,0,28,.12);color:var(--r);border:1px solid rgba(232,0,28,.2);}
+.b-inc2{background:rgba(255,200,0,.1);color:#ffd700;border:1px solid rgba(255,200,0,.2);}
+/* Pénalité sous le nom */
+.pen-note{
+  display:inline-flex;align-items:center;gap:4px;
+  font-size:9px;font-weight:600;letter-spacing:.3px;
+  color:var(--gold);
+  background:rgba(228,160,0,.08);
+  border:1px solid rgba(228,160,0,.15);
+  border-radius:1px;padding:1px 6px;
+  margin-left:4px;
+}
+/* Boutons actions classement */
+.act-btn{
+  background:var(--bg4);border:1px solid var(--b);color:var(--m);
+  border-radius:2px;padding:3px 8px;
+  font-family:var(--font-head);font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;
+  cursor:pointer;transition:all .12s;white-space:nowrap;
+}
+.act-btn:hover{border-color:var(--b2);color:#fff;}
+.act-clr{color:var(--green);border-color:rgba(0,208,98,.2);background:rgba(0,208,98,.06);}
+.act-clr:hover{background:rgba(0,208,98,.14);border-color:rgba(0,208,98,.35);}
+.act-dnf{color:#ff6b6b;border-color:rgba(255,107,107,.2);background:rgba(255,107,107,.06);}
+.act-dnf:hover{background:rgba(255,107,107,.14);border-color:rgba(255,107,107,.35);}
+.act-inf{color:#ffd700;border-color:rgba(255,200,0,.2);background:rgba(255,200,0,.06);}
+.act-inf:hover{background:rgba(255,200,0,.14);border-color:rgba(255,200,0,.35);}
+/* Ligne podium colorée */
+tbody tr.pos-row-1{background:rgba(228,160,0,.04);}
+tbody tr.pos-row-2{background:rgba(155,163,175,.025);}
+tbody tr.pos-row-3{background:rgba(184,115,51,.03);}
+
+/* ── TOPBAR — couleurs vivantes par onglet actif ── */
+.tb-btn[data-tab="chrono"].on::after{background:#ffc800;}
+.tb-btn[data-tab="events"].on::after{background:var(--gold);}
+.tb-btn[data-tab="classement"].on::after{background:var(--green);}
+.tb-btn[data-tab="commentateur"].on::after{background:#4488ff;}
+.tb-btn[data-tab="sam"].on::after{background:var(--green);}
+.tb-btn[data-tab="pilotes"].on::after{background:#aa66ff;}
+.tb-btn[data-tab="diffusions"].on::after{background:#ff6644;}
+
 </style>
 </head>
 <body>
@@ -869,7 +950,11 @@ body.viewer-mode #roleScreen,body.viewer-mode #diffScreen,body.viewer-mode #diff
 <!-- APP -->
 <div id="app">
   <header class="topbar">
-    <div class="tb-brand"><div class="tb-w">W</div><div class="tb-stack"><span class="tb-t1">Weazel Rally</span><span class="tb-t2">Control Center</span></div></div>
+    <div class="tb-brand">
+      <div class="tb-logo">W</div>
+      <div class="tb-brand-line"></div>
+      <div class="tb-stack"><span class="tb-t1">Weazel Rally</span><span class="tb-t2">Control Center</span></div>
+    </div>
     <nav class="tb-nav">
       <button class="tb-btn on"  data-tab="chrono"       onclick="tab('chrono')">⏱ Chrono</button>
       <button class="tb-btn"     data-tab="events"       onclick="tab('events')">⚡ Événements</button>
@@ -1640,20 +1725,39 @@ function renderDcList(){
 
 function renderPeList(){
   const el=document.getElementById('peList');
-  if(!allPilots.length){el.innerHTML='<div class="ev-empty">Aucun pilote</div>';return;}
+  if(!allPilots.length){el.innerHTML='<div class="ev-empty">Aucun pilote enregistré</div>';return;}
   const cats=['Rally B','Rally N','Rally Historique'];
+  const catColors={'Rally B':'#2255cc','Rally N':'#118833','Rally Historique':'#aa7700'};
   el.innerHTML=cats.map(cat=>{
     const grp=allPilots.filter(p=>p.category===cat);
     if(!grp.length)return '';
-    return `<div class="pe-cat-hd">${cat}</div>`+grp.map(p=>`
-      <div class="pe-row">
-        <div class="pe-head"><div class="pe-dot" style="background:${p.team_color||'#e8001c'}"></div><div class="pe-name">${fmtNameFull(p.first_name,p.last_name)}</div><div style="font-size:13px;">${flagOf(p.country)}</div></div>
-        <div class="pe-team">${p.team||''}${p.sponsor?' · '+p.sponsor:''}</div>
-        <div class="pe-acts">
-          <button class="btn b-dk b-sm" onclick="piEdit(${p.id})" style="flex:1;">✏️ Modifier</button>
-          <button class="btn b-dk b-sm" onclick="piDelete(${p.id})" style="color:#ff4455;width:34px;flex:0 0 auto;">🗑</button>
+    const catColor=catColors[cat]||'var(--r)';
+    return `<div class="pe-cat-hd" style="color:${catColor};border-bottom-color:${catColor}22;">
+      <div style="width:3px;height:12px;background:${catColor};border-radius:1px;flex-shrink:0;"></div>
+      ${cat}
+      <span style="margin-left:auto;font-size:9px;color:var(--m);font-family:var(--font-body);font-weight:400;letter-spacing:0;text-transform:none;">${grp.length} pilote${grp.length>1?'s':''}</span>
+    </div>`+grp.map(p=>{
+      const col=p.team_color||'#e8001c';
+      return `<div class="pe-row" style="--team-color:${col};">
+        <div class="pe-row-top">
+          <div class="pe-name">${fmtNameFull(p.first_name,p.last_name)}</div>
+          <div class="pe-flag">${flagOf(p.country)}</div>
         </div>
-      </div>`).join('');
+        <div class="pe-row-bot">
+          <div style="display:flex;flex-direction:column;gap:1px;min-width:0;">
+            <div class="pe-team" style="display:flex;align-items:center;gap:5px;">
+              <div class="pe-dot" style="background:${col};flex-shrink:0;"></div>
+              ${p.team||'<span style="opacity:.3;">Sans écurie</span>'}
+            </div>
+            ${p.sponsor?`<div style="font-size:8px;color:var(--m);letter-spacing:.5px;">↳ ${p.sponsor}</div>`:''}
+          </div>
+          <div class="pe-acts">
+            <button class="btn b-dk b-sm" onclick="piEdit(${p.id})">✏️</button>
+            <button class="btn b-sm" onclick="piDelete(${p.id})" style="background:rgba(255,68,85,.07);color:rgba(255,68,85,.6);border:1px solid rgba(255,68,85,.15);border-radius:2px;padding:5px 10px;font-family:var(--font-head);font-size:9px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .12s;">🗑</button>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
   }).join('');
 }
 
@@ -1854,7 +1958,17 @@ async function pollCls(){
     if(st==='DNF'||st==='DSQ'||st==='INCIDENT')actions+=`<button class="act-btn act-clr" onclick="clearStatus(${p.id})">✓</button>`;
     if(st!=='DNF')actions+=`<button class="act-btn act-dnf" onclick="setStatus(${p.id},'DNF')">DNF</button>`;
     if(st!=='INCIDENT')actions+=`<button class="act-btn act-inf" onclick="setStatus(${p.id},'INCIDENT')">Inc</button>`;
-    return `<tr style="${rowStyle}"><td class="td-pos" style="${pc};${lb};padding-left:${posNum>=0&&posNum<3?'11px':'14px'}">${pos}</td><td class="td-name">${fmtNameFull(p.first_name,p.last_name)}${badge}${pen}</td><td class="td-team">${p.team||''}</td><td class="td-time" style="${tc}">${time}</td><td style="text-align:center;font-size:0;">${actions}</td></tr>`;
+    const posClass=posNum===0?'pos-row-1':posNum===1?'pos-row-2':posNum===2?'pos-row-3':'';
+    return `<tr class="${posClass}" style="${rowStyle}">
+      <td class="td-pos" style="${pc};${lb}">${pos}</td>
+      <td class="td-name">
+        <div style="display:flex;align-items:center;gap:0;">${fmtNameFull(p.first_name,p.last_name)}${badge}</div>
+        ${pen?`<div class="td-name-sub">${pen}</div>`:''}
+      </td>
+      <td class="td-team">${p.team||''}</td>
+      <td class="td-time" style="${tc}">${time}</td>
+      <td style="text-align:right;padding-right:8px;white-space:nowrap;">${actions}</td>
+    </tr>`;
   }).join('');
   document.getElementById('clsUpd').textContent=new Date().toLocaleTimeString('fr-FR');
 }
