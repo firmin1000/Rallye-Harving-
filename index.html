@@ -3281,7 +3281,7 @@ async function samInit(){
   _samInited=true;
   await camLoad();
   samRenderCams();
-  samLoadMap(null);
+  samFetchMap();
   samInitNotes();
   samPollAlerts();
   samPollCls();
@@ -3451,24 +3451,59 @@ function samRenderAlerts(events,isNew){
 }
 
 // ── Carte circuit ──
+// ── Carte circuit — stockée en base (sams_notes.map_image) ──
+// La carte est un dataURL base64 sauvegardé dans Supabase et partagé entre tous les SAMS
+
 function samLoadMap(input){
   if(input&&input.files&&input.files[0]){
+    const file=input.files[0];
+    // Vérifier la taille (max ~4MB en base64)
+    if(file.size>3*1024*1024){
+      alert('Image trop grande (max 3 Mo). Compressez-la avant de la charger.');
+      return;
+    }
     const r=new FileReader();
-    r.onload=e=>{localStorage.setItem('sam_map',e.target.result);samShowMap(e.target.result);};
-    r.readAsDataURL(input.files[0]);
+    r.onload=async e=>{
+      const dataUrl=e.target.result;
+      samShowMap(dataUrl);
+      // Sauvegarder dans Supabase
+      await PATCH('sams_notes','?id=eq.1',{map_image:dataUrl, updated_at:new Date().toISOString()});
+      // Fallback local
+      try{localStorage.setItem('sam_map',dataUrl);}catch(e2){}
+    };
+    r.readAsDataURL(file);
   }else{
-    const saved=localStorage.getItem('sam_map');
-    if(saved)samShowMap(saved);
+    // Chargement initial — depuis Supabase
+    samFetchMap();
   }
 }
+
+async function samFetchMap(){
+  // 1. Essayer Supabase
+  const d=await GET('sams_notes','?id=eq.1&select=map_image');
+  if(d&&d[0]&&d[0].map_image){
+    samShowMap(d[0].map_image);
+    try{localStorage.setItem('sam_map',d[0].map_image);}catch(e){}
+    return;
+  }
+  // 2. Fallback localStorage
+  const saved=localStorage.getItem('sam_map');
+  if(saved) samShowMap(saved);
+}
+
 function samShowMap(url){
   const img=document.getElementById('samMapImg');
   const empty=document.getElementById('samMapEmpty');
   if(img){img.src=url;img.style.display='block';}
   if(empty)empty.style.display='none';
 }
-function samClearMap(){
-  localStorage.removeItem('sam_map');
+
+async function samClearMap(){
+  if(!confirm('Supprimer la carte du circuit pour tout le monde ?')) return;
+  // Supprimer de Supabase
+  await PATCH('sams_notes','?id=eq.1',{map_image:'', updated_at:new Date().toISOString()});
+  // Supprimer local
+  try{localStorage.removeItem('sam_map');}catch(e){}
   const img=document.getElementById('samMapImg');
   const empty=document.getElementById('samMapEmpty');
   if(img){img.src='';img.style.display='none';}
@@ -3513,10 +3548,19 @@ async function samInitNotes(){
       if(r[0].updated_at!==_samNoteLastTs){
         _samNoteLastTs=r[0].updated_at;
         const area2=document.getElementById('samNotesArea');
-        // Ne pas écraser si l'utilisateur est en train de taper
         if(area2&&document.activeElement!==area2){
           area2.value=r[0].notes||'';
           localStorage.setItem('sam_notes',area2.value);
+        }
+        // Sync carte si changée
+        const img=document.getElementById('samMapImg');
+        if(img){
+          const newMap=r[0].map_image||'';
+          const curSrc=img.src.startsWith('data:')?img.src:'';
+          if(newMap!==curSrc){
+            if(newMap){samShowMap(newMap);}
+            else{img.src='';img.style.display='none';const emp=document.getElementById('samMapEmpty');if(emp)emp.style.display='';}
+          }
         }
       }
     },5000);
