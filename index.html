@@ -949,7 +949,7 @@ body.viewer-mode #roleScreen,body.viewer-mode #diffScreen,body.viewer-mode #diff
         <div class="comm-subpanel on" id="cstab-cams">
           <div class="cams-topbar">
             <span class="cams-topbar-lbl">Grille</span>
-            <select class="cams-sel" id="camGridSel" onchange="camApplyGrid()">
+            <select class="cams-sel" id="camGridSelComm" onchange="camApplyGridComm()">
               <option value="g1x1">1 caméra</option>
               <option value="g2x1">2 côte à côte</option>
               <option value="g2x2" selected>2×2 — 4 cams</option>
@@ -1961,8 +1961,8 @@ async function pollOverlayStatus(){
   // Indicateur dans la topbar admin
   document.getElementById('catOvlVal').textContent=cat;
   document.getElementById('catOvlVal').style.color=cat===currentCat?'var(--green)':'rgba(255,255,255,.35)';
-  // ── Synchroniser le panel commentateur automatiquement ──
-  if(cat && cat!=='—' && cat!==cvCat){
+  // ── Synchroniser le panel commentateur automatiquement (sauf si modif manuelle) ──
+  if(cat && cat!=='—' && cat!==cvCat && !_cvCatManual){
     cvCat=cat;
     document.querySelectorAll('.cv-cat-btn').forEach(b=>{
       b.classList.toggle('on', b.dataset.cat===cat);
@@ -2384,6 +2384,8 @@ function camNormalizeUrl(url){
 function camRenderGrid(){
   const sel=document.getElementById('camGridSel');
   if(sel)sel.value=camGrid;
+  const selC=document.getElementById('camGridSelComm');
+  if(selC)selC.value=camGrid;
   const grid=document.getElementById('camsGrid');
   if(!grid)return;
   grid.className='cams-grid '+camGrid;
@@ -2413,6 +2415,21 @@ function camRenderGrid(){
 async function camApplyGrid(){
   const sel=document.getElementById('camGridSel');
   if(sel) camGrid=sel.value;
+  // Sync le select commentateur aussi
+  const selC=document.getElementById('camGridSelComm');
+  if(selC) selC.value=camGrid;
+  await camSave();
+  camRenderGrid();
+  camRenderModal();
+  if(_samInited) samRenderCams();
+}
+
+async function camApplyGridComm(){
+  const selC=document.getElementById('camGridSelComm');
+  if(selC) camGrid=selC.value;
+  // Sync le select modal aussi
+  const sel=document.getElementById('camGridSel');
+  if(sel) sel.value=camGrid;
   await camSave();
   camRenderGrid();
   camRenderModal();
@@ -2532,11 +2549,13 @@ let cvChRun=false,cvChTs=0,cvChRaf=null,cvBestMs=Infinity;
 let cvClockOffset=0;
 // Catégorie locale au panel commentateur — indépendante de currentCat et de l'overlay OBS
 let cvCat='Rally B';
+let _cvCatManual=false; // true = commentateur a changé manuellement
 
 function cvSetCat(btn){
   document.querySelectorAll('.cv-cat-btn').forEach(b=>b.classList.remove('on'));
   btn.classList.add('on');
   cvCat=btn.dataset.cat;
+  _cvCatManual=true; // le commentateur a choisi manuellement
   // Reset chrono
   cvChRun=false;
   cancelAnimationFrame(cvChRaf);
