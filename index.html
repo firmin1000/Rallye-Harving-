@@ -355,47 +355,50 @@ tr:hover td{background:rgba(255,255,255,.015);}
 .rpwd-btn.r-sam:hover{background:rgba(0,200,83,.28);}
 .rb-sam{background:rgba(0,200,83,.1);color:#88ffbb;border:1px solid rgba(0,200,83,.2);}
 
-/* PANEL SAM */
+/* PANEL SAM — layout calqué sur le commentateur */
 .sam-view{display:flex;height:calc(100vh - 54px - 44px);overflow:hidden;min-height:0;}
-.sam-left{width:320px;min-width:320px;border-right:1px solid var(--b);display:flex;flex-direction:column;background:var(--bg2);overflow:hidden;}
-.sam-right{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+
+/* Colonne GAUCHE : alertes + carte */
+.sam-left{width:280px;min-width:280px;border-right:1px solid var(--b);display:flex;flex-direction:column;background:var(--bg2);overflow:hidden;}
 
 /* Alertes */
-.sam-alerts{flex-shrink:0;max-height:240px;overflow-y:auto;border-bottom:1px solid var(--b);}
-.sam-alerts-hd{padding:8px 14px 5px;border-bottom:1px solid var(--b);display:flex;align-items:center;gap:6px;flex-shrink:0;position:sticky;top:0;background:var(--bg2);z-index:1;}
+.sam-alerts{flex-shrink:0;max-height:45%;overflow-y:auto;border-bottom:1px solid var(--b);display:flex;flex-direction:column;}
+.sam-alerts-hd{padding:8px 14px 5px;border-bottom:1px solid var(--b);display:flex;align-items:center;gap:6px;flex-shrink:0;background:var(--bg2);position:sticky;top:0;z-index:1;}
 .sam-alerts-hd h3{font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
 .sam-alert-count{font-size:9px;font-weight:700;letter-spacing:1.5px;padding:2px 7px;border-radius:8px;background:rgba(255,68,85,.15);color:#ff4455;border:1px solid rgba(255,68,85,.25);margin-left:auto;}
 .sam-alert-count.ok{background:rgba(0,200,83,.08);color:var(--green);border-color:rgba(0,200,83,.15);}
-.sam-alert-list{padding:6px 10px;display:flex;flex-direction:column;gap:4px;}
+.sam-alert-list{padding:5px 8px;display:flex;flex-direction:column;gap:3px;overflow-y:auto;}
 .sam-alert-empty{padding:14px;text-align:center;color:var(--m);font-size:11px;}
-@keyframes alertIn{from{opacity:0;transform:translateX(-8px);}to{opacity:1;transform:none;}}
-.sam-alert{display:flex;align-items:flex-start;gap:8px;padding:7px 10px;border-radius:5px;animation:alertIn .25s ease;position:relative;}
+@keyframes alertIn{from{opacity:0;transform:translateX(-6px);}to{opacity:1;transform:none;}}
+.sam-alert{display:flex;align-items:flex-start;gap:7px;padding:6px 9px;border-radius:5px;animation:alertIn .22s ease;position:relative;}
 .sam-alert.type-DNF{background:rgba(255,107,107,.08);border:1px solid rgba(255,107,107,.18);}
 .sam-alert.type-DSQ{background:rgba(255,68,85,.08);border:1px solid rgba(255,68,85,.18);}
 .sam-alert.type-INCIDENT{background:rgba(255,200,0,.07);border:1px solid rgba(255,200,0,.18);}
 .sam-alert.type-PENALTY{background:rgba(196,121,0,.07);border:1px solid rgba(196,121,0,.18);}
-.sam-alert-ico{font-size:16px;flex-shrink:0;line-height:1.3;}
+.sam-alert-ico{font-size:15px;flex-shrink:0;line-height:1.3;}
 .sam-alert-body{flex:1;min-width:0;}
-.sam-alert-pilot{font-family:var(--font-head);font-size:13px;font-weight:700;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sam-alert-pilot{font-family:var(--font-head);font-size:12px;font-weight:700;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .sam-alert-msg{font-size:10px;color:var(--m2);margin-top:1px;}
-.sam-alert-time{font-size:8px;color:var(--m);flex-shrink:0;margin-top:2px;}
-.sam-alert-new{position:absolute;top:5px;right:6px;width:6px;height:6px;border-radius:50%;background:var(--r);animation:pulse 1s ease-in-out infinite;}
+.sam-alert-time{font-size:8px;color:var(--m);flex-shrink:0;margin-top:1px;}
+.sam-alert-new{position:absolute;top:4px;right:5px;width:6px;height:6px;border-radius:50%;background:var(--r);animation:pulse 1s ease-in-out infinite;}
 
 /* Carte circuit */
-.sam-map-block{flex:1;overflow:hidden;display:flex;flex-direction:column;}
+.sam-map-block{flex:1;overflow:hidden;display:flex;flex-direction:column;min-height:0;}
 .sam-map-hd{padding:7px 14px 5px;border-bottom:1px solid var(--b);display:flex;align-items:center;gap:6px;flex-shrink:0;}
 .sam-map-hd h3{font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
 .sam-map-upload{margin-left:auto;background:rgba(255,255,255,.04);border:1px solid var(--b);color:var(--m);border-radius:4px;padding:3px 9px;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .15s;font-family:var(--font-head);}
 .sam-map-upload:hover{border-color:var(--b2);color:#fff;}
-.sam-map-wrap{flex:1;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;background:var(--bg);}
+.sam-map-wrap{flex:1;display:flex;align-items:center;justify-content:center;overflow:hidden;background:var(--bg);position:relative;}
 .sam-map-img{max-width:100%;max-height:100%;object-fit:contain;display:none;}
 .sam-map-img.on{display:block;}
 .sam-map-empty{text-align:center;color:var(--m);font-size:11px;line-height:2;}
 .sam-map-empty-ico{font-size:36px;opacity:.2;margin-bottom:6px;}
 
-/* Notes + Chat SAM (réutilise les styles comm) */
-.sam-right-top{height:42%;border-bottom:1px solid var(--b);display:flex;flex-direction:column;flex-shrink:0;}
-.sam-right-bot{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+/* Colonne CENTRE : caméras (principale, comme comm-center) */
+.sam-center{flex:1;display:flex;flex-direction:column;overflow:hidden;border-right:1px solid var(--b);}
+
+/* Colonne DROITE : notes SAM */
+.sam-right{width:260px;min-width:260px;display:flex;flex-direction:column;background:var(--bg2);overflow:hidden;}
 ::-webkit-scrollbar{width:4px;height:4px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:#252525;border-radius:2px;}
 /* ═══ ÉCRAN RÔLE ═══ */
 #roleScreen{position:fixed;inset:0;z-index:1000;background:var(--bg);display:flex;align-items:center;justify-content:center;}
@@ -733,27 +736,26 @@ body.viewer-mode #app{display:none!important;}
     </div>
   </div>
   <!-- SAM / EMS -->
+  <!-- SAM / EMS -->
   <div class="panel" id="panel-sam" style="padding:0;overflow:hidden;">
     <div class="sam-view">
 
       <!-- COLONNE GAUCHE : alertes + carte circuit -->
       <div class="sam-left">
-
         <!-- Alertes temps réel -->
         <div class="sam-alerts">
           <div class="sam-alerts-hd">
-            <h3>🚨 Alertes incidents</h3>
-            <span class="sam-alert-count ok" id="samAlertCount">0 alerte</span>
+            <h3>🚨 Alertes</h3>
+            <span class="sam-alert-count ok" id="samAlertCount">0</span>
           </div>
           <div class="sam-alert-list" id="samAlertList">
-            <div class="sam-alert-empty">Aucun incident — tout va bien ✅</div>
+            <div class="sam-alert-empty">Aucun incident ✅</div>
           </div>
         </div>
-
         <!-- Carte du circuit -->
         <div class="sam-map-block">
           <div class="sam-map-hd">
-            <h3>🗺 Carte du circuit</h3>
+            <h3>🗺 Carte circuit</h3>
             <label class="sam-map-upload" for="samMapFile">📁 Charger</label>
             <input type="file" id="samMapFile" accept="image/*" style="display:none;" onchange="samLoadMap(this)">
             <button onclick="samClearMap()" style="background:none;border:none;color:var(--m);font-size:11px;cursor:pointer;margin-left:4px;" title="Supprimer">✕</button>
@@ -761,44 +763,41 @@ body.viewer-mode #app{display:none!important;}
           <div class="sam-map-wrap">
             <div class="sam-map-empty" id="samMapEmpty">
               <div class="sam-map-empty-ico">🗺</div>
-              Chargez une image de la carte<br>
-              <span style="font-size:9px;opacity:.5;">PNG, JPG, SVG acceptés</span>
+              Chargez une image du circuit<br>
+              <span style="font-size:9px;opacity:.5;">PNG, JPG acceptés</span>
             </div>
-            <img id="samMapImg" class="sam-map-img" alt="Carte du circuit">
+            <img id="samMapImg" class="sam-map-img" alt="Carte">
           </div>
         </div>
       </div>
 
-      <!-- COLONNE DROITE : caméras + notes -->
+      <!-- COLONNE CENTRE : caméras partagées -->
+      <div class="sam-center">
+        <div class="cams-topbar">
+          <span class="cams-topbar-lbl">Grille</span>
+          <select class="cams-sel" id="samGridSel" onchange="samApplyGrid()">
+            <option value="g1x1">1 caméra</option>
+            <option value="g2x1">2 côte à côte</option>
+            <option value="g2x2" selected>2×2 — 4 cams</option>
+            <option value="g3x2">3×2 — 6 cams</option>
+            <option value="g2x3">2×3 — 6 cams</option>
+          </select>
+          <button class="cams-mgr-btn" onclick="samOpenCamModal()">⚙ Gérer les caméras</button>
+        </div>
+        <div class="cams-grid-wrap">
+          <div class="cams-grid g2x2" id="samCamsGrid"></div>
+        </div>
+      </div>
+
+      <!-- COLONNE DROITE : notes SAM -->
       <div class="sam-right">
-
-        <!-- Caméras (réutilise la grille commentateur) -->
-        <div style="flex:1;display:flex;flex-direction:column;border-bottom:1px solid var(--b);overflow:hidden;">
-          <div class="cams-topbar">
-            <span class="cams-topbar-lbl">Caméras</span>
-            <select class="cams-sel" id="samGridSel" onchange="samApplyGrid()">
-              <option value="g1x1">1 caméra</option>
-              <option value="g2x1">2 côte à côte</option>
-              <option value="g2x2" selected>2×2 — 4 cams</option>
-              <option value="g3x2">3×2 — 6 cams</option>
-            </select>
-            <span style="font-size:9px;color:var(--m);margin-left:6px;">← partagées avec le commentateur</span>
-          </div>
-          <div class="cams-grid-wrap">
-            <div class="cams-grid g2x2" id="samCamsGrid"></div>
-          </div>
+        <div class="cv-notes-hd" style="padding:8px 14px 6px;border-bottom:1px solid var(--b);flex-shrink:0;">
+          <h3 style="font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;">📝 Notes SAM</h3>
+          <span class="cv-notes-saved" id="samNotesSaved">✔ Sauvegardé</span>
         </div>
-
-        <!-- Notes SAM -->
-        <div style="height:160px;display:flex;flex-direction:column;flex-shrink:0;border-bottom:1px solid var(--b);">
-          <div class="cv-notes-hd">
-            <h3>📝 Notes SAM</h3>
-            <span class="cv-notes-saved" id="samNotesSaved">✔ Sauvegardé</span>
-          </div>
-          <textarea id="samNotesArea" style="flex:1;width:100%;background:transparent;color:#fff;border:none;resize:none;padding:8px 14px;font-family:var(--font-body);font-size:12px;line-height:1.5;outline:none;" placeholder="Positions SAM sur le circuit, consignes, observations…&#10;Sauvegardé localement."></textarea>
-        </div>
-
+        <textarea id="samNotesArea" style="flex:1;width:100%;background:transparent;color:#fff;border:none;resize:none;padding:10px 14px;font-family:var(--font-body);font-size:13px;line-height:1.6;outline:none;" placeholder="Positions SAM, consignes, observations médicales…&#10;Sauvegardé localement."></textarea>
       </div>
+
     </div>
   </div>
 
@@ -2643,6 +2642,8 @@ async function camRemove(i,fromModal=false){
   await camSave();
   camRenderGrid();
   if(fromModal)camRenderModal();
+  // Sync SAM aussi
+  if(_samInited) samRenderCams();
 }
 
 
@@ -3166,12 +3167,14 @@ let samAlertLastId=0, samAlertSynced=false;
 let _samInited=false;
 let samGrid='g2x2';
 
-function samInit(){
+async function samInit(){
   if(_samInited) return;
   _samInited=true;
-  samLoadMap(null); // restaurer depuis localStorage
-  samInitNotes();
+  // Charger les cams depuis Supabase (même source que commentateur)
+  await camLoad();
   samRenderCams();
+  samLoadMap(null);
+  samInitNotes();
   samPollAlerts();
   if(!window._samIntervals){
     window._samIntervals=true;
@@ -3274,12 +3277,13 @@ function samRenderAlerts(events, isNew){
 
 // ── Caméras SAM (partagées avec commentateur) ──
 function samRenderCams(){
-  const sel=document.getElementById('samGridSel');
-  if(sel)sel.value=camGrid;
+  // Synchroniser la grille avec camGrid (partagé)
   samGrid=camGrid;
+  const sel=document.getElementById('samGridSel');
+  if(sel)sel.value=samGrid;
   const grid=document.getElementById('samCamsGrid');
   if(!grid)return;
-  grid.className='cams-grid '+camGrid;
+  grid.className='cams-grid '+samGrid;
   const n=camGridCount();
   grid.innerHTML='';
   for(let i=0;i<n;i++){
@@ -3292,17 +3296,30 @@ function samRenderCams(){
         `<iframe src="${cam.url}" allow="camera;microphone;fullscreen;picture-in-picture" allowfullscreen loading="lazy"></iframe>`;
     }else{
       cell.className='cam-cell empty';
-      cell.innerHTML='<span style="opacity:.3;">Slot '+(i+1)+'</span>';
+      cell.innerHTML=
+        `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:.15"><path d="M15 10l4.553-2.069A1 1 0 0121 8.868v6.264a1 1 0 01-1.447.894L15 14M3 8a2 2 0 012-2h10a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z"/></svg>`+
+        `<span style="opacity:.25;font-size:10px;">Slot ${i+1}</span>`;
+      // Clic sur slot vide → ouvre le gestionnaire commentateur
+      cell.onclick=()=>samOpenCamModal();
     }
     grid.appendChild(cell);
   }
 }
 
-function samApplyGrid(){
-  samGrid=document.getElementById('samGridSel').value;
-  const grid=document.getElementById('samCamsGrid');
-  if(grid) grid.className='cams-grid '+samGrid;
+async function samApplyGrid(){
+  // Le SAM peut changer la grille — ça change pour tout le monde
+  camGrid=document.getElementById('samGridSel').value;
+  await camSave();
   samRenderCams();
+  // Mettre à jour aussi la grille commentateur si visible
+  camRenderGrid();
+}
+
+// Ouvre le modal gestionnaire de cams (partagé avec commentateur)
+function samOpenCamModal(){
+  camOpenModal();
+  // Après fermeture, re-render sam aussi
+  const origClose=camCloseModal;
 }
 
 async function samPollSharedCams(){
@@ -3315,6 +3332,9 @@ async function samPollSharedCams(){
     try{camList=JSON.parse(d[0].cams||'[]');}catch(e){}
     camGrid=d[0].grid||'g2x2';
     samRenderCams();
+    // Sync aussi les selects
+    const sel=document.getElementById('samGridSel');
+    if(sel)sel.value=camGrid;
   }
 }
 
