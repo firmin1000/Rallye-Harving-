@@ -949,7 +949,7 @@ body.viewer-mode #roleScreen,body.viewer-mode #diffScreen,body.viewer-mode #diff
         <div class="comm-subpanel on" id="cstab-cams">
           <div class="cams-topbar">
             <span class="cams-topbar-lbl">Grille</span>
-            <select class="cams-sel" id="camGridSel2" onchange="camApplyGridFromSel(this)">
+            <select class="cams-sel" id="camGridSel" onchange="camApplyGrid()">
               <option value="g1x1">1 caméra</option>
               <option value="g2x1">2 côte à côte</option>
               <option value="g2x2" selected>2×2 — 4 cams</option>
@@ -2411,10 +2411,12 @@ function camRenderGrid(){
 }
 
 async function camApplyGrid(){
-  camGrid=document.getElementById('camGridSel').value;
+  const sel=document.getElementById('camGridSel');
+  if(sel) camGrid=sel.value;
   await camSave();
   camRenderGrid();
   camRenderModal();
+  if(_samInited) samRenderCams();
 }
 
 // ── Modal ──
