@@ -640,7 +640,8 @@ tr:last-child td{border-bottom:none;}
 
 /* Viewer OBS */
 #viewerMode{display:none;position:fixed;inset:0;z-index:-1;background:#000;pointer-events:none;}
-body.viewer-mode #viewerMode{display:block;z-index:99999;pointer-events:auto;}
+body.viewer-mode 
+
 body.viewer-mode #roleScreen,body.viewer-mode #diffScreen,body.viewer-mode #diffLiveScreen,body.viewer-mode #app,body.viewer-mode #rolePwdModal,body.viewer-mode #setupModal,body.viewer-mode #camModal{display:none!important;}
 #vwStatus{position:absolute;top:16px;left:16px;z-index:1;display:flex;align-items:center;gap:8px;background:rgba(0,0,0,.7);padding:8px 14px;border-radius:2px;backdrop-filter:blur(4px);}
 .s-dot{width:7px;height:7px;border-radius:50%;background:var(--r);animation:pulse 1s ease-in-out infinite;}
@@ -721,6 +722,15 @@ body.viewer-mode #roleScreen,body.viewer-mode #diffScreen,body.viewer-mode #diff
 
 /* ── SCROLLBAR GLOBALE ── */
 *{scrollbar-width:thin;scrollbar-color:rgba(232,0,28,.2) transparent;}
+
+/* ── OVERRIDES HIDDEN — spécificité suffisante ── */
+#roleScreen.hidden,
+#rolePwdModal.hidden,
+#setupModal.hidden,
+#camModal.hidden,
+#diffScreen.hidden,
+#diffLiveScreen.hidden,
+#viewerMode.hidden{display:none!important;}
 </style>
 </head>
 <body>
