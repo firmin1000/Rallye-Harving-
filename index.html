@@ -313,6 +313,38 @@ tr:hover td{background:rgba(255,255,255,.015);}
 .pen-secs-adj label{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--m);}
 .pen-secs-input{width:70px;background:var(--bg4);color:#fff;border:1px solid rgba(224,128,0,.3);border-radius:4px;padding:5px 8px;font-family:var(--font-head);font-size:16px;font-weight:700;text-align:center;outline:none;}
 
+
+/* ═══ FICHE PILOTE EN COURS (commentateur) ═══ */
+.cv-pilot-card{flex-shrink:0;border-bottom:1px solid var(--b);position:relative;overflow:hidden;background:var(--bg2);transition:all .4s ease;}
+.cv-pilot-card.empty{display:none;}
+.cv-pilot-card.active{display:block;}
+/* Bande couleur écurie */
+.cv-pc-bar{position:absolute;left:0;top:0;bottom:0;width:4px;}
+/* Fond teinté couleur écurie */
+.cv-pc-tint{position:absolute;inset:0;opacity:.06;pointer-events:none;}
+/* Badge EN PISTE animé */
+.cv-pc-badge{position:absolute;top:8px;right:10px;background:var(--r);color:#fff;font-family:var(--font-head);font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:3px 8px;border-radius:3px;display:flex;align-items:center;gap:4px;}
+.cv-pc-badge-dot{width:5px;height:5px;border-radius:50%;background:#fff;animation:pulse .9s ease-in-out infinite;}
+/* Contenu */
+.cv-pc-inner{padding:10px 12px 10px 16px;position:relative;z-index:1;}
+.cv-pc-cat{font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--m);margin-bottom:4px;}
+.cv-pc-name{font-family:var(--font-head);font-size:22px;font-weight:900;font-style:italic;text-transform:uppercase;line-height:1;color:#fff;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.cv-pc-team{font-size:10px;font-weight:600;color:var(--m2);margin-bottom:6px;display:flex;align-items:center;gap:6px;}
+.cv-pc-team-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.cv-pc-stats{display:flex;gap:12px;margin-top:2px;}
+.cv-pc-stat{display:flex;flex-direction:column;gap:1px;}
+.cv-pc-stat-lbl{font-size:7px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--m);}
+.cv-pc-stat-val{font-family:var(--font-head);font-size:13px;font-weight:700;color:rgba(255,255,255,.8);}
+.cv-pc-stat-val.gold{color:var(--gold);}
+.cv-pc-stat-val.red{color:var(--r);}
+/* Chrono intégré dans la fiche */
+.cv-pc-chrono{display:flex;align-items:baseline;gap:6px;margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,.07);}
+.cv-pc-chrono-time{font-family:var(--font-head);font-size:36px;font-weight:900;letter-spacing:1px;font-variant-numeric:tabular-nums;color:rgba(255,255,255,.15);line-height:1;transition:color .3s;}
+.cv-pc-chrono-time.run{color:var(--r);text-shadow:0 0 20px rgba(232,0,28,.2);}
+.cv-pc-chrono-best{display:flex;flex-direction:column;gap:1px;margin-left:auto;}
+.cv-pc-chrono-best-lbl{font-size:7px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--m);}
+.cv-pc-chrono-best-val{font-family:var(--font-head);font-size:13px;font-weight:700;color:var(--gold);}
+
 ::-webkit-scrollbar{width:4px;height:4px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:#252525;border-radius:2px;}
 /* ═══ ÉCRAN RÔLE ═══ */
 #roleScreen{position:fixed;inset:0;z-index:1000;background:var(--bg);display:flex;align-items:center;justify-content:center;}
@@ -920,19 +952,57 @@ body.viewer-mode #app{display:none!important;}
   <div class="panel" id="panel-commentateur" style="padding:0;overflow:hidden;">
     <div class="comm-view">
 
-      <!-- COLONNE GAUCHE : chrono live + classement -->
+      <!-- COLONNE GAUCHE : fiche pilote + chrono + classement -->
       <div class="comm-left">
-        <!-- Sélecteur catégorie — local au commentateur, ne touche pas l'overlay OBS -->
+        <!-- Sélecteur catégorie -->
         <div class="cv-cat-bar">
           <button class="cv-cat-btn on" data-cat="Rally B"          onclick="cvSetCat(this)">🔵 Rally B</button>
           <button class="cv-cat-btn"    data-cat="Rally N"          onclick="cvSetCat(this)">🟢 Rally N</button>
           <button class="cv-cat-btn"    data-cat="Rally Historique" onclick="cvSetCat(this)">🟡 Historique</button>
         </div>
-        <div class="cv-chrono">
+
+        <!-- FICHE PILOTE EN COURS -->
+        <div class="cv-pilot-card empty" id="cvPilotCard">
+          <div class="cv-pc-bar" id="cvPcBar"></div>
+          <div class="cv-pc-tint" id="cvPcTint"></div>
+          <div class="cv-pc-badge"><div class="cv-pc-badge-dot"></div>EN PISTE</div>
+          <div class="cv-pc-inner">
+            <div class="cv-pc-cat" id="cvPcCat">—</div>
+            <div class="cv-pc-name" id="cvPcName">—</div>
+            <div class="cv-pc-team">
+              <div class="cv-pc-team-dot" id="cvPcTeamDot"></div>
+              <span id="cvPcTeam">—</span>
+            </div>
+            <div class="cv-pc-stats">
+              <div class="cv-pc-stat">
+                <span class="cv-pc-stat-lbl">Nationalité</span>
+                <span class="cv-pc-stat-val" id="cvPcNat">—</span>
+              </div>
+              <div class="cv-pc-stat">
+                <span class="cv-pc-stat-lbl">Meilleur temps</span>
+                <span class="cv-pc-stat-val gold" id="cvPcBest">—</span>
+              </div>
+              <div class="cv-pc-stat">
+                <span class="cv-pc-stat-lbl">Position</span>
+                <span class="cv-pc-stat-val red" id="cvPcPos">—</span>
+              </div>
+            </div>
+            <!-- Chrono intégré -->
+            <div class="cv-pc-chrono">
+              <div class="cv-pc-chrono-time" id="cvChTime">00:00.000</div>
+              <div class="cv-pc-chrono-best">
+                <span class="cv-pc-chrono-best-lbl">Meilleur session</span>
+                <span class="cv-pc-chrono-best-val" id="cvChBest">—</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chrono minimal quand aucun pilote en piste -->
+        <div class="cv-chrono" id="cvChronoFallback">
           <div class="cv-ch-lbl"><div class="cv-ch-dot" id="cvChDot"></div>CHRONO EN COURS</div>
-          <div class="cv-pilot" id="cvChPilot">—</div>
-          <div class="cv-time" id="cvChTime">00:00.000</div>
-          <div class="cv-best">Meilleur : <b id="cvChBest">—</b></div>
+          <div class="cv-pilot" id="cvChPilot">Aucun pilote en piste</div>
+          <div class="cv-time" style="font-size:28px;color:rgba(255,255,255,.1);">—</div>
         </div>
         <div class="cv-cls">
           <div class="cv-cls-hd">
@@ -2438,16 +2508,16 @@ function cvSetCat(btn){
   document.querySelectorAll('.cv-cat-btn').forEach(b=>b.classList.remove('on'));
   btn.classList.add('on');
   cvCat=btn.dataset.cat;
-  // Reset chrono si le pilote en cours n'est plus dans cette catégorie
+  // Reset chrono
   cvChRun=false;
   cancelAnimationFrame(cvChRaf);
   const dot=document.getElementById('cvChDot');
   const time=document.getElementById('cvChTime');
-  const pilot=document.getElementById('cvChPilot');
   if(dot)dot.classList.remove('run');
   if(time){time.classList.remove('run');time.textContent='00:00.000';}
-  if(pilot)pilot.textContent='—';
-  // Rafraîchit immédiatement le classement
+  // Masquer la fiche pilote
+  cvHidePilotCard();
+  // Rafraîchit
   cvPollCls();
   cvPollChrono();
 }
@@ -2476,35 +2546,118 @@ function cvChTick(){
 }
 
 async function cvPollChrono(){
-  const d=await GET('chrono','?id=eq.1&select=*,pilotes(last_name,first_name,category)');
+  // Récupère toutes les infos du pilote pour la fiche
+  const d=await GET('chrono','?id=eq.1&select=*,pilotes(id,last_name,first_name,category,country,team,team_color,sponsor)');
   if(!d||!d.length)return;
   const row=d[0];
   const pilotCat=row.pilotes?.category||'';
-  const relevant=pilotCat===cvCat; // catégorie locale commentateur
+  const relevant=pilotCat===cvCat;
+
   if(row.status==='START'&&Number(row.started_at)>0&&relevant){
     const ts=Number(row.started_at);
-    const name=row.pilotes?(row.pilotes.first_name+' '+(row.pilotes.last_name||'').toUpperCase()):'';
+    const p=row.pilotes;
+    const name=p?(p.first_name+' '+(p.last_name||'').toUpperCase()):'';
+
     if(!cvChRun||cvChTs!==ts){
-      cvChRun=true;cvChTs=ts;
-      const pilot=document.getElementById('cvChPilot');
-      const time=document.getElementById('cvChTime');
+      cvChRun=true; cvChTs=ts;
+      // Chrono
       const dot=document.getElementById('cvChDot');
-      if(pilot)pilot.textContent=name.trim();
+      const time=document.getElementById('cvChTime');
       if(dot)dot.classList.add('run');
       if(time)time.classList.add('run');
-      cancelAnimationFrame(cvChRaf);cvChRaf=requestAnimationFrame(cvChTick);
+      cancelAnimationFrame(cvChRaf); cvChRaf=requestAnimationFrame(cvChTick);
+      // Fallback simple
+      const pilotEl=document.getElementById('cvChPilot');
+      if(pilotEl)pilotEl.textContent=name.trim();
     }
-  }else{
-    if(cvChRun){const e=cvNow()-cvChTs;if(e>0&&e<cvBestMs){cvBestMs=e;const b=document.getElementById('cvChBest');if(b)b.textContent=fmt(cvBestMs);}}
+
+    // Afficher la fiche pilote
+    if(p) cvShowPilotCard(p, row.pilote_id);
+
+    // Masquer le fallback chrono
+    const fallback=document.getElementById('cvChronoFallback');
+    if(fallback)fallback.style.display='none';
+
+  } else {
+    // Arrêt chrono
+    if(cvChRun){
+      const e=cvNow()-cvChTs;
+      if(e>0&&e<cvBestMs){
+        cvBestMs=e;
+        const b=document.getElementById('cvChBest');
+        if(b)b.textContent=fmt(cvBestMs);
+      }
+    }
     cvChRun=false;
     const dot=document.getElementById('cvChDot');
     const time=document.getElementById('cvChTime');
-    const pilot=document.getElementById('cvChPilot');
     if(dot)dot.classList.remove('run');
     if(time)time.classList.remove('run');
-    if(pilot&&!cvChRun)pilot.textContent='—';
     cancelAnimationFrame(cvChRaf);
+    // Masquer la fiche, afficher fallback
+    cvHidePilotCard();
   }
+}
+
+// Affiche la fiche du pilote en cours
+async function cvShowPilotCard(p, pilotId){
+  const card=document.getElementById('cvPilotCard');
+  if(!card)return;
+  card.classList.remove('empty'); card.classList.add('active');
+
+  const color=p.team_color||'#e8001c';
+  // Couleur de la barre et du fond
+  const bar=document.getElementById('cvPcBar');
+  const tint=document.getElementById('cvPcTint');
+  if(bar)bar.style.background=color;
+  if(tint)tint.style.background=color;
+
+  // Nom
+  const nameEl=document.getElementById('cvPcName');
+  if(nameEl)nameEl.textContent=(p.first_name+' '+(p.last_name||'').toUpperCase()).trim();
+
+  // Catégorie
+  const catEl=document.getElementById('cvPcCat');
+  if(catEl)catEl.textContent=p.category||'';
+
+  // Équipe
+  const teamEl=document.getElementById('cvPcTeam');
+  const teamDot=document.getElementById('cvPcTeamDot');
+  if(teamEl)teamEl.textContent=p.team||'—';
+  if(teamDot)teamDot.style.background=color;
+
+  // Nationalité
+  const natEl=document.getElementById('cvPcNat');
+  if(natEl)natEl.textContent=p.country||'—';
+
+  // Meilleur temps + position depuis classement
+  if(pilotId){
+    const cls=await GET('classement',`?pilote_id=eq.${pilotId}&select=best_time,position`);
+    if(cls&&cls[0]){
+      const bestEl=document.getElementById('cvPcBest');
+      const posEl=document.getElementById('cvPcPos');
+      if(bestEl)bestEl.textContent=cls[0].best_time||'—';
+      // Calculer la position dans le classement
+      if(posEl){
+        // On va chercher la position via cvPollCls data
+        const allCls=await GET('classement',`?select=pilote_id,best_time,status&pilote_id=in.(${allPilots.filter(p2=>p2.category===cvCat).map(p2=>p2.id).join(',')||'0'})`);
+        if(allCls){
+          const sorted=allCls.filter(r=>r.best_time&&toMs(r.best_time)<Infinity&&r.status!=='DNF'&&r.status!=='DSQ').sort((a,b)=>toMs(a.best_time)-toMs(b.best_time));
+          const pos=sorted.findIndex(r=>r.pilote_id===pilotId);
+          posEl.textContent=pos>=0?'P'+(pos+1):'—';
+        }
+      }
+    }
+  }
+}
+
+function cvHidePilotCard(){
+  const card=document.getElementById('cvPilotCard');
+  if(card){card.classList.remove('active');card.classList.add('empty');}
+  const fallback=document.getElementById('cvChronoFallback');
+  if(fallback)fallback.style.display='';
+  const pilotEl=document.getElementById('cvChPilot');
+  if(pilotEl)pilotEl.textContent='Aucun pilote en piste';
 }
 
 // ══ CLASSEMENT LIVE COMMENTATEUR ══
