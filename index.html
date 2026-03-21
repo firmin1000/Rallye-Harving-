@@ -736,6 +736,20 @@ body.viewer-mode #app{display:none!important;}
       </button>
     </div>
   </div>
+</div>
+
+<!-- MODAL MOT DE PASSE RÔLE -->
+<div id="rolePwdModal" class="hidden">
+  <div class="rpwd-box">
+    <div class="rpwd-icon" id="rpwdIcon">⚙️</div>
+    <div class="rpwd-title" id="rpwdTitle">Administrateur</div>
+    <div class="rpwd-sub">Entrez le mot de passe</div>
+    <input type="password" class="rpwd-inp" id="rpwdInp" placeholder="••••••••" autocomplete="off">
+    <button class="rpwd-btn r-admin" id="rpwdBtn" onclick="submitRolePwd()">Accéder</button>
+    <div class="rpwd-err" id="rpwdErr"></div>
+    <button class="rpwd-cancel" onclick="cancelRolePwd()">← Retour</button>
+  </div>
+</div>
   <!-- SAM / EMS -->
   <!-- SAMS / EMS -->
   <div class="panel" id="panel-sam" style="padding:0;overflow:hidden;">
