@@ -743,7 +743,7 @@ body.viewer-mode #app{display:none!important;}
   <div class="rpwd-box">
     <div class="rpwd-icon" id="rpwdIcon">⚙️</div>
     <div class="rpwd-title" id="rpwdTitle">Administrateur</div>
-    <div class="rpwd-sub">Entrez le mot de passe</div>
+    <div class="rpwd-sub" id="rpwdSub">Entrez le mot de passe</div>
     <input type="password" class="rpwd-inp" id="rpwdInp" placeholder="••••••••" autocomplete="off">
     <button class="rpwd-btn r-admin" id="rpwdBtn" onclick="submitRolePwd()">Accéder</button>
     <div class="rpwd-err" id="rpwdErr"></div>
@@ -1509,6 +1509,7 @@ function selectRole(role){
   document.getElementById('rpwdInp').value='';
   document.getElementById('rolePwdModal').classList.remove('hidden');
   setTimeout(()=>document.getElementById('rpwdInp').focus(),80);
+  document.getElementById('rpwdInp').onkeydown=e=>{if(e.key==='Enter')submitRolePwd();};
 }
 
 function cancelRolePwd(){
