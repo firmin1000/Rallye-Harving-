@@ -345,6 +345,57 @@ tr:hover td{background:rgba(255,255,255,.015);}
 .cv-pc-chrono-best-lbl{font-size:7px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--m);}
 .cv-pc-chrono-best-val{font-family:var(--font-head);font-size:13px;font-weight:700;color:var(--gold);}
 
+
+/* ROLE SAM */
+.role-cards{grid-template-columns:1fr 1fr 1fr 1fr !important;}
+.role-card.r-sam::before{background:linear-gradient(135deg,rgba(0,200,83,.08),transparent);}
+.role-card:hover.r-sam{border-color:rgba(0,200,83,.35);}
+.role-card.r-sam .role-name{color:#88ffbb;}
+.rpwd-btn.r-sam{background:rgba(0,200,83,.18);color:#88ffbb;border:1px solid rgba(0,200,83,.3);}
+.rpwd-btn.r-sam:hover{background:rgba(0,200,83,.28);}
+.rb-sam{background:rgba(0,200,83,.1);color:#88ffbb;border:1px solid rgba(0,200,83,.2);}
+
+/* PANEL SAM */
+.sam-view{display:flex;height:calc(100vh - 54px - 44px);overflow:hidden;min-height:0;}
+.sam-left{width:320px;min-width:320px;border-right:1px solid var(--b);display:flex;flex-direction:column;background:var(--bg2);overflow:hidden;}
+.sam-right{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+
+/* Alertes */
+.sam-alerts{flex-shrink:0;max-height:240px;overflow-y:auto;border-bottom:1px solid var(--b);}
+.sam-alerts-hd{padding:8px 14px 5px;border-bottom:1px solid var(--b);display:flex;align-items:center;gap:6px;flex-shrink:0;position:sticky;top:0;background:var(--bg2);z-index:1;}
+.sam-alerts-hd h3{font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
+.sam-alert-count{font-size:9px;font-weight:700;letter-spacing:1.5px;padding:2px 7px;border-radius:8px;background:rgba(255,68,85,.15);color:#ff4455;border:1px solid rgba(255,68,85,.25);margin-left:auto;}
+.sam-alert-count.ok{background:rgba(0,200,83,.08);color:var(--green);border-color:rgba(0,200,83,.15);}
+.sam-alert-list{padding:6px 10px;display:flex;flex-direction:column;gap:4px;}
+.sam-alert-empty{padding:14px;text-align:center;color:var(--m);font-size:11px;}
+@keyframes alertIn{from{opacity:0;transform:translateX(-8px);}to{opacity:1;transform:none;}}
+.sam-alert{display:flex;align-items:flex-start;gap:8px;padding:7px 10px;border-radius:5px;animation:alertIn .25s ease;position:relative;}
+.sam-alert.type-DNF{background:rgba(255,107,107,.08);border:1px solid rgba(255,107,107,.18);}
+.sam-alert.type-DSQ{background:rgba(255,68,85,.08);border:1px solid rgba(255,68,85,.18);}
+.sam-alert.type-INCIDENT{background:rgba(255,200,0,.07);border:1px solid rgba(255,200,0,.18);}
+.sam-alert.type-PENALTY{background:rgba(196,121,0,.07);border:1px solid rgba(196,121,0,.18);}
+.sam-alert-ico{font-size:16px;flex-shrink:0;line-height:1.3;}
+.sam-alert-body{flex:1;min-width:0;}
+.sam-alert-pilot{font-family:var(--font-head);font-size:13px;font-weight:700;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sam-alert-msg{font-size:10px;color:var(--m2);margin-top:1px;}
+.sam-alert-time{font-size:8px;color:var(--m);flex-shrink:0;margin-top:2px;}
+.sam-alert-new{position:absolute;top:5px;right:6px;width:6px;height:6px;border-radius:50%;background:var(--r);animation:pulse 1s ease-in-out infinite;}
+
+/* Carte circuit */
+.sam-map-block{flex:1;overflow:hidden;display:flex;flex-direction:column;}
+.sam-map-hd{padding:7px 14px 5px;border-bottom:1px solid var(--b);display:flex;align-items:center;gap:6px;flex-shrink:0;}
+.sam-map-hd h3{font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
+.sam-map-upload{margin-left:auto;background:rgba(255,255,255,.04);border:1px solid var(--b);color:var(--m);border-radius:4px;padding:3px 9px;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .15s;font-family:var(--font-head);}
+.sam-map-upload:hover{border-color:var(--b2);color:#fff;}
+.sam-map-wrap{flex:1;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;background:var(--bg);}
+.sam-map-img{max-width:100%;max-height:100%;object-fit:contain;display:none;}
+.sam-map-img.on{display:block;}
+.sam-map-empty{text-align:center;color:var(--m);font-size:11px;line-height:2;}
+.sam-map-empty-ico{font-size:36px;opacity:.2;margin-bottom:6px;}
+
+/* Notes + Chat SAM (réutilise les styles comm) */
+.sam-right-top{height:42%;border-bottom:1px solid var(--b);display:flex;flex-direction:column;flex-shrink:0;}
+.sam-right-bot{flex:1;display:flex;flex-direction:column;overflow:hidden;}
 ::-webkit-scrollbar{width:4px;height:4px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:#252525;border-radius:2px;}
 /* ═══ ÉCRAN RÔLE ═══ */
 #roleScreen{position:fixed;inset:0;z-index:1000;background:var(--bg);display:flex;align-items:center;justify-content:center;}
@@ -669,6 +720,11 @@ body.viewer-mode #app{display:none!important;}
         <div class="role-name">Commentateur</div>
         <div class="role-desc">Caméras VDO, classement live, notes et chat interne</div>
       </div>
+      <div class="role-card r-sam" onclick="selectRole('sam')">
+        <div class="role-icon">🚑</div>
+        <div class="role-name">SAM / EMS</div>
+        <div class="role-desc">Caméras, alertes incidents, carte circuit, notes</div>
+      </div>
     </div>
     <div style="margin-top:20px;">
       <button onclick="showDiffScreen()" style="background:none;border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.35);border-radius:20px;padding:9px 22px;font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .2s;" onmouseover="this.style.borderColor='rgba(255,255,255,.3)';this.style.color='rgba(255,255,255,.75)'" onmouseout="this.style.borderColor='rgba(255,255,255,.12)';this.style.color='rgba(255,255,255,.35)'">
@@ -676,6 +732,76 @@ body.viewer-mode #app{display:none!important;}
       </button>
     </div>
   </div>
+  <!-- SAM / EMS -->
+  <div class="panel" id="panel-sam" style="padding:0;overflow:hidden;">
+    <div class="sam-view">
+
+      <!-- COLONNE GAUCHE : alertes + carte circuit -->
+      <div class="sam-left">
+
+        <!-- Alertes temps réel -->
+        <div class="sam-alerts">
+          <div class="sam-alerts-hd">
+            <h3>🚨 Alertes incidents</h3>
+            <span class="sam-alert-count ok" id="samAlertCount">0 alerte</span>
+          </div>
+          <div class="sam-alert-list" id="samAlertList">
+            <div class="sam-alert-empty">Aucun incident — tout va bien ✅</div>
+          </div>
+        </div>
+
+        <!-- Carte du circuit -->
+        <div class="sam-map-block">
+          <div class="sam-map-hd">
+            <h3>🗺 Carte du circuit</h3>
+            <label class="sam-map-upload" for="samMapFile">📁 Charger</label>
+            <input type="file" id="samMapFile" accept="image/*" style="display:none;" onchange="samLoadMap(this)">
+            <button onclick="samClearMap()" style="background:none;border:none;color:var(--m);font-size:11px;cursor:pointer;margin-left:4px;" title="Supprimer">✕</button>
+          </div>
+          <div class="sam-map-wrap">
+            <div class="sam-map-empty" id="samMapEmpty">
+              <div class="sam-map-empty-ico">🗺</div>
+              Chargez une image de la carte<br>
+              <span style="font-size:9px;opacity:.5;">PNG, JPG, SVG acceptés</span>
+            </div>
+            <img id="samMapImg" class="sam-map-img" alt="Carte du circuit">
+          </div>
+        </div>
+      </div>
+
+      <!-- COLONNE DROITE : caméras + notes -->
+      <div class="sam-right">
+
+        <!-- Caméras (réutilise la grille commentateur) -->
+        <div style="flex:1;display:flex;flex-direction:column;border-bottom:1px solid var(--b);overflow:hidden;">
+          <div class="cams-topbar">
+            <span class="cams-topbar-lbl">Caméras</span>
+            <select class="cams-sel" id="samGridSel" onchange="samApplyGrid()">
+              <option value="g1x1">1 caméra</option>
+              <option value="g2x1">2 côte à côte</option>
+              <option value="g2x2" selected>2×2 — 4 cams</option>
+              <option value="g3x2">3×2 — 6 cams</option>
+            </select>
+            <span style="font-size:9px;color:var(--m);margin-left:6px;">← partagées avec le commentateur</span>
+          </div>
+          <div class="cams-grid-wrap">
+            <div class="cams-grid g2x2" id="samCamsGrid"></div>
+          </div>
+        </div>
+
+        <!-- Notes SAM -->
+        <div style="height:160px;display:flex;flex-direction:column;flex-shrink:0;border-bottom:1px solid var(--b);">
+          <div class="cv-notes-hd">
+            <h3>📝 Notes SAM</h3>
+            <span class="cv-notes-saved" id="samNotesSaved">✔ Sauvegardé</span>
+          </div>
+          <textarea id="samNotesArea" style="flex:1;width:100%;background:transparent;color:#fff;border:none;resize:none;padding:8px 14px;font-family:var(--font-body);font-size:12px;line-height:1.5;outline:none;" placeholder="Positions SAM sur le circuit, consignes, observations…&#10;Sauvegardé localement."></textarea>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <!-- ÉCRAN DIFFUSEUR — Via VDO.ninja -->
@@ -738,6 +864,7 @@ body.viewer-mode #app{display:none!important;}
       <div class="sf"><label>🔑 Mot de passe Admin (accès complet)</label><input type="text" id="cfgPwdAdmin" placeholder="Vide = inchangé"></div>
       <div class="sf"><label>⏱ Mot de passe Chrono</label><input type="text" id="cfgPwdChrono" placeholder="Vide = inchangé"></div>
       <div class="sf"><label>🎙 Mot de passe Commentateur</label><input type="text" id="cfgPwdComm" placeholder="Vide = inchangé"></div>
+      <div class="sf"><label>🚑 Mot de passe SAM / EMS</label><input type="text" id="cfgPwdSam" placeholder="Vide = inchangé"></div>
     </div>
     <div class="setup-acts">
       <button class="setup-ok" onclick="saveSetup()">Sauvegarder</button>
@@ -794,6 +921,7 @@ body.viewer-mode #app{display:none!important;}
       <button class="tb-btn"     data-tab="classement"   onclick="tab('classement')">📊 Classement</button>
       <button class="tb-btn"     data-tab="pilotes"      onclick="tab('pilotes')">👤 Pilotes</button>
       <button class="tb-btn"     data-tab="diffusions"   onclick="tab('diffusions')">📡 Diffusions</button>
+      <button class="tb-btn"     data-tab="sam"          onclick="tab('sam')">🚑 SAM</button>
     </nav>
     <div class="tb-right">
       <span class="role-badge" id="roleBadge"></span>
@@ -1246,7 +1374,7 @@ const DEFAULT_SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 
 let SB_URL='',SB_KEY='',APP_PWD='weazel2024';
 // Mots de passe par rôle (chargés depuis Supabase)
-let PWD_ADMIN='', PWD_CHRONO='', PWD_COMM='';
+let PWD_ADMIN='', PWD_CHRONO='', PWD_COMM='', PWD_SAM='';
 let currentRole=''; // 'admin' | 'chrono' | 'comm'
 let pendingRole='';
 
@@ -1262,6 +1390,7 @@ const ROLE_META={
   admin:  {icon:'⚙️', title:'Administrateur', sub:'Accès complet',    cls:'r-admin',  badge:'rb-admin',  label:'ADMIN'},
   chrono: {icon:'⏱️', title:'Chronométreur',  sub:'Vue chrono',       cls:'r-chrono', badge:'rb-chrono', label:'CHRONO'},
   comm:   {icon:'🎙️', title:'Commentateur',   sub:'Vue commentateur', cls:'r-comm',   badge:'rb-comm',   label:'COMMENTATEUR'},
+  sam:    {icon:'🚑', title:'SAM / EMS',       sub:'Vue médicale',     cls:'r-sam',    badge:'rb-sam',    label:'SAM'},
 };
 
 async function loadRolePwds(){
@@ -1276,6 +1405,7 @@ async function loadRolePwds(){
       PWD_ADMIN    = row.pwd_admin    || row.app_pwd || 'weazel2024';
       PWD_CHRONO   = row.pwd_chrono   || row.app_pwd || 'weazel2024';
       PWD_COMM     = row.pwd_comm     || row.app_pwd || 'weazel2024';
+      PWD_SAM      = row.pwd_sam      || row.app_pwd || 'sam2024';
     }
   }catch(e){}
 }
@@ -1307,7 +1437,8 @@ async function submitRolePwd(){
   if(!PWD_ADMIN) PWD_ADMIN='weazel2024';
   if(!PWD_CHRONO) PWD_CHRONO='chrono2024';
   if(!PWD_COMM) PWD_COMM='comm2024';
-  const expected=pendingRole==='admin'?PWD_ADMIN:pendingRole==='chrono'?PWD_CHRONO:PWD_COMM;
+  if(!PWD_SAM) PWD_SAM='sam2024';
+  const expected=pendingRole==='admin'?PWD_ADMIN:pendingRole==='chrono'?PWD_CHRONO:pendingRole==='sam'?PWD_SAM:PWD_COMM;
   if(v!==expected){
     err.textContent='❌ Mot de passe incorrect';
     document.getElementById('rpwdInp').value='';
@@ -1339,9 +1470,10 @@ function applyRole(role){
   if(btnSetup)btnSetup.style.display=role==='admin'?'':'none';
   // Onglets visibles selon le rôle
   const navMap={
-    admin:  ['chrono','events','drivercard','commentateur','classement','pilotes','diffusions'],
+    admin:  ['chrono','events','drivercard','commentateur','classement','pilotes','diffusions','sam'],
     chrono: ['chrono','events','classement'],
     comm:   ['commentateur'],
+    sam:    ['sam'],
   };
   const allowed=navMap[role]||[];
   document.querySelectorAll('.tb-btn[data-tab]').forEach(btn=>{
@@ -1361,7 +1493,7 @@ function applyRole(role){
   }
   // Masquer cat-bar pour commentateur pur
   const catBar=document.querySelector('.cat-bar');
-  if(catBar)catBar.style.display=role==='comm'?'none':'';
+  if(catBar)catBar.style.display=(role==='comm'||role==='sam')?'none':'';
 }
 
 async function startup(){
@@ -1376,6 +1508,7 @@ function openSetup(){
   document.getElementById('cfgPwdAdmin').value='';
   document.getElementById('cfgPwdChrono').value='';
   document.getElementById('cfgPwdComm').value='';
+  document.getElementById('cfgPwdSam').value='';
   document.getElementById('setupModal').classList.remove('hidden');
 }
 function closeSetup(){document.getElementById('setupModal').classList.add('hidden');}
@@ -1391,6 +1524,8 @@ async function saveSetup(){
   if(pa){body.pwd_admin=pa;PWD_ADMIN=pa;body.app_pwd=pa;}
   if(pc){body.pwd_chrono=pc;PWD_CHRONO=pc;}
   if(pm){body.pwd_comm=pm;PWD_COMM=pm;}
+  const ps=document.getElementById('cfgPwdSam').value.trim();
+  if(ps){body.pwd_sam=ps;PWD_SAM=ps;}
   await PATCH('app_config','?id=eq.1',body);
   closeSetup();fb('fb-ch','✔ Config sauvegardée','ok');
 }
@@ -1461,6 +1596,7 @@ function tab(name){
     else{fixCommHeight();cvPollChrono();cvPollCls();}
   }
   if(name==='diffusions') loadDiffusions();
+  if(name==='sam'){samInit();}
 }
 
 // ══ PILOTES ══
@@ -1948,8 +2084,20 @@ async function pollOverlayStatus(){
   const d=await GET('overlay_config','?id=eq.1');
   if(!d||!d.length)return;
   const cat=d[0].category||'—';
+  // Indicateur dans la topbar admin
   document.getElementById('catOvlVal').textContent=cat;
   document.getElementById('catOvlVal').style.color=cat===currentCat?'var(--green)':'rgba(255,255,255,.35)';
+  // ── Synchroniser le panel commentateur automatiquement ──
+  if(cat && cat!=='—' && cat!==cvCat){
+    cvCat=cat;
+    // Mettre à jour les boutons catégorie commentateur
+    document.querySelectorAll('.cv-cat-btn').forEach(b=>{
+      b.classList.toggle('on', b.dataset.cat===cat);
+    });
+    // Rafraîchir classement et chrono commentateur
+    cvPollCls();
+    cvPollChrono();
+  }
 }
 
 // ══ COMMENTATEUR ══
@@ -3011,6 +3159,183 @@ setInterval(()=>{
   if(document.getElementById('panel-diffusions')?.classList.contains('on')) loadDiffusions();
 },8000);
 
+
+
+// ══ SAM / EMS ══
+let samAlertLastId=0, samAlertSynced=false;
+let _samInited=false;
+let samGrid='g2x2';
+
+function samInit(){
+  if(_samInited) return;
+  _samInited=true;
+  samLoadMap(null); // restaurer depuis localStorage
+  samInitNotes();
+  samRenderCams();
+  samPollAlerts();
+  if(!window._samIntervals){
+    window._samIntervals=true;
+    setInterval(samPollAlerts, 1500);
+    setInterval(samPollSharedCams, 3000);
+  }
+}
+
+// ── Carte circuit ──
+function samLoadMap(input){
+  if(input && input.files && input.files[0]){
+    const file=input.files[0];
+    const reader=new FileReader();
+    reader.onload=e=>{
+      localStorage.setItem('sam_map', e.target.result);
+      samShowMap(e.target.result);
+    };
+    reader.readAsDataURL(file);
+  } else {
+    const saved=localStorage.getItem('sam_map');
+    if(saved) samShowMap(saved);
+  }
+}
+function samShowMap(dataUrl){
+  const img=document.getElementById('samMapImg');
+  const empty=document.getElementById('samMapEmpty');
+  if(img){img.src=dataUrl;img.classList.add('on');}
+  if(empty)empty.style.display='none';
+}
+function samClearMap(){
+  localStorage.removeItem('sam_map');
+  const img=document.getElementById('samMapImg');
+  const empty=document.getElementById('samMapEmpty');
+  if(img){img.src='';img.classList.remove('on');}
+  if(empty)empty.style.display='';
+}
+
+// ── Alertes incidents/DNF/pénalités ──
+const SAM_ICONS={DNF:'🚫',DSQ:'❌',INCIDENT:'⚡',PENALTY:'⚠️'};
+const SAM_LABELS={DNF:'ABANDON',DSQ:'DISQUALIFIÉ',INCIDENT:'INCIDENT',PENALTY:'PÉNALITÉ'};
+
+async function samPollAlerts(){
+  const d=await GET('events','?order=id.desc&limit=20');
+  if(!d) return;
+  if(!samAlertSynced){
+    samAlertSynced=true;
+    samAlertLastId=d[0]?.id||0;
+    // Afficher les 5 derniers incidents/DNF existants
+    const recent=d.filter(e=>e.type==='INCIDENT'||e.type==='DNF'||e.type==='DSQ').slice(0,5);
+    samRenderAlerts(recent, false);
+    return;
+  }
+  const news=d.filter(e=>e.id>samAlertLastId);
+  if(!news.length) return;
+  samAlertLastId=d[0].id;
+  // Filtrer : incidents, DNF, DSQ, et pénalités importantes (>= 10s)
+  const important=news.filter(e=>
+    e.type==='INCIDENT'||e.type==='DNF'||e.type==='DSQ'||
+    (e.type==='PENALTY'&&Number((e.message||'').match(/\+(\d+)/)?.[1]||0)>=10)
+  );
+  if(important.length) samRenderAlerts(important, true);
+}
+
+function samRenderAlerts(events, isNew){
+  const list=document.getElementById('samAlertList');
+  const countEl=document.getElementById('samAlertCount');
+  if(!list) return;
+  const empty=list.querySelector('.sam-alert-empty');
+  if(empty && events.length) empty.remove();
+
+  // Ajouter les nouvelles alertes en haut
+  events.forEach(e=>{
+    const div=document.createElement('div');
+    div.className=`sam-alert type-${e.type}`;
+    const t=new Date(e.created_at).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+    div.innerHTML=
+      `<div class="sam-alert-ico">${SAM_ICONS[e.type]||'❗'}</div>`+
+      `<div class="sam-alert-body">`+
+        `<div class="sam-alert-pilot">${e.pilote_name||'?'}</div>`+
+        `<div class="sam-alert-msg">${SAM_LABELS[e.type]||e.type}${e.message?' — '+e.message:''}</div>`+
+      `</div>`+
+      `<div class="sam-alert-time">${t}</div>`+
+      (isNew?'<div class="sam-alert-new"></div>':'');
+    list.insertBefore(div, list.firstChild);
+    // Retirer le point rouge après 8s
+    if(isNew) setTimeout(()=>div.querySelector('.sam-alert-new')?.remove(), 8000);
+  });
+
+  // Supprimer les vieilles alertes au-delà de 15
+  while(list.children.length>15) list.removeChild(list.lastChild);
+
+  // Compter les incidents non résolus
+  const total=list.querySelectorAll('.sam-alert').length;
+  const incCount=list.querySelectorAll('.sam-alert.type-INCIDENT,.sam-alert.type-DNF,.sam-alert.type-DSQ').length;
+  if(countEl){
+    countEl.textContent=total+' alerte'+(total>1?'s':'');
+    countEl.className='sam-alert-count'+(incCount>0?'':' ok');
+  }
+}
+
+// ── Caméras SAM (partagées avec commentateur) ──
+function samRenderCams(){
+  const sel=document.getElementById('samGridSel');
+  if(sel)sel.value=camGrid;
+  samGrid=camGrid;
+  const grid=document.getElementById('samCamsGrid');
+  if(!grid)return;
+  grid.className='cams-grid '+camGrid;
+  const n=camGridCount();
+  grid.innerHTML='';
+  for(let i=0;i<n;i++){
+    const cam=camList[i];
+    const cell=document.createElement('div');
+    if(cam&&cam.url){
+      cell.className='cam-cell';
+      cell.innerHTML=
+        `<div class="cam-lbl-badge">${cam.label||('Cam '+(i+1))}</div>`+
+        `<iframe src="${cam.url}" allow="camera;microphone;fullscreen;picture-in-picture" allowfullscreen loading="lazy"></iframe>`;
+    }else{
+      cell.className='cam-cell empty';
+      cell.innerHTML='<span style="opacity:.3;">Slot '+(i+1)+'</span>';
+    }
+    grid.appendChild(cell);
+  }
+}
+
+function samApplyGrid(){
+  samGrid=document.getElementById('samGridSel').value;
+  const grid=document.getElementById('samCamsGrid');
+  if(grid) grid.className='cams-grid '+samGrid;
+  samRenderCams();
+}
+
+async function samPollSharedCams(){
+  if(!_samInited) return;
+  const d=await GET('shared_cams','?id=eq.1&select=cams,grid,updated_at');
+  if(!d||!d[0]) return;
+  const ts=d[0].updated_at||'';
+  if(ts && ts!==_camLastUpdated){
+    _camLastUpdated=ts;
+    try{camList=JSON.parse(d[0].cams||'[]');}catch(e){}
+    camGrid=d[0].grid||'g2x2';
+    samRenderCams();
+  }
+}
+
+// ── Notes SAM ──
+let _samNoteT=null;
+function samInitNotes(){
+  const area=document.getElementById('samNotesArea');
+  if(!area) return;
+  area.value=localStorage.getItem('sam_notes')||'';
+  area.addEventListener('input',()=>{
+    clearTimeout(_samNoteT);
+    _samNoteT=setTimeout(()=>{
+      localStorage.setItem('sam_notes',area.value);
+      const s=document.getElementById('samNotesSaved');
+      if(s){s.classList.add('on');clearTimeout(s._t);s._t=setTimeout(()=>s.classList.remove('on'),2000);}
+    },600);
+  });
+}
+
+// SQL: ajouter pwd_sam dans app_config (si pas encore fait)
+// alter table app_config add column if not exists pwd_sam text default 'sam2024';
 
 // ═══ MODE VIEWER DIFFUSION (activé si ?view=ID dans l'URL) ═══
 (function(){
