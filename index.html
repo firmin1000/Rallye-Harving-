@@ -346,68 +346,68 @@ tr:hover td{background:rgba(255,255,255,.015);}
 .cv-pc-chrono-best-val{font-family:var(--font-head);font-size:13px;font-weight:700;color:var(--gold);}
 
 
-/* ROLE SAM */
-.role-cards{grid-template-columns:1fr 1fr 1fr 1fr !important;}
-.role-card.r-sam::before{background:linear-gradient(135deg,rgba(0,200,83,.08),transparent);}
-.role-card:hover.r-sam{border-color:rgba(0,200,83,.35);}
-.role-card.r-sam .role-name{color:#88ffbb;}
-.rpwd-btn.r-sam{background:rgba(0,200,83,.18);color:#88ffbb;border:1px solid rgba(0,200,83,.3);}
-.rpwd-btn.r-sam:hover{background:rgba(0,200,83,.28);}
-.rb-sam{background:rgba(0,200,83,.1);color:#88ffbb;border:1px solid rgba(0,200,83,.2);}
 
-/* PANEL SAM — layout calqué sur le commentateur */
-.sam-view{display:flex;height:calc(100vh - 54px - 44px);overflow:hidden;min-height:0;}
+/* ═══ PANEL SAMS — Classes propres sans conflit ═══ */
+.sams-view{display:flex;height:calc(100vh - 54px - 44px);overflow:hidden;min-height:0;}
 
-/* Colonne GAUCHE : alertes + carte */
-.sam-left{width:280px;min-width:280px;border-right:1px solid var(--b);display:flex;flex-direction:column;background:var(--bg2);overflow:hidden;}
+/* Colonne gauche */
+.sams-left{width:260px;min-width:260px;border-right:1px solid var(--b);display:flex;flex-direction:column;background:var(--bg2);overflow:hidden;}
+.sams-alerts-block{display:flex;flex-direction:column;max-height:45%;border-bottom:1px solid var(--b);overflow:hidden;}
+.sams-block-hd{display:flex;align-items:center;gap:8px;padding:8px 12px 6px;border-bottom:1px solid var(--b);flex-shrink:0;}
+.sams-block-title{font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
+.sams-badge{font-size:9px;font-weight:700;letter-spacing:1.5px;padding:2px 7px;border-radius:8px;margin-left:auto;}
+.sams-badge.red{background:rgba(255,68,85,.15);color:#ff4455;border:1px solid rgba(255,68,85,.25);}
+.sams-badge.green{background:rgba(0,200,83,.08);color:var(--green);border:1px solid rgba(0,200,83,.15);}
+.sams-alert-list{overflow-y:auto;padding:4px 8px;display:flex;flex-direction:column;gap:3px;flex:1;}
+.sams-map-block{flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:0;}
+.sams-map-wrap{flex:1;display:flex;align-items:center;justify-content:center;overflow:hidden;background:var(--bg);position:relative;}
+.sams-map-img{max-width:100%;max-height:100%;object-fit:contain;display:none;}
+.sams-map-img.on{display:block;}
+.sams-upload-btn{background:rgba(255,255,255,.04);border:1px solid var(--b);color:var(--m);border-radius:4px;padding:2px 8px;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .15s;font-family:var(--font-head);}
+.sams-upload-btn:hover{border-color:var(--b2);color:#fff;}
+.sams-clear-btn{background:none;border:none;color:var(--m);font-size:12px;cursor:pointer;padding:0 2px;line-height:1;}
+.sams-empty{color:var(--m);font-size:11px;padding:10px;text-align:center;}
 
-/* Alertes */
-.sam-alerts{flex-shrink:0;max-height:45%;overflow-y:auto;border-bottom:1px solid var(--b);display:flex;flex-direction:column;}
-.sam-alerts-hd{padding:8px 14px 5px;border-bottom:1px solid var(--b);display:flex;align-items:center;gap:6px;flex-shrink:0;background:var(--bg2);position:sticky;top:0;z-index:1;}
-.sam-alerts-hd h3{font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
-.sam-alert-count{font-size:9px;font-weight:700;letter-spacing:1.5px;padding:2px 7px;border-radius:8px;background:rgba(255,68,85,.15);color:#ff4455;border:1px solid rgba(255,68,85,.25);margin-left:auto;}
-.sam-alert-count.ok{background:rgba(0,200,83,.08);color:var(--green);border-color:rgba(0,200,83,.15);}
-.sam-alert-list{padding:5px 8px;display:flex;flex-direction:column;gap:3px;overflow-y:auto;}
-.sam-alert-empty{padding:14px;text-align:center;color:var(--m);font-size:11px;}
-@keyframes alertIn{from{opacity:0;transform:translateX(-6px);}to{opacity:1;transform:none;}}
-.sam-alert{display:flex;align-items:flex-start;gap:7px;padding:6px 9px;border-radius:5px;animation:alertIn .22s ease;position:relative;}
-.sam-alert.type-DNF{background:rgba(255,107,107,.08);border:1px solid rgba(255,107,107,.18);}
-.sam-alert.type-DSQ{background:rgba(255,68,85,.08);border:1px solid rgba(255,68,85,.18);}
-.sam-alert.type-INCIDENT{background:rgba(255,200,0,.07);border:1px solid rgba(255,200,0,.18);}
-.sam-alert.type-PENALTY{background:rgba(196,121,0,.07);border:1px solid rgba(196,121,0,.18);}
-.sam-alert-ico{font-size:15px;flex-shrink:0;line-height:1.3;}
-.sam-alert-body{flex:1;min-width:0;}
-.sam-alert-pilot{font-family:var(--font-head);font-size:12px;font-weight:700;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.sam-alert-msg{font-size:10px;color:var(--m2);margin-top:1px;}
-.sam-alert-time{font-size:8px;color:var(--m);flex-shrink:0;margin-top:1px;}
-.sam-alert-new{position:absolute;top:4px;right:5px;width:6px;height:6px;border-radius:50%;background:var(--r);animation:pulse 1s ease-in-out infinite;}
+/* Colonne centre */
+.sams-center{flex:1;display:flex;flex-direction:column;overflow:hidden;border-right:1px solid var(--b);}
+.sams-tabs{display:flex;border-bottom:1px solid var(--b);flex-shrink:0;background:var(--bg3);}
+.sams-tab{flex:1;padding:9px 4px;font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--m);background:none;border:none;cursor:pointer;border-bottom:2px solid transparent;transition:color .15s,border-color .15s;}
+.sams-tab:hover{color:#fff;}
+.sams-tab.on{color:#fff;border-bottom-color:var(--green);}
+.sams-panel{display:none;flex:1;flex-direction:column;overflow:hidden;min-height:0;}
+.sams-panel.on{display:flex;}
 
-/* Carte circuit */
-.sam-map-block{flex:1;overflow:hidden;display:flex;flex-direction:column;min-height:0;}
-.sam-map-hd{padding:7px 14px 5px;border-bottom:1px solid var(--b);display:flex;align-items:center;gap:6px;flex-shrink:0;}
-.sam-map-hd h3{font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
-.sam-map-upload{margin-left:auto;background:rgba(255,255,255,.04);border:1px solid var(--b);color:var(--m);border-radius:4px;padding:3px 9px;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .15s;font-family:var(--font-head);}
-.sam-map-upload:hover{border-color:var(--b2);color:#fff;}
-.sam-map-wrap{flex:1;display:flex;align-items:center;justify-content:center;overflow:hidden;background:var(--bg);position:relative;}
-.sam-map-img{max-width:100%;max-height:100%;object-fit:contain;display:none;}
-.sam-map-img.on{display:block;}
-.sam-map-empty{text-align:center;color:var(--m);font-size:11px;line-height:2;}
-.sam-map-empty-ico{font-size:36px;opacity:.2;margin-bottom:6px;}
+/* Infos course */
+.sams-piste-card{background:var(--bg3);border:1px solid var(--b);border-radius:7px;padding:12px 14px;}
+.sams-piste-lbl{font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--m);margin-bottom:6px;display:flex;align-items:center;gap:5px;}
+.sams-dot{width:6px;height:6px;border-radius:50%;background:#333;transition:background .3s;}
+.sams-piste-name{font-family:var(--font-head);font-size:18px;font-weight:700;font-style:italic;text-transform:uppercase;line-height:1.1;}
+.sams-piste-team{font-size:10px;color:var(--m);margin-top:3px;}
+.sams-cls-hd{font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--m);padding-top:4px;}
+.sams-cls-list{display:flex;flex-direction:column;gap:2px;}
 
-/* Colonne CENTRE : caméras (principale, comme comm-center) */
-.sam-center{flex:1;display:flex;flex-direction:column;overflow:hidden;border-right:1px solid var(--b);}
+/* Colonne droite */
+.sams-right{width:240px;min-width:240px;display:flex;flex-direction:column;background:var(--bg2);}
+.sams-notes{flex:1;width:100%;background:transparent;color:#fff;border:none;resize:none;padding:10px 14px;font-family:var(--font-body);font-size:13px;line-height:1.6;outline:none;}
+.sams-notes::placeholder{color:rgba(255,255,255,.18);}
 
-/* Colonne DROITE : notes SAM */
-.sam-right{width:260px;min-width:260px;display:flex;flex-direction:column;background:var(--bg2);overflow:hidden;}
-::-webkit-scrollbar{width:4px;height:4px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:#252525;border-radius:2px;}
+/* Role screen SAMS */
+.role-card.r-sams::before{background:linear-gradient(135deg,rgba(0,200,83,.08),transparent);}
+.role-card:hover.r-sams{border-color:rgba(0,200,83,.35);}
+.role-card.r-sams .role-name{color:#88ffbb;}
+.rpwd-btn.r-sams{background:rgba(0,200,83,.18);color:#88ffbb;border:1px solid rgba(0,200,83,.3);}
+.rpwd-btn.r-sams:hover{background:rgba(0,200,83,.28);}
+.rb-sams{background:rgba(0,200,83,.1);color:#88ffbb;border:1px solid rgba(0,200,83,.2);}
+
 /* ═══ ÉCRAN RÔLE ═══ */
 #roleScreen{position:fixed;inset:0;z-index:1000;background:var(--bg);display:flex;align-items:center;justify-content:center;}
 #roleScreen.hidden{display:none;}
-.role-box{width:520px;text-align:center;animation:fadeUp .4s ease;}
-.role-logo{font-family:var(--font-head);font-size:80px;font-weight:900;font-style:italic;color:var(--r);line-height:1;text-shadow:0 0 60px rgba(232,0,28,.35);}
-.role-sub{font-size:11px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--m);margin-bottom:32px;}
-.role-cards{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:0;}
-.role-card{background:var(--bg3);border:1px solid var(--b);border-radius:10px;padding:20px 14px 16px;cursor:pointer;transition:all .18s;position:relative;overflow:hidden;text-align:center;}
+.role-box{width:680px;max-width:96vw;text-align:center;animation:fadeUp .4s ease;}
+.role-logo{font-family:var(--font-head);font-size:72px;font-weight:900;font-style:italic;color:var(--r);line-height:1;text-shadow:0 0 60px rgba(232,0,28,.35);}
+.role-sub{font-size:11px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--m);margin-bottom:28px;}
+.role-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:0;}
+@media(max-width:700px){.role-cards{grid-template-columns:1fr 1fr;}}
+.role-card{background:var(--bg3);border:1px solid var(--b);border-radius:10px;padding:16px 10px 14px;cursor:pointer;transition:all .18s;position:relative;overflow:hidden;text-align:center;}
 .role-card::before{content:'';position:absolute;inset:0;opacity:0;transition:opacity .18s;}
 .role-card:hover{transform:translateY(-2px);border-color:var(--b2);}
 .role-card:hover::before{opacity:1;}
@@ -417,12 +417,13 @@ tr:hover td{background:rgba(255,255,255,.015);}
 .role-card:hover.r-admin{border-color:rgba(232,0,28,.35);}
 .role-card:hover.r-chrono{border-color:rgba(255,180,0,.35);}
 .role-card:hover.r-comm{border-color:rgba(34,85,170,.35);}
-.role-icon{font-size:32px;margin-bottom:10px;line-height:1;}
-.role-name{font-family:var(--font-head);font-size:18px;font-weight:900;letter-spacing:1px;text-transform:uppercase;margin-bottom:5px;}
+.role-icon{font-size:28px;margin-bottom:8px;line-height:1;}
+.role-name{font-family:var(--font-head);font-size:15px;font-weight:900;letter-spacing:.5px;text-transform:uppercase;margin-bottom:5px;}
 .role-card.r-admin .role-name{color:#ff6677;}
 .role-card.r-chrono .role-name{color:#ffcc44;}
 .role-card.r-comm .role-name{color:#88aaff;}
-.role-desc{font-size:10px;color:var(--m);line-height:1.5;min-height:30px;}
+.role-card.r-sam .role-name{color:#88ffbb;}
+.role-desc{font-size:9px;color:var(--m);line-height:1.5;min-height:28px;}
 
 /* Modal mot de passe rôle */
 #rolePwdModal{position:fixed;inset:0;z-index:1001;background:rgba(0,0,0,.82);display:flex;align-items:center;justify-content:center;}
@@ -711,22 +712,22 @@ body.viewer-mode #app{display:none!important;}
       <div class="role-card r-admin" onclick="selectRole('admin')">
         <div class="role-icon">⚙️</div>
         <div class="role-name">Admin</div>
-        <div class="role-desc">Accès complet — chrono, classement, pilotes, overlays OBS</div>
+        <div class="role-desc">Accès complet</div>
       </div>
       <div class="role-card r-chrono" onclick="selectRole('chrono')">
         <div class="role-icon">⏱️</div>
         <div class="role-name">Chrono</div>
-        <div class="role-desc">Vue chronomètre, événements et classement en direct</div>
+        <div class="role-desc">Chronométreur</div>
       </div>
       <div class="role-card r-comm" onclick="selectRole('comm')">
         <div class="role-icon">🎙️</div>
-        <div class="role-name">Commentateur</div>
-        <div class="role-desc">Caméras VDO, classement live, notes et chat interne</div>
+        <div class="role-name">Comm.</div>
+        <div class="role-desc">Commentateur</div>
       </div>
-      <div class="role-card r-sam" onclick="selectRole('sam')">
+      <div class="role-card r-sams" onclick="selectRole('sam')">
         <div class="role-icon">🚑</div>
-        <div class="role-name">SAM / EMS</div>
-        <div class="role-desc">Caméras, alertes incidents, carte circuit, notes</div>
+        <div class="role-name">SAMS</div>
+        <div class="role-desc">EMS / Médical</div>
       </div>
     </div>
     <div style="margin-top:20px;">
@@ -736,525 +737,96 @@ body.viewer-mode #app{display:none!important;}
     </div>
   </div>
   <!-- SAM / EMS -->
-  <!-- SAM / EMS -->
+  <!-- SAMS / EMS -->
   <div class="panel" id="panel-sam" style="padding:0;overflow:hidden;">
-    <div class="sam-view">
+    <div class="sams-view">
 
-      <!-- COLONNE GAUCHE : alertes + carte circuit -->
-      <div class="sam-left">
-        <!-- Alertes temps réel -->
-        <div class="sam-alerts">
-          <div class="sam-alerts-hd">
-            <h3>🚨 Alertes</h3>
-            <span class="sam-alert-count ok" id="samAlertCount">0</span>
+      <!-- COL GAUCHE : alertes + carte -->
+      <div class="sams-left">
+
+        <!-- Alertes -->
+        <div class="sams-alerts-block">
+          <div class="sams-block-hd">
+            <span class="sams-block-title">🚨 Alertes</span>
+            <span id="samAlertCount" class="sams-badge red">0</span>
           </div>
-          <div class="sam-alert-list" id="samAlertList">
-            <div class="sam-alert-empty">Aucun incident ✅</div>
+          <div id="samAlertList" class="sams-alert-list">
+            <div class="sams-empty">Aucun incident ✅</div>
           </div>
         </div>
-        <!-- Carte du circuit -->
-        <div class="sam-map-block">
-          <div class="sam-map-hd">
-            <h3>🗺 Carte circuit</h3>
-            <label class="sam-map-upload" for="samMapFile">📁 Charger</label>
+
+        <!-- Carte circuit -->
+        <div class="sams-map-block">
+          <div class="sams-block-hd">
+            <span class="sams-block-title">🗺 Circuit</span>
+            <label for="samMapFile" class="sams-upload-btn">📁 Charger</label>
             <input type="file" id="samMapFile" accept="image/*" style="display:none;" onchange="samLoadMap(this)">
-            <button onclick="samClearMap()" style="background:none;border:none;color:var(--m);font-size:11px;cursor:pointer;margin-left:4px;" title="Supprimer">✕</button>
+            <button onclick="samClearMap()" class="sams-clear-btn">✕</button>
           </div>
-          <div class="sam-map-wrap">
-            <div class="sam-map-empty" id="samMapEmpty">
-              <div class="sam-map-empty-ico">🗺</div>
-              Chargez une image du circuit<br>
-              <span style="font-size:9px;opacity:.5;">PNG, JPG acceptés</span>
+          <div class="sams-map-wrap">
+            <div id="samMapEmpty" class="sams-empty" style="text-align:center;">
+              <div style="font-size:32px;opacity:.15;margin-bottom:8px;">🗺</div>
+              Chargez une image
             </div>
-            <img id="samMapImg" class="sam-map-img" alt="Carte">
+            <img id="samMapImg" class="sams-map-img" alt="Carte">
           </div>
         </div>
       </div>
 
-      <!-- COLONNE CENTRE : caméras partagées -->
-      <div class="sam-center">
-        <div class="cams-topbar">
-          <span class="cams-topbar-lbl">Grille</span>
-          <select class="cams-sel" id="samGridSel" onchange="samApplyGrid()">
-            <option value="g1x1">1 caméra</option>
-            <option value="g2x1">2 côte à côte</option>
-            <option value="g2x2" selected>2×2 — 4 cams</option>
-            <option value="g3x2">3×2 — 6 cams</option>
-            <option value="g2x3">2×3 — 6 cams</option>
-          </select>
-          <button class="cams-mgr-btn" onclick="samOpenCamModal()">⚙ Gérer les caméras</button>
-        </div>
-        <div class="cams-grid-wrap">
-          <div class="cams-grid g2x2" id="samCamsGrid"></div>
-        </div>
-      </div>
-
-      <!-- COLONNE DROITE : notes SAM -->
-      <div class="sam-right">
-        <div class="cv-notes-hd" style="padding:8px 14px 6px;border-bottom:1px solid var(--b);flex-shrink:0;">
-          <h3 style="font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;">📝 Notes SAM</h3>
-          <span class="cv-notes-saved" id="samNotesSaved">✔ Sauvegardé</span>
-        </div>
-        <textarea id="samNotesArea" style="flex:1;width:100%;background:transparent;color:#fff;border:none;resize:none;padding:10px 14px;font-family:var(--font-body);font-size:13px;line-height:1.6;outline:none;" placeholder="Positions SAM, consignes, observations médicales…&#10;Sauvegardé localement."></textarea>
-      </div>
-
-    </div>
-  </div>
-
-</div>
-
-<!-- ÉCRAN DIFFUSEUR — Via VDO.ninja -->
-<div id="diffScreen" class="hidden">
-  <div class="diff-box" style="max-width:520px;">
-    <div class="diff-logo">W</div>
-    <div class="diff-sub">Weazel Rally · Diffusion écran</div>
-    <div class="diff-step">
-      <h3>📡 Diffuser mon écran</h3>
-      <input type="text" class="diff-inp" id="diffPseudo" placeholder="Votre pseudo (ex: Jean-Pierre)" maxlength="30">
-      <button class="diff-start-btn" id="diffStartBtn" onclick="diffGenerate()">
-        <span>🔗</span> Générer mon lien de diffusion
-      </button>
-      <div class="diff-err" id="diffErr"></div>
-    </div>
-
-    <!-- Lien généré -->
-    <div id="diffLinkBox" style="display:none;background:var(--bg3);border:1px solid var(--b2);border-radius:8px;padding:16px;text-align:left;">
-      <div style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--m);margin-bottom:8px;">📺 Votre lien de diffusion (à ouvrir dans Chrome)</div>
-      <div style="display:flex;gap:6px;margin-bottom:12px;">
-        <input type="text" id="diffPushUrl" style="flex:1;background:var(--bg4);color:#fff;border:1px solid var(--b);border-radius:4px;padding:8px 10px;font-size:11px;font-family:monospace;outline:none;" readonly onclick="this.select()">
-        <button id="diffCopyBtn" onclick="diffCopyPush(this)" style="background:var(--r);color:#fff;border:none;border-radius:4px;padding:8px 14px;font-family:var(--font-head);font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;min-width:90px;display:flex;align-items:center;justify-content:center;gap:5px;">📋 Copier</button>
-      </div>
-      <div style="font-size:10px;color:rgba(255,255,255,.4);line-height:1.8;">
-        1. Copiez ce lien et ouvrez-le dans <b style="color:var(--m2);">Chrome</b><br>
-        2. Autorisez le partage d&apos;écran quand demandé<br>
-        3. Votre flux apparaîtra automatiquement dans le panel Admin<br>
-        4. L&apos;admin copiera le lien OBS pour le mettre dans OBS
-      </div>
-      <button onclick="diffClose()" style="margin-top:12px;width:100%;background:var(--bg4);color:var(--m2);border:1px solid var(--b);border-radius:5px;padding:9px;font-family:var(--font-head);font-size:12px;font-weight:700;cursor:pointer;">← Retour</button>
-    </div>
-  </div>
-</div>
-
-<!-- ÉCRAN LIVE DIFFUSEUR (kept for compatibility) -->
-<div id="diffLiveScreen" class="hidden"></div>
-
-<!-- MODAL MOT DE PASSE RÔLE -->
-<div id="rolePwdModal" class="hidden">
-  <div class="rpwd-box">
-    <div class="rpwd-icon" id="rpwdIcon">🔑</div>
-    <div class="rpwd-title" id="rpwdTitle">Accès</div>
-    <div class="rpwd-sub" id="rpwdSub">Entrez le mot de passe</div>
-    <input type="password" class="rpwd-inp" id="rpwdInp" placeholder="Mot de passe" autofocus>
-    <button class="rpwd-btn" id="rpwdBtn" onclick="submitRolePwd()">Accéder</button>
-    <br>
-    <button class="rpwd-cancel" onclick="cancelRolePwd()">← Retour</button>
-    <div class="rpwd-err" id="rpwdErr"></div>
-  </div>
-</div>
-
-<!-- SETUP -->
-<div id="setupModal" class="hidden">
-  <div class="setup-box">
-    <h2>⚙️ Configuration</h2>
-    <div class="sf"><label>URL Supabase</label><input type="text" id="cfgUrl"></div>
-    <div class="sf"><label>Clé anon</label><input type="text" id="cfgKey"></div>
-    <div style="margin:14px 0 8px;border-top:1px solid rgba(255,255,255,.07);padding-top:12px;">
-      <div style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.28);margin-bottom:10px;">Mots de passe par rôle</div>
-      <div class="sf"><label>🔑 Mot de passe Admin (accès complet)</label><input type="text" id="cfgPwdAdmin" placeholder="Vide = inchangé"></div>
-      <div class="sf"><label>⏱ Mot de passe Chrono</label><input type="text" id="cfgPwdChrono" placeholder="Vide = inchangé"></div>
-      <div class="sf"><label>🎙 Mot de passe Commentateur</label><input type="text" id="cfgPwdComm" placeholder="Vide = inchangé"></div>
-      <div class="sf"><label>🚑 Mot de passe SAM / EMS</label><input type="text" id="cfgPwdSam" placeholder="Vide = inchangé"></div>
-    </div>
-    <div class="setup-acts">
-      <button class="setup-ok" onclick="saveSetup()">Sauvegarder</button>
-      <button class="setup-cl" onclick="closeSetup()">Annuler</button>
-    </div>
-    <div class="setup-note">Config et mots de passe stockés dans Supabase — partagés avec tous les opérateurs.</div>
-  </div>
-</div>
-
-<!-- ÉCRAN DIFFUSEUR — Via VDO.ninja -->
-<div id="diffScreen" class="hidden">
-  <div class="diff-box" style="max-width:520px;">
-    <div class="diff-logo">W</div>
-    <div class="diff-sub">Weazel Rally · Diffusion écran</div>
-    <div class="diff-step">
-      <h3>📡 Diffuser mon écran</h3>
-      <input type="text" class="diff-inp" id="diffPseudo" placeholder="Votre pseudo (ex: Jean-Pierre)" maxlength="30">
-      <button class="diff-start-btn" id="diffStartBtn" onclick="diffGenerate()">
-        <span>🔗</span> Générer mon lien de diffusion
-      </button>
-      <div class="diff-err" id="diffErr"></div>
-    </div>
-
-    <!-- Lien généré -->
-    <div id="diffLinkBox" style="display:none;background:var(--bg3);border:1px solid var(--b2);border-radius:8px;padding:16px;text-align:left;">
-      <div style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--m);margin-bottom:8px;">📺 Votre lien de diffusion (à ouvrir dans Chrome)</div>
-      <div style="display:flex;gap:6px;margin-bottom:12px;">
-        <input type="text" id="diffPushUrl" style="flex:1;background:var(--bg4);color:#fff;border:1px solid var(--b);border-radius:4px;padding:8px 10px;font-size:11px;font-family:monospace;outline:none;" readonly onclick="this.select()">
-        <button id="diffCopyBtn" onclick="diffCopyPush(this)" style="background:var(--r);color:#fff;border:none;border-radius:4px;padding:8px 14px;font-family:var(--font-head);font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;min-width:90px;display:flex;align-items:center;justify-content:center;gap:5px;">📋 Copier</button>
-      </div>
-      <div style="font-size:10px;color:rgba(255,255,255,.4);line-height:1.8;">
-        1. Copiez ce lien et ouvrez-le dans <b style="color:var(--m2);">Chrome</b><br>
-        2. Autorisez le partage d&apos;écran quand demandé<br>
-        3. Votre flux apparaîtra automatiquement dans le panel Admin<br>
-        4. L&apos;admin copiera le lien OBS pour le mettre dans OBS
-      </div>
-      <button onclick="diffClose()" style="margin-top:12px;width:100%;background:var(--bg4);color:var(--m2);border:1px solid var(--b);border-radius:5px;padding:9px;font-family:var(--font-head);font-size:12px;font-weight:700;cursor:pointer;">← Retour</button>
-    </div>
-  </div>
-</div>
-
-<!-- ÉCRAN LIVE DIFFUSEUR (kept for compatibility) -->
-<div id="diffLiveScreen" class="hidden"></div>
-
-<!-- APP -->
-<div id="app">
-  <header class="topbar">
-    <div class="tb-brand"><div class="tb-w">W</div><div class="tb-stack"><span class="tb-t1">Weazel Rally</span><span class="tb-t2">Control Center</span></div></div>
-    <nav class="tb-nav">
-      <button class="tb-btn on"  data-tab="chrono"       onclick="tab('chrono')">⏱ Chrono</button>
-      <button class="tb-btn"     data-tab="events"       onclick="tab('events')">⚡ Événements</button>
-      <button class="tb-btn"     data-tab="drivercard"   onclick="tab('drivercard')">🏎 Driver Card</button>
-      <button class="tb-btn"     data-tab="commentateur" onclick="tab('commentateur')">🎙 Commentateur</button>
-      <button class="tb-btn"     data-tab="classement"   onclick="tab('classement')">📊 Classement</button>
-      <button class="tb-btn"     data-tab="pilotes"      onclick="tab('pilotes')">👤 Pilotes</button>
-      <button class="tb-btn"     data-tab="diffusions"   onclick="tab('diffusions')">📡 Diffusions</button>
-      <button class="tb-btn"     data-tab="sam"          onclick="tab('sam')">🚑 SAM</button>
-    </nav>
-    <div class="tb-right">
-      <span class="role-badge" id="roleBadge"></span>
-      <div class="conn-dot" id="connDot"></div>
-      <span class="conn-txt" id="connTxt">—</span>
-      <button class="tb-setup" id="btnSetup" onclick="openSetup()" style="display:none;">⚙ Config</button>
-    </div>
-  </header>
-
-  <div class="cat-bar">
-    <span class="cat-lbl">Catégorie :</span>
-    <button class="cat-btn on" data-cat="Rally B"          onclick="setCat(this)">🔵 Rally B</button>
-    <button class="cat-btn"    data-cat="Rally N"          onclick="setCat(this)">🟢 Rally N</button>
-    <button class="cat-btn"    data-cat="Rally Historique" onclick="setCat(this)">🟡 Rally Historique</button>
-    <div class="cat-sep"></div>
-    <button class="cat-push" id="catPushBtn" onclick="pushCatToOverlay()">
-      <span id="catPushIco">📺</span><span id="catPushTxt">Overlay OBS</span>
-    </button>
-    <div class="cat-overlay-status">
-      <span class="cat-ovl-lbl">OBS :</span>
-      <span class="cat-ovl-val" id="catOvlVal">—</span>
-    </div>
-  </div>
-
-  <!-- CHRONO -->
-  <div class="panel on" id="panel-chrono">
-    <div class="g2l">
-      <div>
-        <div class="sec-hd"><h2>⏱ Chronomètre live</h2></div>
-        <div class="card"><div class="cb">
-          <div class="ch-disp" id="chDisp">
-            <div class="ch-plbl">EN PISTE</div>
-            <div class="ch-pname" id="chPN">—</div>
-            <div class="ch-time" id="chT">00:00.000</div>
-            <div class="ch-best">Meilleur : <b id="chB">—</b></div>
-            <div class="ch-st" id="chSt"><div class="sdot" id="chDot"></div><span id="chStTxt">ARRÊTÉ</span></div>
-          </div>
-          <div class="f"><label class="fl">Pilote</label><select id="selCh"><option value="">— Sélectionner —</option></select></div>
-          <div class="brow" style="margin-bottom:8px;">
-            <button class="btn b-red" id="bStart" onclick="chStart()">▶ START</button>
-            <button class="btn b-dk"  id="bStop"  onclick="chStop()" disabled>■ STOP</button>
-          </div>
-          <div class="brow" style="margin-bottom:8px;">
-            <button class="btn b-dk" id="bReset" onclick="chReset()" style="opacity:.4;flex:1;">↺ RESET</button>
-            <button class="btn b-dk" onclick="resetHistorique()" style="color:#ffaa00;flex:1;">🔄 Reset Session</button>
-          </div>
-          <div class="fb" id="fb-ch"></div>
-        </div></div>
-      </div>
-      <div>
-        <div class="sec-hd"><h2>📋 Historique session</h2></div>
-        <div class="card"><div class="cb" style="padding:10px;"><div class="ev-log" id="evLog"><div class="ev-empty">Aucun événement</div></div></div></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ÉVÉNEMENTS -->
-  <div class="panel" id="panel-events">
-    <div class="g2">
-      <div>
-        <div class="sec-hd"><h2>⚠ Pénalité</h2></div>
-        <div class="card"><div class="cb">
-          <div class="f"><label class="fl">Pilote</label><select id="selPen"><option value="">— Sélectionner —</option></select></div>
-
-          <!-- Barème sélectionnable -->
-          <div class="f">
-            <label class="fl">Barème — cliquez une pénalité</label>
-            <div class="pen-bareme" id="penBareme">
-              <div class="pen-cat">🚗 Comportement de course</div>
-              <div class="pen-item" onclick="penSelect(this,'Couper volontairement la piste',2)"><span class="pen-item-name">Couper volontairement la piste</span><span class="pen-item-secs">+2s</span></div>
-              <div class="pen-item" onclick="penSelect(this,'Non-respect du tracé imposé',2)"><span class="pen-item-name">Non-respect du tracé imposé</span><span class="pen-item-secs">+2s</span></div>
-              <div class="pen-item" onclick="penSelect(this,'Danger envers les commissaires / public',20)"><span class="pen-item-name">Danger envers commissaires / public</span><span class="pen-item-secs">+20s</span></div>
-              <div class="pen-item" onclick="penSelect(this,'Conduite anti-sportive / blocage volontaire',30)"><span class="pen-item-name">Conduite anti-sportive / blocage</span><span class="pen-item-secs">+30s</span></div>
-              <div class="pen-cat">⏱️ Organisation de la spéciale</div>
-              <div class="pen-item" onclick="penSelect(this,'Faux départ',5)"><span class="pen-item-name">Faux départ</span><span class="pen-item-secs">+5s</span></div>
-              <div class="pen-item" onclick="penSelect(this,'Non-respect des consignes départ / arrivée',10)"><span class="pen-item-name">Non-respect consignes départ / arrivée</span><span class="pen-item-secs">+10s</span></div>
-              <div class="pen-item" onclick="penSelect(this,'Défaut de radio',4)"><span class="pen-item-name">Défaut de radio</span><span class="pen-item-secs">+4s</span></div>
-              <div class="pen-item" onclick="penSelect(this,'Défaut de phare',4)"><span class="pen-item-name">Défaut de phare</span><span class="pen-item-secs">+4s</span></div>
-              <div class="pen-cat">🚑 Réalisme RP</div>
-              <div class="pen-item" onclick="penSelect(this,'No Pain (accident non joué)',5)"><span class="pen-item-name">No Pain — accident / choc non joué</span><span class="pen-item-secs">+5s</span></div>
-            </div>
-          </div>
-
-          <!-- Pénalité sélectionnée -->
-          <div class="pen-selected-info" id="penSelInfo">
-            <div class="pen-selected-reason" id="penSelReason">—</div>
-            <div class="pen-secs-adj">
-              <label>Secondes :</label>
-              <input type="number" class="pen-secs-input" id="penS" min="1" max="300" value="5">
-            </div>
-          </div>
-
-          <!-- Raison manuelle (optionnel) -->
-          <div class="f">
-            <label class="fl">Raison personnalisée <span style="opacity:.4;">(facultatif — remplace la sélection)</span></label>
-            <input type="text" id="penR" placeholder="Ou saisissez une raison manuelle…">
-          </div>
-
-          <button class="btn b-amb" onclick="doPenalty()">⚠ Appliquer la pénalité</button>
-          <div class="fb" id="fb-pen"></div>
-        </div></div>
-      </div>
-      <div>
-        <div class="sec-hd"><h2>🚩 Événement de course</h2></div>
-        <div class="card"><div class="cb">
-          <div class="f"><label class="fl">Pilote</label><select id="selEv"><option value="">— Sélectionner —</option></select></div>
-          <div class="f"><label class="fl">Note (optionnel)</label><input type="text" id="evNote" placeholder="Description…"></div>
-          <div class="brow3">
-            <button class="btn b-dnf" onclick="doEvent('DNF')">🚫 Abandon</button>
-            <button class="btn b-dsq" onclick="doEvent('DSQ')">❌ Disqual.</button>
-            <button class="btn b-inc" onclick="doEvent('INCIDENT')">⚡ Incident</button>
-          </div>
-          <div class="fb" id="fb-ev"></div>
-        </div></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- DRIVER CARD -->
-  <div class="panel" id="panel-drivercard">
-    <div class="g2">
-      <div>
-        <div class="sec-hd"><h2>🏎 Sélection pilote</h2></div>
-        <div class="card"><div class="cb" style="padding:10px;">
-          <div class="plist" id="dcList" style="max-height:700px;"><div class="ev-empty">Chargement…</div></div>
-        </div></div>
-      </div>
-      <div>
-        <div class="sec-hd"><h2>🎬 Diffusion OBS</h2></div>
-        <div class="card"><div class="cb">
-          <div class="dc-prev" id="dcPrev">
-            <div class="dc-prev-bar" id="dcPrevBar"></div>
-            <div class="dc-prev-c">
-              <div class="dc-prev-lbl">PILOTE SÉLECTIONNÉ</div>
-              <div class="dc-prev-name" id="dcPrevName">—</div>
-              <div class="dc-prev-team" id="dcPrevTeam">—</div>
-            </div>
-          </div>
-          <div class="f"><label class="fl">Durée d'affichage</label>
-            <div class="dur-grid" id="dcDurGrid">
-              <div class="dur-btn on" data-ms="6000"  onclick="setDur(this,'dc')">6s</div>
-              <div class="dur-btn"    data-ms="8000"  onclick="setDur(this,'dc')">8s</div>
-              <div class="dur-btn"    data-ms="12000" onclick="setDur(this,'dc')">12s</div>
-              <div class="dur-btn"    data-ms="0"     onclick="setDur(this,'dc')">∞</div>
-            </div>
-          </div>
-          <button class="btn b-red" id="bDcShow" onclick="dcShow()" disabled style="margin-bottom:8px;">▶ Afficher sur OBS</button>
-          <button class="btn b-dk" onclick="dcHide()">✕ Masquer</button>
-          <div class="fb" id="fb-dc"></div>
-        </div></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- COMMENTATEUR — Vue complète intégrée -->
-  <div class="panel" id="panel-commentateur" style="padding:0;overflow:hidden;">
-    <div class="comm-view">
-
-      <!-- COLONNE GAUCHE : fiche pilote + chrono + classement -->
-      <div class="comm-left">
-        <!-- Sélecteur catégorie -->
-        <div class="cv-cat-bar">
-          <button class="cv-cat-btn on" data-cat="Rally B"          onclick="cvSetCat(this)">🔵 Rally B</button>
-          <button class="cv-cat-btn"    data-cat="Rally N"          onclick="cvSetCat(this)">🟢 Rally N</button>
-          <button class="cv-cat-btn"    data-cat="Rally Historique" onclick="cvSetCat(this)">🟡 Historique</button>
+      <!-- COL CENTRE : caméras + infos -->
+      <div class="sams-center">
+        <div class="sams-tabs">
+          <button class="sams-tab on" data-sams="cams"  onclick="samTab('cams')">📹 Caméras</button>
+          <button class="sams-tab"    data-sams="info"  onclick="samTab('info')">📊 Infos course</button>
         </div>
 
-        <!-- FICHE PILOTE EN COURS -->
-        <div class="cv-pilot-card empty" id="cvPilotCard">
-          <div class="cv-pc-bar" id="cvPcBar"></div>
-          <div class="cv-pc-tint" id="cvPcTint"></div>
-          <div class="cv-pc-badge"><div class="cv-pc-badge-dot"></div>EN PISTE</div>
-          <div class="cv-pc-inner">
-            <div class="cv-pc-cat" id="cvPcCat">—</div>
-            <div class="cv-pc-name" id="cvPcName">—</div>
-            <div class="cv-pc-team">
-              <div class="cv-pc-team-dot" id="cvPcTeamDot"></div>
-              <span id="cvPcTeam">—</span>
-            </div>
-            <div class="cv-pc-stats">
-              <div class="cv-pc-stat">
-                <span class="cv-pc-stat-lbl">Nationalité</span>
-                <span class="cv-pc-stat-val" id="cvPcNat">—</span>
-              </div>
-              <div class="cv-pc-stat">
-                <span class="cv-pc-stat-lbl">Meilleur temps</span>
-                <span class="cv-pc-stat-val gold" id="cvPcBest">—</span>
-              </div>
-              <div class="cv-pc-stat">
-                <span class="cv-pc-stat-lbl">Position</span>
-                <span class="cv-pc-stat-val red" id="cvPcPos">—</span>
-              </div>
-            </div>
-            <!-- Chrono intégré -->
-            <div class="cv-pc-chrono">
-              <div class="cv-pc-chrono-time" id="cvChTime">00:00.000</div>
-              <div class="cv-pc-chrono-best">
-                <span class="cv-pc-chrono-best-lbl">Meilleur session</span>
-                <span class="cv-pc-chrono-best-val" id="cvChBest">—</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Chrono minimal quand aucun pilote en piste -->
-        <div class="cv-chrono" id="cvChronoFallback">
-          <div class="cv-ch-lbl"><div class="cv-ch-dot" id="cvChDot"></div>CHRONO EN COURS</div>
-          <div class="cv-pilot" id="cvChPilot">Aucun pilote en piste</div>
-          <div class="cv-time" style="font-size:28px;color:rgba(255,255,255,.1);">—</div>
-        </div>
-        <div class="cv-cls">
-          <div class="cv-cls-hd">
-            <h3>📊 Classement live</h3>
-            <span class="cv-cls-upd" id="cvClsUpd">—</span>
-          </div>
-          <div class="cv-cls-list" id="cvClsList"><div class="ev-empty">Chargement…</div></div>
-        </div>
-      </div>
-
-      <!-- COLONNE CENTRE : caméras VDO + OBS commentateur -->
-      <div class="comm-center">
-        <div class="comm-subtabs">
-          <button class="comm-stab on" data-stab="cams" onclick="commStab('cams')">📹 Caméras</button>
-          <button class="comm-stab"    data-stab="obs"  onclick="commStab('obs')">🎬 OBS Overlay</button>
-        </div>
-
-        <!-- Caméras VDO -->
-        <div class="comm-subpanel on" id="cstab-cams">
+        <!-- Caméras -->
+        <div class="sams-panel on" id="sams-cams">
           <div class="cams-topbar">
             <span class="cams-topbar-lbl">Grille</span>
-            <select class="cams-sel" id="camGridSel" onchange="camApplyGrid()">
+            <select class="cams-sel" id="samGridSel" onchange="samApplyGrid()">
               <option value="g1x1">1 caméra</option>
               <option value="g2x1">2 côte à côte</option>
               <option value="g2x2" selected>2×2 — 4 cams</option>
               <option value="g3x2">3×2 — 6 cams</option>
-              <option value="g2x3">2×3 — 6 cams</option>
             </select>
             <button class="cams-mgr-btn" onclick="camOpenModal()">⚙ Gérer les caméras</button>
           </div>
           <div class="cams-grid-wrap">
-            <div class="cams-grid g2x2" id="camsGrid"></div>
+            <div class="cams-grid g2x2" id="samCamsGrid"></div>
           </div>
         </div>
 
-        <!-- MODAL GESTIONNAIRE DE CAMÉRAS -->
-        <div id="camModal" class="hidden">
-          <div class="cam-modal-box">
-            <div class="cam-modal-hd">
-              <h3>📹 Gérer les caméras</h3>
-              <button class="cam-modal-close" onclick="camCloseModal()">✕</button>
-            </div>
-            <div class="cam-list" id="camMgrList"></div>
-            <div class="cam-modal-ft">
-              <span class="cam-modal-ft-hint">Cliquez sur un slot vide ou sur ✏️ pour éditer</span>
-              <button class="cam-add-new-btn" onclick="camAddNew()">+ Nouvelle caméra</button>
-            </div>
+        <!-- Infos course -->
+        <div class="sams-panel" id="sams-info" style="overflow-y:auto;flex-direction:column;padding:14px 16px;gap:12px;">
+          <!-- Catégorie -->
+          <div class="cv-cat-bar">
+            <button class="cv-cat-btn on" data-cat="Rally B"          onclick="samSetCat(this)">🔵 Rally B</button>
+            <button class="cv-cat-btn"    data-cat="Rally N"          onclick="samSetCat(this)">🟢 Rally N</button>
+            <button class="cv-cat-btn"    data-cat="Rally Historique" onclick="samSetCat(this)">🟡 Historique</button>
           </div>
-        </div>
-
-        <!-- OBS Commentateur — scrollable librement -->
-        <div class="comm-subpanel" id="cstab-obs">
-          <div style="padding:16px;overflow-y:auto;flex:1;">
-            <div class="sec-hd" style="margin-bottom:12px;"><h2>🎙 Commentateurs enregistrés</h2></div>
-            <div class="card" style="margin-bottom:16px;"><div class="cb" style="padding:10px;">
-              <!-- Liste sans max-height fixe — scrolle avec la page -->
-              <div style="display:flex;flex-direction:column;gap:10px;" id="commList"><div class="ev-empty">Chargement…</div></div>
-            </div></div>
-
-            <div class="sec-hd" style="margin-bottom:12px;"><h2 id="commFormTitle">➕ Ajouter un commentateur</h2></div>
-            <div class="card" style="margin-bottom:16px;"><div class="cb">
-              <input type="hidden" id="commId">
-              <div class="frow">
-                <div class="f"><label class="fl">Prénom</label><input type="text" id="commFirst" placeholder="Jean" oninput="commPreview()"></div>
-                <div class="f"><label class="fl">Nom</label><input type="text" id="commLast" placeholder="DUPONT" oninput="commPreview()"></div>
-              </div>
-              <div class="f"><label class="fl">Rôle</label><input type="text" id="commRole" placeholder="Commentateur principal" oninput="commPreview()"></div>
-              <div class="brow" style="margin-top:4px;">
-                <button class="btn b-grn" onclick="commSave()">💾 Enregistrer</button>
-                <button class="btn b-dk"  onclick="commClear()">✕ Annuler</button>
-              </div>
-              <div class="fb" id="fb-commForm"></div>
-            </div></div>
-
-            <div class="sec-hd" style="margin-bottom:12px;"><h2>🎬 Diffusion OBS</h2></div>
-            <div class="card"><div class="cb">
-              <div class="comm-prev">
-                <div class="comm-prev-name" id="commPN">—</div>
-                <div class="comm-prev-role" id="commPR">—</div>
-                <div class="comm-st" id="commSt"><div class="csdot" id="commDot"></div><span id="commStTxt">INACTIF</span></div>
-              </div>
-              <div class="f"><label class="fl">Durée</label>
-                <div class="dur-grid" id="commDurGrid">
-                  <div class="dur-btn on" data-ms="6000"  onclick="setDur(this,'comm')">6s</div>
-                  <div class="dur-btn"    data-ms="8000"  onclick="setDur(this,'comm')">8s</div>
-                  <div class="dur-btn"    data-ms="12000" onclick="setDur(this,'comm')">12s</div>
-                  <div class="dur-btn"    data-ms="0"     onclick="setDur(this,'comm')">∞</div>
-                </div>
-              </div>
-              <button class="btn b-blue" id="bCommShow" onclick="commShow()" disabled style="margin-bottom:8px;">▶ Afficher sur OBS</button>
-              <button class="btn b-dk"   onclick="commHide()">✕ Masquer</button>
-              <div class="fb" id="fb-comm"></div>
-            </div></div>
+          <!-- Pilote en piste -->
+          <div class="sams-piste-card">
+            <div class="sams-piste-lbl"><div id="samChDot" class="sams-dot"></div>EN PISTE</div>
+            <div id="samChPilot" class="sams-piste-name" style="color:rgba(255,255,255,.2);">Aucun pilote</div>
+            <div id="samChTeam"  class="sams-piste-team">—</div>
+          </div>
+          <!-- Classement -->
+          <div class="sams-cls-hd">📊 Classement</div>
+          <div id="samClsList" class="sams-cls-list">
+            <div class="sams-empty">Chargement…</div>
           </div>
         </div>
       </div>
 
-      <!-- COLONNE DROITE : notes + chat -->
-      <div class="comm-right">
-        <!-- Notes -->
-        <div class="cv-notes" style="height:40%;border-bottom:1px solid var(--b);flex-shrink:0;">
-          <div class="cv-notes-hd">
-            <h3>📝 Notes</h3>
-            <span class="cv-notes-saved" id="cvNotesSaved">✔ Sauvegardé</span>
-          </div>
-          <textarea id="cvNotesArea" placeholder="Infos pilotes, stats, points clés…&#10;Sauvegardé automatiquement."></textarea>
+      <!-- COL DROITE : notes -->
+      <div class="sams-right">
+        <div class="sams-block-hd">
+          <span class="sams-block-title">📝 Notes SAMS</span>
+          <span class="cv-notes-saved" id="samNotesSaved">✔ Sauvegardé</span>
         </div>
-        <!-- Chat interne -->
-        <div class="cv-chat">
-          <div class="cv-chat-hd">
-            <h3>💬 Chat interne</h3>
-            <span class="cv-chat-online"><span style="font-size:8px;">●</span> OPÉRATEURS</span>
-          </div>
-          <div class="cv-chat-msgs" id="cvChatMsgs"><div class="cv-chat-empty">Aucun message</div></div>
-          <div class="cv-chat-inp">
-            <div class="cv-chat-inp-top">
-              <span class="cv-name-lbl">Pseudo</span>
-              <input type="text" class="cv-name-inp" id="cvChatName" placeholder="Votre nom…" maxlength="16">
-            </div>
-            <div class="cv-chat-inp-bottom">
-              <textarea class="cv-txt-inp" id="cvChatTxt" placeholder="Écrire un message…" maxlength="400" rows="2"></textarea>
-              <button class="cv-send-btn" onclick="cvSendChat()">➤ Envoyer</button>
-            </div>
-          </div>
-        </div>
+        <textarea id="samNotesArea" class="sams-notes"
+          placeholder="Positions SAMS…&#10;Consignes médicales…&#10;Sauvegardé localement."></textarea>
       </div>
 
     </div>
@@ -2089,13 +1661,16 @@ async function pollOverlayStatus(){
   // ── Synchroniser le panel commentateur automatiquement ──
   if(cat && cat!=='—' && cat!==cvCat){
     cvCat=cat;
-    // Mettre à jour les boutons catégorie commentateur
     document.querySelectorAll('.cv-cat-btn').forEach(b=>{
       b.classList.toggle('on', b.dataset.cat===cat);
     });
-    // Rafraîchir classement et chrono commentateur
     cvPollCls();
     cvPollChrono();
+  }
+  // Sync SAMS aussi
+  if(cat && cat!=='—' && _samInited && cat!==samCat){
+    samCat=cat;
+    samSetCat(null);
   }
 }
 
@@ -3162,128 +2737,53 @@ setInterval(()=>{
 
 
 
-// ══ SAM / EMS ══
+// ══ SAMS / EMS ══
 let samAlertLastId=0, samAlertSynced=false;
 let _samInited=false;
-let samGrid='g2x2';
+let samCat='Rally B';
 
+// ── Tabs propres SAMS (n'interfère pas avec cvStab) ──
+function samTab(name){
+  document.querySelectorAll('.sams-tab').forEach(b=>b.classList.toggle('on',b.dataset.sams===name));
+  document.querySelectorAll('.sams-panel').forEach(p=>p.classList.toggle('on',p.id==='sams-'+name));
+}
+
+// ── Catégorie (suit l'overlay OBS automatiquement) ──
+function samSetCat(btn){
+  if(btn) samCat=btn.dataset.cat;
+  document.querySelectorAll('#sams-info .cv-cat-btn').forEach(b=>
+    b.classList.toggle('on', b.dataset.cat===samCat));
+  samPollCls();
+  samPollChrono();
+}
+
+// ── Init ──
 async function samInit(){
-  if(_samInited) return;
+  if(_samInited)return;
   _samInited=true;
-  // Charger les cams depuis Supabase (même source que commentateur)
   await camLoad();
   samRenderCams();
   samLoadMap(null);
   samInitNotes();
   samPollAlerts();
+  samPollCls();
+  samPollChrono();
   if(!window._samIntervals){
     window._samIntervals=true;
-    setInterval(samPollAlerts, 1500);
+    setInterval(samPollAlerts,   1500);
+    setInterval(samPollCls,      2500);
+    setInterval(samPollChrono,   1000);
     setInterval(samPollSharedCams, 3000);
   }
 }
 
-// ── Carte circuit ──
-function samLoadMap(input){
-  if(input && input.files && input.files[0]){
-    const file=input.files[0];
-    const reader=new FileReader();
-    reader.onload=e=>{
-      localStorage.setItem('sam_map', e.target.result);
-      samShowMap(e.target.result);
-    };
-    reader.readAsDataURL(file);
-  } else {
-    const saved=localStorage.getItem('sam_map');
-    if(saved) samShowMap(saved);
-  }
-}
-function samShowMap(dataUrl){
-  const img=document.getElementById('samMapImg');
-  const empty=document.getElementById('samMapEmpty');
-  if(img){img.src=dataUrl;img.classList.add('on');}
-  if(empty)empty.style.display='none';
-}
-function samClearMap(){
-  localStorage.removeItem('sam_map');
-  const img=document.getElementById('samMapImg');
-  const empty=document.getElementById('samMapEmpty');
-  if(img){img.src='';img.classList.remove('on');}
-  if(empty)empty.style.display='';
-}
-
-// ── Alertes incidents/DNF/pénalités ──
-const SAM_ICONS={DNF:'🚫',DSQ:'❌',INCIDENT:'⚡',PENALTY:'⚠️'};
-const SAM_LABELS={DNF:'ABANDON',DSQ:'DISQUALIFIÉ',INCIDENT:'INCIDENT',PENALTY:'PÉNALITÉ'};
-
-async function samPollAlerts(){
-  const d=await GET('events','?order=id.desc&limit=20');
-  if(!d) return;
-  if(!samAlertSynced){
-    samAlertSynced=true;
-    samAlertLastId=d[0]?.id||0;
-    // Afficher les 5 derniers incidents/DNF existants
-    const recent=d.filter(e=>e.type==='INCIDENT'||e.type==='DNF'||e.type==='DSQ').slice(0,5);
-    samRenderAlerts(recent, false);
-    return;
-  }
-  const news=d.filter(e=>e.id>samAlertLastId);
-  if(!news.length) return;
-  samAlertLastId=d[0].id;
-  // Filtrer : incidents, DNF, DSQ, et pénalités importantes (>= 10s)
-  const important=news.filter(e=>
-    e.type==='INCIDENT'||e.type==='DNF'||e.type==='DSQ'||
-    (e.type==='PENALTY'&&Number((e.message||'').match(/\+(\d+)/)?.[1]||0)>=10)
-  );
-  if(important.length) samRenderAlerts(important, true);
-}
-
-function samRenderAlerts(events, isNew){
-  const list=document.getElementById('samAlertList');
-  const countEl=document.getElementById('samAlertCount');
-  if(!list) return;
-  const empty=list.querySelector('.sam-alert-empty');
-  if(empty && events.length) empty.remove();
-
-  // Ajouter les nouvelles alertes en haut
-  events.forEach(e=>{
-    const div=document.createElement('div');
-    div.className=`sam-alert type-${e.type}`;
-    const t=new Date(e.created_at).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
-    div.innerHTML=
-      `<div class="sam-alert-ico">${SAM_ICONS[e.type]||'❗'}</div>`+
-      `<div class="sam-alert-body">`+
-        `<div class="sam-alert-pilot">${e.pilote_name||'?'}</div>`+
-        `<div class="sam-alert-msg">${SAM_LABELS[e.type]||e.type}${e.message?' — '+e.message:''}</div>`+
-      `</div>`+
-      `<div class="sam-alert-time">${t}</div>`+
-      (isNew?'<div class="sam-alert-new"></div>':'');
-    list.insertBefore(div, list.firstChild);
-    // Retirer le point rouge après 8s
-    if(isNew) setTimeout(()=>div.querySelector('.sam-alert-new')?.remove(), 8000);
-  });
-
-  // Supprimer les vieilles alertes au-delà de 15
-  while(list.children.length>15) list.removeChild(list.lastChild);
-
-  // Compter les incidents non résolus
-  const total=list.querySelectorAll('.sam-alert').length;
-  const incCount=list.querySelectorAll('.sam-alert.type-INCIDENT,.sam-alert.type-DNF,.sam-alert.type-DSQ').length;
-  if(countEl){
-    countEl.textContent=total+' alerte'+(total>1?'s':'');
-    countEl.className='sam-alert-count'+(incCount>0?'':' ok');
-  }
-}
-
-// ── Caméras SAM (partagées avec commentateur) ──
+// ── Caméras (partagées Supabase) ──
 function samRenderCams(){
-  // Synchroniser la grille avec camGrid (partagé)
-  samGrid=camGrid;
   const sel=document.getElementById('samGridSel');
-  if(sel)sel.value=samGrid;
+  if(sel)sel.value=camGrid;
   const grid=document.getElementById('samCamsGrid');
   if(!grid)return;
-  grid.className='cams-grid '+samGrid;
+  grid.className='cams-grid '+camGrid;
   const n=camGridCount();
   grid.innerHTML='';
   for(let i=0;i<n;i++){
@@ -3299,63 +2799,211 @@ function samRenderCams(){
       cell.innerHTML=
         `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:.15"><path d="M15 10l4.553-2.069A1 1 0 0121 8.868v6.264a1 1 0 01-1.447.894L15 14M3 8a2 2 0 012-2h10a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z"/></svg>`+
         `<span style="opacity:.25;font-size:10px;">Slot ${i+1}</span>`;
-      // Clic sur slot vide → ouvre le gestionnaire commentateur
-      cell.onclick=()=>samOpenCamModal();
+      cell.onclick=()=>camOpenModal(i);
     }
     grid.appendChild(cell);
   }
 }
 
 async function samApplyGrid(){
-  // Le SAM peut changer la grille — ça change pour tout le monde
   camGrid=document.getElementById('samGridSel').value;
   await camSave();
   samRenderCams();
-  // Mettre à jour aussi la grille commentateur si visible
   camRenderGrid();
 }
 
-// Ouvre le modal gestionnaire de cams (partagé avec commentateur)
-function samOpenCamModal(){
-  camOpenModal();
-  // Après fermeture, re-render sam aussi
-  const origClose=camCloseModal;
-}
-
 async function samPollSharedCams(){
-  if(!_samInited) return;
+  if(!_samInited)return;
   const d=await GET('shared_cams','?id=eq.1&select=cams,grid,updated_at');
-  if(!d||!d[0]) return;
+  if(!d||!d[0])return;
   const ts=d[0].updated_at||'';
-  if(ts && ts!==_camLastUpdated){
+  if(ts&&ts!==_camLastUpdated){
     _camLastUpdated=ts;
     try{camList=JSON.parse(d[0].cams||'[]');}catch(e){}
     camGrid=d[0].grid||'g2x2';
     samRenderCams();
-    // Sync aussi les selects
     const sel=document.getElementById('samGridSel');
     if(sel)sel.value=camGrid;
   }
 }
 
-// ── Notes SAM ──
-let _samNoteT=null;
-function samInitNotes(){
-  const area=document.getElementById('samNotesArea');
-  if(!area) return;
-  area.value=localStorage.getItem('sam_notes')||'';
-  area.addEventListener('input',()=>{
-    clearTimeout(_samNoteT);
-    _samNoteT=setTimeout(()=>{
-      localStorage.setItem('sam_notes',area.value);
-      const s=document.getElementById('samNotesSaved');
-      if(s){s.classList.add('on');clearTimeout(s._t);s._t=setTimeout(()=>s.classList.remove('on'),2000);}
-    },600);
-  });
+// ── Pilote en piste ──
+async function samPollChrono(){
+  const d=await GET('chrono','?id=eq.1&select=status,pilotes(first_name,last_name,category,team,team_color)');
+  if(!d||!d.length)return;
+  const row=d[0];
+  const pilotEl=document.getElementById('samChPilot');
+  const teamEl =document.getElementById('samChTeam');
+  const dot    =document.getElementById('samChDot');
+  const relevant=row.pilotes?.category===samCat;
+  if(row.status==='START'&&row.pilotes&&relevant){
+    const p=row.pilotes;
+    const name=(p.first_name+' '+(p.last_name||'').toUpperCase()).trim();
+    if(pilotEl){pilotEl.textContent=name;pilotEl.style.color=p.team_color||'var(--r)';}
+    if(teamEl)teamEl.textContent=p.team||'';
+    if(dot){dot.style.background='var(--r)';dot.style.boxShadow='0 0 6px rgba(232,0,28,.6)';}
+  }else{
+    if(pilotEl){pilotEl.textContent='Aucun pilote en piste';pilotEl.style.color='rgba(255,255,255,.2)';}
+    if(teamEl)teamEl.textContent='—';
+    if(dot){dot.style.background='#333';dot.style.boxShadow='none';}
+  }
 }
 
-// SQL: ajouter pwd_sam dans app_config (si pas encore fait)
-// alter table app_config add column if not exists pwd_sam text default 'sam2024';
+// ── Classement ──
+async function samPollCls(){
+  const samPilots=allPilots.filter(p=>p.category===samCat);
+  const ids=samPilots.map(p=>p.id);
+  const el=document.getElementById('samClsList');
+  if(!el)return;
+  if(!ids.length){el.innerHTML='<div class="sams-empty">Aucun pilote</div>';return;}
+  const rows=await GET('classement',`?select=*&pilote_id=in.(${ids.join(',')})`) || [];
+  const clsMap={};rows.forEach(r=>{clsMap[r.pilote_id]=r;});
+  const allR=samPilots.map(p=>({...(clsMap[p.id]||{pilote_id:p.id,best_time:'',status:''}),_p:p}));
+  const ok =allR.filter(r=>r.best_time&&toMs(r.best_time)<Infinity&&r.status!=='DNF'&&r.status!=='DSQ').sort((a,b)=>toMs(a.best_time)-toMs(b.best_time));
+  const no =allR.filter(r=>(!r.best_time||toMs(r.best_time)===Infinity)&&r.status!=='DNF'&&r.status!=='DSQ');
+  const out=allR.filter(r=>r.status==='DNF'||r.status==='DSQ');
+  el.innerHTML=[...ok,...no,...out].map((r,idx)=>{
+    const p=r._p, st=(r.status||'').toUpperCase();
+    const hasTime=r.best_time&&toMs(r.best_time)<Infinity, isOut=st==='DNF'||st==='DSQ';
+    const posNum=ok.indexOf(r);
+    const pos=isOut?'—':posNum>=0?'P'+(posNum+1):'—';
+    const time=st==='DNF'?'DNF':st==='DSQ'?'DSQ':hasTime?r.best_time:'—';
+    const posCol=posNum===0?'var(--r)':posNum===1?'#ccc':posNum===2?'var(--gold)':'rgba(255,255,255,.12)';
+    return `<div style="display:flex;align-items:center;padding:5px 2px;border-bottom:1px solid rgba(255,255,255,.04);gap:4px;${isOut?'opacity:.4;':''}${!hasTime&&!isOut?'opacity:.5;':''}">
+      <div style="width:3px;align-self:stretch;background:${p.team_color||'#333'};border-radius:2px;margin-right:6px;flex-shrink:0;"></div>
+      <div style="width:32px;font-family:var(--font-head);font-size:13px;font-weight:900;color:${posCol};flex-shrink:0;">${pos}</div>
+      <div style="flex:1;font-family:var(--font-head);font-size:11px;font-weight:700;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${fmtNameFull(p.first_name,p.last_name)}</div>
+      <div style="font-family:var(--font-head);font-size:11px;font-variant-numeric:tabular-nums;color:${hasTime&&!isOut?'rgba(255,255,255,.7)':'rgba(255,255,255,.25)'};">${time}</div>
+    </div>`;
+  }).join('');
+}
+
+// ── Alertes incidents/DNF ──
+async function samPollAlerts(){
+  const d=await GET('events','?order=id.desc&limit=25');
+  if(!d)return;
+  if(!samAlertSynced){
+    samAlertSynced=true;
+    samAlertLastId=d[0]?.id||0;
+    const recent=d.filter(e=>['INCIDENT','DNF','DSQ'].includes(e.type)).slice(0,5);
+    if(recent.length)samRenderAlerts(recent,false);
+    return;
+  }
+  const news=d.filter(e=>e.id>samAlertLastId);
+  if(!news.length)return;
+  samAlertLastId=d[0].id;
+  const imp=news.filter(e=>
+    ['INCIDENT','DNF','DSQ'].includes(e.type)||
+    (e.type==='PENALTY'&&Number((e.message||'').match(/\+(\d+)/)?.[1]||0)>=10)
+  );
+  if(imp.length)samRenderAlerts(imp,true);
+}
+
+function samRenderAlerts(events,isNew){
+  const list=document.getElementById('samAlertList');
+  const countEl=document.getElementById('samAlertCount');
+  if(!list)return;
+  const empty=list.querySelector('.sams-empty');
+  if(empty&&events.length)empty.remove();
+  const ICONS={DNF:'🚫',DSQ:'❌',INCIDENT:'⚡',PENALTY:'⚠️'};
+  const LABELS={DNF:'Abandon',DSQ:'Disqualifié',INCIDENT:'Incident',PENALTY:'Pénalité'};
+  const BORDS={DNF:'rgba(255,107,107,.25)',DSQ:'rgba(255,68,85,.25)',INCIDENT:'rgba(255,200,0,.25)',PENALTY:'rgba(196,121,0,.25)'};
+  const BKGS ={DNF:'rgba(255,107,107,.07)',DSQ:'rgba(255,68,85,.07)',INCIDENT:'rgba(255,200,0,.07)',PENALTY:'rgba(196,121,0,.07)'};
+  events.forEach(e=>{
+    const t=new Date(e.created_at).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+    const div=document.createElement('div');
+    div.style.cssText=`display:flex;align-items:flex-start;gap:7px;padding:6px 9px;border-radius:5px;background:${BKGS[e.type]||'rgba(255,255,255,.04)'};border:1px solid ${BORDS[e.type]||'var(--b)'};position:relative;animation:alertIn .22s ease;margin-bottom:3px;`;
+    div.innerHTML=
+      `<span style="font-size:15px;flex-shrink:0;">${ICONS[e.type]||'❗'}</span>`+
+      `<div style="flex:1;min-width:0;">`+
+        `<div style="font-family:var(--font-head);font-size:12px;font-weight:700;text-transform:uppercase;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${e.pilote_name||'?'}</div>`+
+        `<div style="font-size:10px;color:var(--m2);margin-top:1px;">${LABELS[e.type]||e.type}${e.message?' — '+e.message:''}</div>`+
+      `</div>`+
+      `<span style="font-size:8px;color:var(--m);flex-shrink:0;">${t}</span>`+
+      (isNew?`<div style="position:absolute;top:4px;right:5px;width:6px;height:6px;border-radius:50%;background:var(--r);animation:pulse 1s ease-in-out infinite;" id="samDot-${e.id}"></div>`:'');
+    list.insertBefore(div,list.firstChild);
+    if(isNew)setTimeout(()=>document.getElementById('samDot-'+e.id)?.remove(),8000);
+  });
+  while(list.children.length>15)list.removeChild(list.lastChild);
+  const total=list.children.length;
+  if(countEl){
+    countEl.textContent=total||'0';
+    countEl.className='sams-badge '+(total>0?'red':'green');
+  }
+}
+
+// ── Carte circuit ──
+function samLoadMap(input){
+  if(input&&input.files&&input.files[0]){
+    const r=new FileReader();
+    r.onload=e=>{localStorage.setItem('sam_map',e.target.result);samShowMap(e.target.result);};
+    r.readAsDataURL(input.files[0]);
+  }else{
+    const saved=localStorage.getItem('sam_map');
+    if(saved)samShowMap(saved);
+  }
+}
+function samShowMap(url){
+  const img=document.getElementById('samMapImg');
+  const empty=document.getElementById('samMapEmpty');
+  if(img){img.src=url;img.style.display='block';}
+  if(empty)empty.style.display='none';
+}
+function samClearMap(){
+  localStorage.removeItem('sam_map');
+  const img=document.getElementById('samMapImg');
+  const empty=document.getElementById('samMapEmpty');
+  if(img){img.src='';img.style.display='none';}
+  if(empty)empty.style.display='';
+}
+
+// ── Notes SAMS — sauvegardées dans Supabase (partagées) + localStorage (fallback) ──
+let _samNoteT=null;
+let _samNoteLastTs='';
+
+async function samInitNotes(){
+  const area=document.getElementById('samNotesArea');
+  if(!area)return;
+  // Charger depuis Supabase
+  const d=await GET('sams_notes','?id=eq.1');
+  if(d&&d[0]){
+    area.value=d[0].notes||'';
+    _samNoteLastTs=d[0].updated_at||'';
+    localStorage.setItem('sam_notes',area.value);
+  }else{
+    // Fallback localStorage
+    area.value=localStorage.getItem('sam_notes')||'';
+  }
+  // Auto-save sur frappe (debounce 800ms)
+  area.addEventListener('input',()=>{
+    clearTimeout(_samNoteT);
+    const s=document.getElementById('samNotesSaved');
+    if(s)s.textContent='✏ Saisie…';
+    _samNoteT=setTimeout(async()=>{
+      localStorage.setItem('sam_notes',area.value);
+      await PATCH('sams_notes','?id=eq.1',{notes:area.value,updated_at:new Date().toISOString()});
+      if(s){s.textContent='✔ Sauvegardé';s.classList.add('on');clearTimeout(s._t);s._t=setTimeout(()=>s.classList.remove('on'),2000);}
+    },800);
+  });
+  // Poll pour sync en temps réel si plusieurs SAMS connectés
+  if(!window._samNotePoll){
+    window._samNotePoll=true;
+    setInterval(async()=>{
+      if(!_samInited)return;
+      const r=await GET('sams_notes','?id=eq.1&select=notes,updated_at');
+      if(!r||!r[0])return;
+      if(r[0].updated_at!==_samNoteLastTs){
+        _samNoteLastTs=r[0].updated_at;
+        const area2=document.getElementById('samNotesArea');
+        // Ne pas écraser si l'utilisateur est en train de taper
+        if(area2&&document.activeElement!==area2){
+          area2.value=r[0].notes||'';
+          localStorage.setItem('sam_notes',area2.value);
+        }
+      }
+    },5000);
+  }
+}
 
 // ═══ MODE VIEWER DIFFUSION (activé si ?view=ID dans l'URL) ═══
 (function(){
