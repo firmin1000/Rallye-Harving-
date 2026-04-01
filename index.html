@@ -601,6 +601,153 @@ body.viewer-mode #roleScreen,body.viewer-mode #diffScreen,body.viewer-mode #diff
 @keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:none;}}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.2;transform:scale(.6);}}
 @keyframes alertIn{from{opacity:0;transform:translateX(-5px);}to{opacity:1;transform:none;}}
+
+/* ════════════════════════════════════════════════
+   CLASSEMENT — style timing board F1
+════════════════════════════════════════════════ */
+.cls-panel-hd{
+  display:flex;align-items:center;gap:10px;
+  padding:0 0 12px;border-bottom:2px solid var(--b);margin-bottom:0;
+}
+.cls-panel-title{font-family:var(--font-head);font-size:22px;font-weight:900;letter-spacing:2px;text-transform:uppercase;}
+.cls-live-pill{display:inline-flex;align-items:center;gap:5px;background:rgba(0,200,83,.1);border:1px solid rgba(0,200,83,.2);border-radius:10px;padding:3px 10px;font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--green);}
+.cls-export-btn{margin-left:auto;background:rgba(255,255,255,.05);border:1px solid var(--b);color:var(--m);border-radius:5px;padding:5px 12px;font-family:var(--font-head);font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:all .15s;}
+.cls-export-btn:hover{border-color:var(--b2);color:#fff;}
+
+/* Table timing */
+.cls-table-wrap{overflow:hidden;border-radius:8px;border:1px solid var(--b);}
+.cls-table{width:100%;border-collapse:collapse;}
+.cls-table thead tr{background:var(--bg2);}
+.cls-table th{font-family:var(--font-head);font-size:8px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--m);padding:10px 12px;text-align:left;border-bottom:1px solid var(--b);}
+.cls-table tbody tr{border-bottom:1px solid rgba(255,255,255,.04);transition:background .1s;}
+.cls-table tbody tr:last-child{border-bottom:none;}
+.cls-table tbody tr:hover{background:rgba(255,255,255,.03);}
+
+/* Positions podium */
+.cls-table tbody tr.rk-1{background:linear-gradient(90deg,rgba(200,134,10,.12) 0%,rgba(200,134,10,.03) 60%,transparent 100%);}
+.cls-table tbody tr.rk-2{background:linear-gradient(90deg,rgba(155,163,175,.08) 0%,rgba(155,163,175,.02) 60%,transparent 100%);}
+.cls-table tbody tr.rk-3{background:linear-gradient(90deg,rgba(184,115,51,.1) 0%,rgba(184,115,51,.02) 60%,transparent 100%);}
+.cls-table tbody tr.rk-out{opacity:.3;}
+.cls-table td{padding:0;}
+
+/* Cellule position */
+.cls-td-pos{width:52px;text-align:center;padding:0!important;}
+.cls-pos-inner{
+  display:flex;align-items:center;justify-content:center;
+  height:100%;min-height:46px;
+  position:relative;
+}
+.cls-pos-bar{position:absolute;left:0;top:0;bottom:0;width:4px;}
+.cls-pos-num{font-family:var(--font-head);font-size:20px;font-weight:900;color:rgba(255,255,255,.12);position:relative;z-index:1;}
+.rk-1 .cls-pos-num{color:var(--gold);}
+.rk-2 .cls-pos-num{color:#aaa;}
+.rk-3 .cls-pos-num{color:#cd7f32;}
+
+/* Cellule pilote */
+.cls-td-pilot{padding:8px 10px 8px 6px!important;}
+.cls-pilot-name{font-family:var(--font-head);font-size:14px;font-weight:900;text-transform:uppercase;letter-spacing:.3px;display:flex;align-items:center;gap:0;line-height:1.1;}
+.cls-pilot-sub{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin-top:3px;}
+.cls-pen-chip{display:inline-flex;align-items:center;gap:3px;font-size:8px;font-weight:700;letter-spacing:.5px;color:var(--gold);background:rgba(200,134,10,.1);border:1px solid rgba(200,134,10,.2);border-radius:3px;padding:1px 6px;}
+.cls-badge{display:inline-flex;align-items:center;font-family:var(--font-head);font-size:8px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:2px 6px;border-radius:3px;margin-left:6px;}
+.cls-b-dnf{background:rgba(255,107,107,.12);color:#ff6b6b;border:1px solid rgba(255,107,107,.2);}
+.cls-b-dsq{background:rgba(232,0,28,.1);color:var(--r);border:1px solid rgba(232,0,28,.18);}
+.cls-b-inc{background:rgba(255,200,0,.1);color:#ffd700;border:1px solid rgba(255,200,0,.18);}
+
+/* Cellule écurie */
+.cls-td-team{padding:8px 10px!important;}
+.cls-team-inner{display:flex;align-items:center;gap:6px;}
+.cls-team-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0;}
+.cls-team-name{font-size:11px;color:var(--m);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:120px;}
+
+/* Cellule temps */
+.cls-td-time{text-align:right;padding:8px 10px!important;}
+.cls-time-val{font-family:var(--font-head);font-size:14px;font-weight:700;font-variant-numeric:tabular-nums;color:rgba(255,255,255,.3);}
+.rk-1 .cls-time-val{color:var(--gold);}
+
+/* Cellule actions */
+.cls-td-acts{padding:6px 8px!important;text-align:right;white-space:nowrap;}
+
+/* ════════════════════════════════════════════════
+   DRIVER CARD — preview OBS stylée
+════════════════════════════════════════════════ */
+.dc-preview-card{
+  background:var(--bg2);
+  border-radius:10px;
+  overflow:hidden;
+  margin-bottom:14px;
+  position:relative;
+  display:none;
+  border:1px solid var(--b);
+}
+.dc-preview-card.on{display:block;}
+/* Header coloré */
+.dc-card-head{
+  padding:14px 16px 12px;
+  position:relative;overflow:hidden;
+}
+.dc-card-stripe{position:absolute;left:0;top:0;bottom:0;width:5px;}
+.dc-card-tint{position:absolute;inset:0;opacity:.08;pointer-events:none;}
+.dc-card-badge{
+  position:absolute;top:10px;right:12px;
+  font-family:var(--font-head);font-size:7px;font-weight:700;letter-spacing:3px;text-transform:uppercase;
+  padding:3px 8px;border-radius:2px;
+  background:var(--r);color:#fff;
+}
+.dc-card-cat{font-size:7px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--m);margin-bottom:4px;position:relative;z-index:1;}
+.dc-card-name{font-family:var(--font-head);font-size:26px;font-weight:900;font-style:italic;text-transform:uppercase;color:#fff;line-height:1;position:relative;z-index:1;}
+.dc-card-team{font-size:10px;color:var(--m);margin-top:4px;display:flex;align-items:center;gap:6px;position:relative;z-index:1;}
+.dc-card-team-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0;}
+/* Footer */
+.dc-card-foot{
+  background:var(--bg);
+  padding:10px 16px;
+  display:flex;align-items:center;gap:8px;
+  border-top:1px solid var(--b);
+}
+.dc-card-stat{display:flex;flex-direction:column;gap:1px;}
+.dc-card-stat-lbl{font-size:7px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--m);}
+.dc-card-stat-val{font-family:var(--font-head);font-size:13px;font-weight:700;color:var(--m2);}
+.dc-card-stat-val.accent{color:var(--gold);}
+.dc-card-sep{width:1px;height:28px;background:var(--b);}
+
+/* ════════════════════════════════════════════════
+   COMMENTATEUR — sous-panel OBS
+════════════════════════════════════════════════ */
+.comm-card-prev{
+  background:var(--bg2);border:1px solid var(--b);border-radius:8px;
+  overflow:hidden;margin-bottom:10px;cursor:pointer;
+  transition:border-color .15s,transform .1s;
+}
+.comm-card-prev:hover{border-color:var(--b2);transform:translateY(-1px);}
+.comm-card-prev.sel{border-color:rgba(68,102,204,.5);background:rgba(68,102,204,.07);}
+.comm-card-head{
+  display:flex;align-items:center;gap:0;
+  padding:10px 12px;
+}
+.comm-card-accent{width:4px;align-self:stretch;border-radius:1px;margin-right:12px;flex-shrink:0;}
+.comm-card-info{flex:1;min-width:0;}
+.comm-card-name{font-family:var(--font-head);font-size:16px;font-weight:900;font-style:italic;text-transform:uppercase;letter-spacing:.3px;line-height:1.1;}
+.comm-card-role{font-size:9px;color:var(--m);margin-top:2px;letter-spacing:.5px;}
+.comm-card-foot{
+  display:flex;align-items:center;gap:8px;
+  padding:6px 12px;border-top:1px solid var(--b);
+  background:var(--bg);
+}
+.comm-card-status{display:flex;align-items:center;gap:5px;flex:1;font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;}
+.comm-cdot{width:6px;height:6px;border-radius:50%;background:#333;flex-shrink:0;}
+.comm-cdot.on{background:var(--green);box-shadow:0 0 7px rgba(0,200,83,.5);animation:pulse 1.2s ease-in-out infinite;}
+.comm-card-dur{font-size:8px;color:var(--m);letter-spacing:.5px;}
+.comm-obs-trigger{
+  background:var(--r);color:#fff;border:none;border-radius:5px;
+  padding:5px 12px;font-family:var(--font-head);font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
+  cursor:pointer;transition:background .12s;white-space:nowrap;
+}
+.comm-obs-trigger:hover{background:var(--rh);}
+.comm-dur-row{display:flex;gap:5px;margin-top:8px;}
+.comm-dur-btn{flex:1;background:var(--bg4);color:var(--m);border:1px solid var(--b);border-radius:5px;padding:6px 4px;font-family:var(--font-head);font-size:11px;font-weight:700;text-align:center;cursor:pointer;transition:all .12s;}
+.comm-dur-btn.on{background:rgba(68,102,204,.14);border-color:rgba(68,102,204,.3);color:#88aaff;}
+.comm-dur-btn:hover{border-color:var(--b2);color:#fff;}
+
 </style>
 </head>
 <body>
@@ -876,12 +1023,33 @@ body.viewer-mode #roleScreen,body.viewer-mode #diffScreen,body.viewer-mode #diff
       <div>
         <div class="sec-hd"><h2>🎬 Diffusion OBS</h2></div>
         <div class="card"><div class="cb">
-          <div class="dc-prev" id="dcPrev">
-            <div class="dc-prev-bar" id="dcPrevBar"></div>
-            <div class="dc-prev-c">
-              <div class="dc-prev-lbl">PILOTE SÉLECTIONNÉ</div>
-              <div class="dc-prev-name" id="dcPrevName">—</div>
-              <div class="dc-prev-team" id="dcPrevTeam">—</div>
+          <div class="dc-preview-card" id="dcPrev">
+            <div class="dc-card-head">
+              <div class="dc-card-stripe" id="dcPrevBar"></div>
+              <div class="dc-card-tint" id="dcPrevTint"></div>
+              <div class="dc-card-badge">🎬 OBS Ready</div>
+              <div class="dc-card-cat" id="dcPrevCat">—</div>
+              <div class="dc-card-name" id="dcPrevName">—</div>
+              <div class="dc-card-team">
+                <div class="dc-card-team-dot" id="dcPrevTeamDot"></div>
+                <span id="dcPrevTeam">—</span>
+              </div>
+            </div>
+            <div class="dc-card-foot">
+              <div class="dc-card-stat">
+                <div class="dc-card-stat-lbl">Catégorie</div>
+                <div class="dc-card-stat-val" id="dcPrevCat2">—</div>
+              </div>
+              <div class="dc-card-sep"></div>
+              <div class="dc-card-stat">
+                <div class="dc-card-stat-lbl">Écurie</div>
+                <div class="dc-card-stat-val" id="dcPrevTeam2">—</div>
+              </div>
+              <div class="dc-card-sep"></div>
+              <div class="dc-card-stat">
+                <div class="dc-card-stat-lbl">Durée</div>
+                <div class="dc-card-stat-val accent" id="dcPrevDur">6s</div>
+              </div>
             </div>
           </div>
           <div class="f"><label class="fl">Durée d&apos;affichage</label>
@@ -961,44 +1129,64 @@ body.viewer-mode #roleScreen,body.viewer-mode #diffScreen,body.viewer-mode #diff
             <div class="cams-grid g2x2" id="camsGrid"></div>
           </div>
         </div>
-        <div class="comm-subpanel" id="cstab-obs" style="overflow-y:auto;padding:16px;flex-direction:column;gap:14px;">
-          <div class="sec-hd" style="margin-bottom:10px;"><h2>🎙 Commentateurs enregistrés</h2></div>
-          <div class="card" style="margin-bottom:14px;"><div class="cb" style="padding:10px;">
-            <div class="plist" id="commList"><div class="ev-empty">Chargement…</div></div>
-          </div></div>
-          <div class="sec-hd" style="margin-bottom:10px;"><h2 id="commFormTitle">➕ Ajouter un commentateur</h2></div>
-          <div class="card" style="margin-bottom:14px;"><div class="cb">
+        <div class="comm-subpanel" id="cstab-obs" style="flex-direction:column;overflow:hidden;min-height:0;">
+
+          <!-- ZONE 1 : Header + liste scrollable -->
+          <div style="display:flex;align-items:center;gap:8px;padding:10px 14px 6px;border-bottom:1px solid var(--b);flex-shrink:0;">
+            <h2 style="font-family:var(--font-head);font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--m2);">🎙 Commentateurs</h2>
+            <button onclick="commClear();document.getElementById('commFormToggle').style.display=document.getElementById('commFormToggle').style.display==='none'?'flex':'none'" style="margin-left:auto;background:rgba(0,200,83,.1);color:var(--green);border:1px solid rgba(0,200,83,.2);border-radius:4px;padding:4px 10px;font-family:var(--font-head);font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;">＋ Ajouter</button>
+          </div>
+
+          <!-- Formulaire collapsible -->
+          <div id="commFormToggle" style="display:none;flex-direction:column;gap:0;padding:10px 14px;border-bottom:1px solid var(--b);flex-shrink:0;background:var(--bg2);">
             <input type="hidden" id="commId">
-            <div class="frow">
-              <div class="f"><label class="fl">Prénom</label><input type="text" id="commFirst" placeholder="Jean" oninput="commPreview()"></div>
-              <div class="f"><label class="fl">Nom</label><input type="text" id="commLast" placeholder="DUPONT" oninput="commPreview()"></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+              <div class="f" style="margin:0;"><label class="fl">Prénom</label><input type="text" id="commFirst" placeholder="Jean" oninput="commPreview()"></div>
+              <div class="f" style="margin:0;"><label class="fl">Nom</label><input type="text" id="commLast" placeholder="DUPONT" oninput="commPreview()"></div>
             </div>
-            <div class="f"><label class="fl">Rôle</label><input type="text" id="commRole" placeholder="Commentateur principal" oninput="commPreview()"></div>
-            <div class="brow" style="margin-top:4px;">
-              <button class="btn b-grn" onclick="commSave()">💾 Enregistrer</button>
-              <button class="btn b-dk"  onclick="commClear()">✕ Annuler</button>
+            <div class="f" style="margin-bottom:8px;"><label class="fl">Rôle</label><input type="text" id="commRole" placeholder="Commentateur principal" oninput="commPreview()"></div>
+            <div style="display:flex;gap:6px;">
+              <button class="btn b-grn" onclick="commSave();document.getElementById('commFormToggle').style.display='none';" style="flex:1;">💾 Enregistrer</button>
+              <button class="btn b-dk"  onclick="commClear();document.getElementById('commFormToggle').style.display='none';" style="flex:0 0 auto;">✕</button>
             </div>
-            <div class="fb" id="fb-commForm"></div>
-          </div></div>
-          <div class="sec-hd" style="margin-bottom:10px;"><h2>🎬 Diffusion OBS</h2></div>
-          <div class="card"><div class="cb">
-            <div class="comm-prev">
-              <div class="comm-prev-name" id="commPN">—</div>
-              <div class="comm-prev-role" id="commPR">—</div>
-              <div class="comm-st" id="commSt"><div class="csdot" id="commDot"></div><span id="commStTxt">INACTIF</span></div>
+            <div class="fb" id="fb-commForm" style="margin-top:4px;"></div>
+            <div id="commFormTitle" style="display:none;"></div>
+          </div>
+
+          <!-- Liste scrollable — prend tout l'espace restant -->
+          <div id="commList" style="flex:1;overflow-y:auto;padding:8px 10px;min-height:0;">
+            <div class="ev-empty">Chargement…</div>
+          </div>
+
+          <!-- ZONE 2 : Diffusion OBS — fixe en bas -->
+          <div style="border-top:2px solid rgba(232,0,28,.2);flex-shrink:0;background:var(--bg2);">
+            <div style="display:flex;align-items:center;gap:8px;padding:8px 14px 5px;border-bottom:1px solid var(--b);">
+              <h2 style="font-family:var(--font-head);font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--m2);">🎬 OBS Overlay</h2>
+              <div class="comm-st" id="commSt" style="margin-left:auto;">
+                <div class="csdot" id="commDot"></div>
+                <span id="commStTxt" style="font-family:var(--font-head);font-size:8px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--m);">INACTIF</span>
+              </div>
             </div>
-            <div class="f"><label class="fl">Durée</label>
-              <div class="dur-grid" id="commDurGrid">
+            <!-- Pilote sélectionné preview -->
+            <div style="padding:8px 14px;display:flex;align-items:center;gap:10px;min-height:44px;">
+              <div style="flex:1;min-width:0;">
+                <div class="comm-prev-name" id="commPN" style="font-family:var(--font-head);font-size:15px;font-weight:900;font-style:italic;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">—</div>
+                <div id="commPR" style="font-size:8px;color:var(--m);letter-spacing:.5px;text-transform:uppercase;margin-top:1px;">—</div>
+              </div>
+              <button class="btn b-dk" onclick="commHide()" style="flex:0 0 auto;padding:5px 10px;font-size:10px;">✕</button>
+            </div>
+            <!-- Durée + bouton Afficher -->
+            <div style="padding:0 14px 10px;display:flex;align-items:center;gap:8px;">
+              <div class="dur-grid" id="commDurGrid" style="flex:1;display:flex;gap:4px;">
                 <div class="dur-btn on" data-ms="6000"  onclick="setDur(this,'comm')">6s</div>
                 <div class="dur-btn"    data-ms="8000"  onclick="setDur(this,'comm')">8s</div>
                 <div class="dur-btn"    data-ms="12000" onclick="setDur(this,'comm')">12s</div>
                 <div class="dur-btn"    data-ms="0"     onclick="setDur(this,'comm')">∞</div>
               </div>
+              <button class="btn b-red" id="bCommShow" onclick="commShow()" disabled style="flex:0 0 auto;padding:7px 14px;font-size:11px;">▶ LIVE</button>
             </div>
-            <button class="btn b-blue" id="bCommShow" onclick="commShow()" disabled style="margin-bottom:8px;">▶ Afficher sur OBS</button>
-            <button class="btn b-dk"   onclick="commHide()">✕ Masquer</button>
-            <div class="fb" id="fb-comm"></div>
-          </div></div>
+            <div class="fb" id="fb-comm" style="padding:0 14px 8px;"></div>
+          </div>
         </div>
       </div>
       <div class="comm-right">
@@ -1040,18 +1228,22 @@ body.viewer-mode #roleScreen,body.viewer-mode #diffScreen,body.viewer-mode #diff
         </div></div>
       </div>
       <div>
-        <div class="sec-hd">
-          <h2>📊 Classement en direct</h2>
-          <div class="cls-live" style="margin-left:auto;"><div class="live-dot"></div><span id="clsUpd">—</span></div>
-          <button onclick="exportClsPNG()" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.55);border-radius:5px;padding:5px 11px;font-family:var(--font-head);font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;margin-left:6px;transition:all .15s;">📸 Export PNG</button>
+        <div class="cls-panel-hd">
+          <span class="cls-panel-title">Classement</span>
+          <div class="cls-live-pill"><div class="live-dot"></div>LIVE <span id="clsUpd" style="color:var(--m2);margin-left:4px;">—</span></div>
+          <button class="cls-export-btn" onclick="exportClsPNG()">📸 PNG</button>
         </div>
-        <div class="card"><div class="cls-wrap">
-          <table><thead><tr>
-            <th style="width:40px;">Pos</th><th>Pilote</th><th>Écurie</th><th style="text-align:right;">Temps</th><th style="width:80px;text-align:center;">Actions</th>
+        <div class="cls-table-wrap">
+          <table class="cls-table"><thead><tr>
+            <th class="cls-td-pos">POS</th>
+            <th>PILOTE</th>
+            <th>ÉCURIE</th>
+            <th style="text-align:right;">TEMPS</th>
+            <th style="text-align:right;width:90px;">ACTIONS</th>
           </tr></thead>
           <tbody id="clsBody"><tr><td colspan="5" class="tbl-empty">Chargement…</td></tr></tbody>
           </table>
-        </div></div>
+        </div>
       </div>
     </div>
   </div>
@@ -1167,13 +1359,11 @@ body.viewer-mode #roleScreen,body.viewer-mode #diffScreen,body.viewer-mode #diff
         <div class="sams-panel on" id="sams-cams">
           <div class="cams-topbar">
             <span class="cams-topbar-lbl">Grille</span>
-            <select class="cams-sel" id="samGridSel" onchange="samApplyGrid()">
-              <option value="g1x1">1 caméra</option>
-              <option value="g2x1">2 côte à côte</option>
-              <option value="g2x2" selected>2×2 — 4 cams</option>
-              <option value="g3x2">3×2 — 6 cams</option>
-            </select>
-            <button class="cams-mgr-btn" onclick="camOpenModal()">⚙ Gérer les caméras</button>
+            <span id="samGridLbl" style="font-family:var(--font-head);font-size:11px;font-weight:700;color:var(--m2);background:var(--bg4);border:1px solid var(--b);border-radius:4px;padding:4px 12px;">—</span>
+            <span style="margin-left:auto;font-size:9px;color:var(--m);letter-spacing:1px;display:flex;align-items:center;gap:5px;">
+              <span style="width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 5px rgba(0,200,83,.4);animation:pulse 1.5s ease-in-out infinite;display:inline-block;"></span>
+              Synchronisé · Admin uniquement
+            </span>
           </div>
           <div class="cams-grid-wrap">
             <div class="cams-grid g2x2" id="samCamsGrid"></div>
@@ -1505,11 +1695,47 @@ function fmtNameFull(fn,ln){return ((fn||'')+' '+(ln||'').toUpperCase()).trim();
 function renderDcList(){
   const el=document.getElementById('dcList');
   if(!pilots.length){el.innerHTML='<div class="ev-empty">Aucun pilote dans cette catégorie</div>';return;}
-  el.innerHTML=pilots.map(p=>`
-    <div class="pitem ${dcSel===p.id?'sel':''}" style="--tc:${p.team_color||'#e8001c'}" onclick="dcSelect(${p.id})">
-      <div style="flex:1;"><div class="pi-n">${fmtNameFull(p.first_name,p.last_name)}</div><div class="pi-t">${p.team||''}</div></div>
-      <div class="pi-chk">${dcSel===p.id?'✓':''}</div>
-    </div>`).join('');
+  const sorted=pilotsSorted();
+  el.innerHTML=sorted.map((p,idx)=>{
+    const col=p.team_color||'#e8001c';
+    const isSel=dcSel===p.id;
+    const posNum=idx+1;
+    const posLbl=posNum===1?'NEXT':posNum===2?'2ème':posNum===3?'3ème':'';
+    return `<div onclick="dcSelect(${p.id})" style="
+      display:flex;align-items:center;gap:0;
+      background:${isSel?`rgba(${hexToRgb(col)},.12)`:'var(--bg3)'};
+      border:1px solid ${isSel?col:'var(--b)'};
+      border-radius:6px;margin-bottom:4px;overflow:hidden;cursor:pointer;
+      transition:all .12s;position:relative;
+    " onmouseover="this.style.background='var(--bg4)'" onmouseout="this.style.background='${isSel?`rgba(${hexToRgb(col)},.12)`:'var(--bg3)'}'">
+      <!-- Barre couleur écurie -->
+      <div style="width:4px;align-self:stretch;background:${col};flex-shrink:0;"></div>
+      <!-- Numéro passage -->
+      <div style="width:36px;text-align:center;flex-shrink:0;padding:10px 4px;">
+        <div style="font-family:var(--font-head);font-size:16px;font-weight:900;color:${isSel?col:'rgba(255,255,255,.15)'};">${posNum}</div>
+        ${posLbl?`<div style="font-size:6px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:${isSel?col:'rgba(255,255,255,.25)'};">${posLbl}</div>`:''}
+      </div>
+      <!-- Info pilote -->
+      <div style="flex:1;padding:8px 8px 8px 4px;min-width:0;">
+        <div style="font-family:var(--font-head);font-size:15px;font-weight:900;font-style:italic;text-transform:uppercase;letter-spacing:.3px;color:${isSel?'#fff':'rgba(255,255,255,.85)'};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${fmtNameFull(p.first_name,p.last_name)}</div>
+        <div style="display:flex;align-items:center;gap:5px;margin-top:2px;">
+          <div style="width:6px;height:6px;border-radius:50%;background:${col};flex-shrink:0;"></div>
+          <span style="font-size:9px;color:var(--m);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${p.team||'Sans écurie'}</span>
+        </div>
+      </div>
+      <!-- Flag + check -->
+      <div style="padding:0 10px;display:flex;align-items:center;gap:6px;flex-shrink:0;">
+        <span style="font-size:13px;">${flagOf(p.country)}</span>
+        ${isSel?`<div style="width:20px;height:20px;border-radius:50%;background:${col};display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;">✓</div>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// Utilitaire hex→rgb pour les teintes de fond
+function hexToRgb(hex){
+  const r=/^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return r?`${parseInt(r[1],16)},${parseInt(r[2],16)},${parseInt(r[3],16)}`:'232,0,28';
 }
 
 function renderPeList(){
@@ -1741,16 +1967,28 @@ async function pollCls(){
     if(st==='DNF'||st==='DSQ'||st==='INCIDENT')actions+=`<button class="act-btn act-clr" onclick="clearStatus(${p.id})">✓</button>`;
     if(st!=='DNF')actions+=`<button class="act-btn act-dnf" onclick="setStatus(${p.id},'DNF')">DNF</button>`;
     if(st!=='INCIDENT')actions+=`<button class="act-btn act-inf" onclick="setStatus(${p.id},'INCIDENT')">Inc</button>`;
-    const posClass=posNum===0?'pos-row-1':posNum===1?'pos-row-2':posNum===2?'pos-row-3':'';
-    return `<tr class="${posClass}" style="${rowStyle}">
-      <td class="td-pos" style="${pc};${lb}">${pos}</td>
-      <td class="td-name">
-        <div style="display:flex;align-items:center;gap:0;">${fmtNameFull(p.first_name,p.last_name)}${badge}</div>
-        ${pen?`<div class="td-name-sub">${pen}</div>`:''}
+    const rkClass=isOut?'rk-out':posNum===0?'rk-1':posNum===1?'rk-2':posNum===2?'rk-3':'';
+    const barColor=isOut?'#333':posNum===0?'var(--gold)':posNum===1?'#888':posNum===2?'#cd7f32':p.team_color||'var(--b2)';
+    const penChips=r.penalties?r.penalties.split('|').map(p2=>p2.trim()).filter(Boolean).map(p2=>`<span class="cls-pen-chip">⚑ ${p2}</span>`).join(''):'';
+    return `<tr class="${rkClass}">
+      <td class="cls-td-pos">
+        <div class="cls-pos-inner">
+          <div class="cls-pos-bar" style="background:${barColor};"></div>
+          <span class="cls-pos-num">${pos}</span>
+        </div>
       </td>
-      <td class="td-team">${p.team||''}</td>
-      <td class="td-time" style="${tc}">${time}</td>
-      <td style="text-align:right;padding-right:8px;white-space:nowrap;">${actions}</td>
+      <td class="cls-td-pilot">
+        <div class="cls-pilot-name">${fmtNameFull(p.first_name,p.last_name)}<span class="cls-badge ${st==='DNF'?'cls-b-dnf':st==='DSQ'?'cls-b-dsq':st==='INCIDENT'?'cls-b-inc':''}" style="${st&&st!=='INCIDENT'&&st!=='DNF'&&st!=='DSQ'?'display:none':''}">${st==='DNF'?'DNF':st==='DSQ'?'DSQ':st==='INCIDENT'?'INC':''}</span></div>
+        ${penChips?`<div class="cls-pilot-sub">${penChips}</div>`:''}
+      </td>
+      <td class="cls-td-team">
+        <div class="cls-team-inner">
+          <div class="cls-team-dot" style="background:${p.team_color||'var(--b2)'};"></div>
+          <span class="cls-team-name">${p.team||'—'}</span>
+        </div>
+      </td>
+      <td class="cls-td-time"><span class="cls-time-val">${time}</span></td>
+      <td class="cls-td-acts">${actions}</td>
     </tr>`;
   }).join('');
   document.getElementById('clsUpd').textContent=new Date().toLocaleTimeString('fr-FR');
@@ -1930,10 +2168,16 @@ async function setStatus(pid,st){
 // ══ DRIVER CARD ══
 function dcSelect(id){
   dcSel=id;const p=allPilots.find(x=>x.id===id);renderDcList();
+  const col=p.team_color||'#e8001c';
   document.getElementById('dcPrev').classList.add('on');
-  document.getElementById('dcPrevBar').style.background=p.team_color||'#e8001c';
+  document.getElementById('dcPrevBar').style.background=col;
+  document.getElementById('dcPrevTint').style.background=col;
   document.getElementById('dcPrevName').textContent=fmtNameFull(p.first_name,p.last_name);
   document.getElementById('dcPrevTeam').textContent=p.team||'';
+  document.getElementById('dcPrevTeam2').textContent=p.team||'—';
+  document.getElementById('dcPrevTeamDot').style.background=col;
+  document.getElementById('dcPrevCat').textContent=p.category||'';
+  document.getElementById('dcPrevCat2').textContent=p.category||'—';
   document.getElementById('bDcShow').disabled=false;
 }
 async function dcShow(){
@@ -1986,21 +2230,40 @@ async function loadCommentateurs(){
 }
 function renderCommList(){
   const el=document.getElementById('commList');
-  if(!allCommentateurs.length){el.innerHTML='<div class="ev-empty">Aucun commentateur</div>';return;}
-  el.innerHTML=allCommentateurs.map(c=>`
-    <div class="pitem ${commSel===c.id?'sel':''}" style="--tc:#4466cc" onclick="commSelect(${c.id})">
-      <div style="flex:1;"><div class="pi-n">${fmtNameFull(c.first_name,c.last_name)}</div><div class="pi-t">${c.role||''}</div></div>
-      <div style="display:flex;gap:6px;align-items:center;">
-        <button class="btn b-dk b-sm" onclick="event.stopPropagation();commEdit(${c.id})" style="width:auto;padding:5px 10px;">✏️</button>
-        <button class="btn b-dk b-sm" onclick="event.stopPropagation();commDelete(${c.id})" style="width:auto;padding:5px 10px;color:#ff4455;">🗑</button>
+  if(!allCommentateurs.length){el.innerHTML='<div class="ev-empty" style="padding:20px;text-align:center;">Aucun commentateur enregistré</div>';return;}
+  const accentColors=['#4466cc','#cc4444','#44aa66','#cc8800','#7744cc','#cc4488'];
+  el.innerHTML=allCommentateurs.map((cm,i)=>{
+    const accent=accentColors[i%accentColors.length];
+    const isSel=commSel===cm.id;
+    const isOn=cm.active;
+    return `<div class="comm-card-prev ${isSel?'sel':''}" onclick="commSelect(${cm.id})">
+      <div class="comm-card-head">
+        <div class="comm-card-accent" style="background:${accent};"></div>
+        <div class="comm-card-info">
+          <div class="comm-card-name" style="color:${isSel?accent:'#fff'};">${fmtNameFull(cm.first_name,cm.last_name)}</div>
+          <div class="comm-card-role">${cm.role||'Commentateur'}</div>
+        </div>
+        <div style="display:flex;gap:5px;flex-shrink:0;">
+          <button class="btn b-dk b-sm" onclick="event.stopPropagation();commEdit(${cm.id})" style="padding:4px 9px;">✏️</button>
+          <button style="background:none;border:none;color:rgba(255,68,85,.4);cursor:pointer;padding:4px 8px;font-size:13px;transition:color .1s;" onclick="event.stopPropagation();commDelete(${cm.id})" onmouseover="this.style.color='#ff4455'" onmouseout="this.style.color='rgba(255,68,85,.4)'">🗑</button>
+        </div>
       </div>
-      <div class="pi-chk">${commSel===c.id?'✓':''}</div>
-    </div>`).join('');
+      <div class="comm-card-foot">
+        <div class="comm-card-status">
+          <div class="comm-cdot ${isOn?'on':''}"></div>
+          <span style="color:${isOn?'var(--green)':'var(--m)'};">${isOn?'EN DIRECT':'VEILLE'}</span>
+        </div>
+        <button class="comm-obs-trigger" onclick="event.stopPropagation();commShow(${cm.id})" style="background:${accent};font-size:9px;padding:4px 10px;">▶ OBS</button>
+      </div>
+    </div>`;
+  }).join('');
 }
 function commSelect(id){
-  commSel=id;const c=allCommentateurs.find(x=>x.id===id);renderCommList();
-  document.getElementById('commPN').textContent=fmtNameFull(c.first_name,c.last_name);
-  document.getElementById('commPR').textContent=(c.role||'').toUpperCase();
+  commSel=id;const cm=allCommentateurs.find(x=>x.id===id);renderCommList();
+  if(cm){
+    document.getElementById('commPN').textContent=fmtNameFull(cm.first_name,cm.last_name);
+    document.getElementById('commPR').textContent=(cm.role||'').toUpperCase();
+  }
   document.getElementById('bCommShow').disabled=false;
 }
 function commPreview(){
@@ -2034,11 +2297,12 @@ async function commDelete(id){
   const d=await DELETE('commentateurs',`?id=eq.${id}`);
   if(d!==null){if(commSel===id){commSel=null;document.getElementById('bCommShow').disabled=true;}await loadCommentateurs();}
 }
-async function commShow(){
+async function commShow(forceId){
+  if(forceId!==undefined)commSel=forceId;
   let fn,ln,role;
-  if(commSel){const c=allCommentateurs.find(x=>x.id===commSel);fn=c.first_name;ln=c.last_name;role=c.role;}
-  else{fn=document.getElementById('commFirst').value.trim();ln=document.getElementById('commLast').value.trim();role=document.getElementById('commRole').value.trim();}
-  if(!fn&&!ln){fb('fb-comm','Sélectionne ou saisis un commentateur','err');return;}
+  if(commSel){const cm=allCommentateurs.find(x=>x.id===commSel);if(cm){fn=cm.first_name;ln=cm.last_name;role=cm.role;}}
+  if(!fn&&!ln){fn=document.getElementById('commFirst').value.trim();ln=document.getElementById('commLast').value.trim();role=document.getElementById('commRole').value.trim();}
+  if(!fn&&!ln){fb('fb-comm','Sélectionne un commentateur dans la liste','err');return;}
   const d=await PATCH('commentateur','?id=eq.1',{first_name:fn,last_name:ln,role,active:true,duration_ms:commDur,triggered_at:Date.now()});
   if(d!==null){
     fb('fb-comm','▶ '+fmtNameFull(fn,ln),'ok');
@@ -2406,7 +2670,7 @@ function camRenderGrid(){
       cell.innerHTML=
         `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:.2"><path d="M15 10l4.553-2.069A1 1 0 0121 8.868v6.264a1 1 0 01-1.447.894L15 14M3 8a2 2 0 012-2h10a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8z"/></svg>`+
         `<span>Slot ${i+1} — Cliquer pour ajouter</span>`;
-      cell.onclick=()=>camOpenModal(i);
+      // Lecture seule SAMS — pas d'action au clic
     }
     grid.appendChild(cell);
   }
@@ -3103,8 +3367,10 @@ async function samInit(){
 
 // ── Caméras (partagées Supabase) ──
 function samRenderCams(){
-  const sel=document.getElementById('samGridSel');
-  if(sel)sel.value=camGrid;
+  // Mettre à jour le label de grille (lecture seule)
+  const gridLabels={g1x1:'1 caméra',g2x1:'2 côte à côte',g2x2:'2×2 — 4 cams',g3x2:'3×2 — 6 cams',g2x3:'2×3 — 6 cams'};
+  const lbl=document.getElementById('samGridLbl');
+  if(lbl)lbl.textContent=gridLabels[camGrid]||camGrid;
   const grid=document.getElementById('samCamsGrid');
   if(!grid)return;
   grid.className='cams-grid '+camGrid;
@@ -3130,10 +3396,8 @@ function samRenderCams(){
 }
 
 async function samApplyGrid(){
-  camGrid=document.getElementById('samGridSel').value;
-  await camSave();
-  samRenderCams();
-  camRenderGrid();
+  // Lecture seule — la grille est contrôlée par Admin/Commentateur uniquement
+  return;
 }
 
 async function samPollSharedCams(){
@@ -3146,8 +3410,6 @@ async function samPollSharedCams(){
     try{camList=JSON.parse(d[0].cams||'[]');}catch(e){}
     camGrid=d[0].grid||'g2x2';
     samRenderCams();
-    const sel=document.getElementById('samGridSel');
-    if(sel)sel.value=camGrid;
   }
 }
 
