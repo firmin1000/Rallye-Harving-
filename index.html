@@ -1882,20 +1882,19 @@ function piEdit(id){
   document.getElementById('piId').value=id;
   document.getElementById('piFirst').value=p.first_name||'';
   document.getElementById('piLast').value=p.last_name||'';
-  document.getElementById('piNat').value=p.country||'';
+  document.getElementById('piCountry').value=p.country||'';
   document.getElementById('piCat').value=p.category||'Rally B';
   document.getElementById('piTeam').value=p.team||'';
   document.getElementById('piSponsor').value=p.sponsor||'';
   document.getElementById('piColor').value=p.team_color||'#e8001c';
   document.getElementById('piColorTxt').value=p.team_color||'#e8001c';
   document.getElementById('piPhoto').value=p.photo_url||'';
-  document.getElementById('piLogo').value=p.logo_url||'';
   document.getElementById('piFormTitle').textContent='✏️ Modifier le pilote';
   tab('pilotes');
 }
 function piClear(){
   document.getElementById('piId').value='';
-  ['piFirst','piLast','piNat','piTeam','piSponsor','piPhoto','piLogo'].forEach(id=>document.getElementById(id).value='');
+  ['piFirst','piLast','piCountry','piTeam','piSponsor','piPhoto'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('piCat').value='Rally B';
   document.getElementById('piColor').value='#e8001c';document.getElementById('piColorTxt').value='#e8001c';
   document.getElementById('piFormTitle').textContent='➕ Ajouter un pilote';
@@ -1905,13 +1904,13 @@ async function piSave(){
   const body={
     first_name:document.getElementById('piFirst').value.trim(),
     last_name:document.getElementById('piLast').value.trim(),
-    country:document.getElementById('piNat').value.trim(),
+    country:document.getElementById('piCountry').value.trim(),
     category:document.getElementById('piCat').value,
     team:document.getElementById('piTeam').value.trim(),
     sponsor:document.getElementById('piSponsor').value.trim(),
     team_color:document.getElementById('piColorTxt').value.trim()||document.getElementById('piColor').value,
     photo_url:document.getElementById('piPhoto').value.trim(),
-    logo_url:document.getElementById('piLogo').value.trim(),
+    logo_url:'',  // champ logo non utilisé dans ce formulaire
   };
   if(!body.first_name||!body.last_name){fb('fb-pi','Prénom et nom requis','err');return;}
   const d=id?await PATCH('pilotes',`?id=eq.${id}`,body):await POST('pilotes',body);
